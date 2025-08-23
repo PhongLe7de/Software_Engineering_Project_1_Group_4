@@ -2,17 +2,17 @@ version: "3.9"
 services:
   db:
     image: postgres:15
-    env_file: .env
+    env_file: ../../../whiteboard-backend/.env
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   app:
-    build: .
+    build: ../../../whiteboard-backend
     depends_on:
       - db
-    env_file: .env
+    env_file: ../../../whiteboard-backend/.env
     ports:
       - "8080:8080"
 
