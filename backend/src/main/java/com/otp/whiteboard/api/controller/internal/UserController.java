@@ -8,10 +8,12 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import static com.otp.whiteboard.api.Endpoint.USER_INTERNAL_API;
+
 //import io.swagger.v3.oas.annotations.Operation;
 //import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
-@RequestMapping("/api/internal/users")
+@RequestMapping(USER_INTERNAL_API)
 @Validated
 //@Tag(name = "User Management", description = "Operations related to user management")
 public class UserController {
