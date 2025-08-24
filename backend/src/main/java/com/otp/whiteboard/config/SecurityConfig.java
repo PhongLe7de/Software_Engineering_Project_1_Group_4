@@ -31,7 +31,11 @@ public class SecurityConfig {
                 .anonymous(AbstractHttpConfigurer::disable)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
+                        // Swagger UI endpoints
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
+                        // Protected internal API endpoints
                         .requestMatchers(Endpoint.INTERNAL_API_PATTERN).authenticated()
+                        // All other requests are public
                         .anyRequest().permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
