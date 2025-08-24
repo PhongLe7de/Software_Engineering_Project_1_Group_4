@@ -33,3 +33,6 @@ build/
 .vscode/
 
 .env
+
+# Firebase
+firebase-service-account.json
