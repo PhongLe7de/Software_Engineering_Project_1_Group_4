@@ -5,12 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 
 public record UserDto(
         @NotBlank String email,
-        @NotBlank String username
+        @NotBlank String uid,
+        @NotBlank String status
 ) {
     public UserDto(final User user) {
         this(
             user.getEmail(),
-            user.getUsername()
+            user.getUid(),
+            user.getStatus()
         );
     }
 
