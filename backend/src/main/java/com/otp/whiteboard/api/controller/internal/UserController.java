@@ -30,14 +30,11 @@ public class UserController {
     @PostMapping("/register")
     @Operation(
         summary = "Register a new user",
-        description = "Register a new user in the system with email and password. Requires Firebase authentication."
+        description = "Register a new user in the system with email only. Firebase UID and user status are automatically extracted/set from the authenticated token."
     )
     @ResponseBody
     public UserDto registerUser(@RequestBody @NotNull @Valid UserRegisterRequest request) {
-        if (request.getEmail() == null || request.getPassword() == null) {
-            throw new IllegalArgumentException("Email and password must not be null");
-        }
-        return new UserDto(userService.registerUser(request.getEmail(), request.getPassword()));
+        return new UserDto(userService.registerUser(request.getEmail()));
     }
 
 }

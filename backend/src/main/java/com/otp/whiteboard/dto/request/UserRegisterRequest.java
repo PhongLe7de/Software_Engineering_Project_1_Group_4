@@ -4,15 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 
 public record UserRegisterRequest (
         @NotBlank
-        String email,
-        @NotBlank
-        String password
+        String email
 ){
     public String getEmail() {
         return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 }
