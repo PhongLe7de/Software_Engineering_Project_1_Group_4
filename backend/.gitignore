@@ -33,6 +33,7 @@ build/
 .vscode/
 
 .env
+.DS_Store
 
 # Firebase
 firebase-service-account.json
