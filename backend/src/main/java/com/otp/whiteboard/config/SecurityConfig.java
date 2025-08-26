@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .anonymous(AbstractHttpConfigurer::disable)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(Endpoint.INTERNAL_API_PATTERN).authenticated()
                         .anyRequest().permitAll()
                 )
