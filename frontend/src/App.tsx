@@ -1,24 +1,30 @@
 import { useState } from 'react'
+import Canvas from "@/components/Canvas.tsx";
+import { AppSidebar } from "@/components/AppSidebar.tsx";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [userData, setUserData] = useState(undefined)
+    const [sidebarVisible, setSidebarVisible] = useState(true);
+    const [tool, setTool] = useState("pen");
+    const [brushSize, setBrushSize] = useState(5);
+    const [brushColor, setBrushColor] = useState("#000000");
 
-  return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <SidebarProvider>
+            <AppSidebar />
+            <main className="flex-1 relative w-full h-screen">
+                <SidebarTrigger />
+                <Canvas
+                    userData={userData}
+                    sidebarVisible={sidebarVisible}
+                    tool={tool}
+                    brushSize={brushSize}
+                    brushColor={brushColor}
+                />
+            </main>
+        </SidebarProvider>
+    )
 }
 
 export default App
