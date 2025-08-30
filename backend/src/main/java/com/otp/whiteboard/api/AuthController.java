@@ -1,4 +1,4 @@
-package com.otp.whiteboard.controller;
+package com.otp.whiteboard.api;
 
 import com.otp.whiteboard.dto.request.LoginRequest;
 import com.otp.whiteboard.dto.request.RegisterRequest;

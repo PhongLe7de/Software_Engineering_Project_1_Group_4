@@ -19,7 +19,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Since we removed roles, return basic USER authority
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
