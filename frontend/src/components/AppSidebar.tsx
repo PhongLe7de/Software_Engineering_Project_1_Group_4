@@ -1,9 +1,9 @@
 import * as React from "react"
 import {
-    IconFolder,
     IconInnerShadowTop,
     IconSettings,
-    IconUsers,
+    IconPencil,
+    IconEraser
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -37,14 +37,14 @@ const data = {
     },
     navMain: [
         {
-            title: "Projects",
+            title: "Pen",
             url: "#",
-            icon: IconFolder,
+            icon: IconPencil,
         },
         {
-            title: "Contacts",
+            title: "Eraser",
             url: "#",
-            icon: IconUsers,
+            icon: IconEraser,
         },
     ],
     navSecondary: [
