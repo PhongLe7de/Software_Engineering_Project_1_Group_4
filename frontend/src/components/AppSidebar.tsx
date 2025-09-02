@@ -1,13 +1,7 @@
 import * as React from "react"
 import {
-    IconCamera,
-    IconDatabase,
-    IconFileAi,
-    IconFileDescription,
-    IconFileWord,
     IconFolder,
     IconInnerShadowTop,
-    IconReport,
     IconSettings,
     IconUsers,
 } from "@tabler/icons-react"
@@ -23,7 +17,17 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+
+import {
+  ColorPicker,
+  ColorPickerAlpha,
+  ColorPickerEyeDropper,
+  ColorPickerFormat,
+  ColorPickerHue,
+  ColorPickerOutput,
+  ColorPickerSelection,
+} from '@/components/ui/shadcn-io/color-picker';
 
 const data = {
     user: {
@@ -43,77 +47,12 @@ const data = {
             icon: IconUsers,
         },
     ],
-    navClouds: [
-        {
-            title: "Capture",
-            icon: IconCamera,
-            isActive: true,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Proposal",
-            icon: IconFileDescription,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Prompts",
-            icon: IconFileAi,
-            url: "#",
-            items: [
-                {
-                    title: "Active Proposals",
-                    url: "#",
-                },
-                {
-                    title: "Archived",
-                    url: "#",
-                },
-            ],
-        },
-    ],
     navSecondary: [
         {
             title: "Settings",
             url: "#",
             icon: IconSettings,
         }
-    ],
-    documents: [
-        {
-            name: "Data Library",
-            url: "#",
-            icon: IconDatabase,
-        },
-        {
-            name: "Reports",
-            url: "#",
-            icon: IconReport,
-        },
-        {
-            name: "Word Assistant",
-            url: "#",
-            icon: IconFileWord,
-        },
     ],
 }
 
@@ -129,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         >
                             <a href="#">
                                 <IconInnerShadowTop className="!size-5" />
-                                <span className="text-base font-semibold">Acme Inc.</span>
+                                <span className="text-base font-semibold">Realtime Whiteboard</span>
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -137,6 +76,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
+                <ColorPicker className="max-w-sm rounded-md border bg-background p-4 shadow-sm">
+                <ColorPickerSelection />
+                <div className="flex items-center gap-4">
+                <ColorPickerEyeDropper />
+                <div className="grid w-full gap-1">
+                    <ColorPickerHue />
+                    <ColorPickerAlpha />
+                </div>
+                </div>
+                <div className="flex items-center gap-2">
+                <ColorPickerOutput />
+                <ColorPickerFormat />
+                </div>
+            </ColorPicker>
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
