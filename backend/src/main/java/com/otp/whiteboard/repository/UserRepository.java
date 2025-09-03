@@ -1,11 +1,12 @@
 package com.otp.whiteboard.repository;
 
-
 import com.otp.whiteboard.model.User;
+import com.otp.whiteboard.enums.Status;
 import jakarta.annotation.Nonnull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,19 +29,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(@Nonnull String email);
 
     /**
-     * Finds a user by their Firebase UID.
+     * Finds users by their status.
      *
-     * @param uid the Firebase UID of the user.
-     * @return an {@link Optional} containing the user if found, or empty if not.
+     * @param status the status to search for.
+     * @return a list of users with the specified status.
      */
-    @Nonnull
-    Optional<User> findByUid(@Nonnull String uid);
-
-    /**
-     * Checks if a user with the given Firebase UID exists.
-     *
-     * @param uid the Firebase UID to check.
-     * @return {@code true} if a user with the Firebase UID exists, {@code false} otherwise.
-     */
-    boolean existsByUid(@Nonnull String uid);
+    List<User> findByStatus(@Nonnull Status status);
 }

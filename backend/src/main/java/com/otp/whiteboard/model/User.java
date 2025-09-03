@@ -1,34 +1,34 @@
 package com.otp.whiteboard.model;
 
 import com.otp.whiteboard.common.annotation.LibraryUseConstructor;
+import com.otp.whiteboard.enums.Status;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users",
-        indexes = {
-                @Index(name = "idx_user_status", columnList = "status"),
-                @Index(name = "idx_user_uid", columnList = "uid")
-        },
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uq_user_email", columnNames = "email"),
-
-        })
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "uid", unique = true, length = 100)
-    private String uid;
+    @Column(nullable = false)
+    private String password;
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "status", nullable = false, length = 255)
-    private String status;
+    @Column(unique = true,name = "display_name")
+    private String displayName;
+
+    @Column(name = "photo_url", columnDefinition = "TEXT")
+    private String photoUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
+    private Status status = Status.ACTIVE;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -37,8 +37,14 @@ public class User {
     public User() {
     }
 
-    public User(String email) {
+    public User(String email, String password) {
         this.email = email;
+        this.password = password;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
     }
 
     //Getters and Setters
@@ -50,6 +56,14 @@ public class User {
         this.id = id;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -58,21 +72,30 @@ public class User {
         this.email = email;
     }
 
-    public String getUid() {
-        return uid;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
-    public String getStatus() {
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
+
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -87,11 +110,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(uid, user.uid) && Objects.equals(email, user.email) && Objects.equals(status, user.status) && Objects.equals(createdAt, user.createdAt);
+        return Objects.equals(id, user.id) && Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, status, createdAt, uid);
+        return Objects.hash(id, email);
     }
 }
