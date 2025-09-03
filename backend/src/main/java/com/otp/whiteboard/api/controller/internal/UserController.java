@@ -1,6 +1,6 @@
 package com.otp.whiteboard.api.controller.internal;
 
-import com.otp.whiteboard.dto.request.response.UserDto;
+import com.otp.whiteboard.dto.response.UserDto;
 import com.otp.whiteboard.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,7 +28,7 @@ public class UserController {
     public UserDto getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return new UserDto(userDetails.getUser());
+        return new UserDto(userDetails.user());
     }
 
 }

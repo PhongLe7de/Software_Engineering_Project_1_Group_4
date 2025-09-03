@@ -5,21 +5,30 @@ import com.otp.whiteboard.enums.Status;
 
 import java.time.LocalDateTime;
 
-public class RegisterResponse {
-    private String message;
+public class LoginDto {
+    private String token;
+    private String type = "Bearer";
     private UserInfo user;
 
-    public RegisterResponse(String message, User user) {
-        this.message = message;
+    public LoginDto(String token, User user) {
+        this.token = token;
         this.user = new UserInfo(user);
     }
 
-    public String getMessage() {
-        return message;
+    public String getToken() {
+        return token;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public UserInfo getUser() {
