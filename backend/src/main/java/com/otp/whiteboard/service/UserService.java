@@ -26,17 +26,14 @@ public class UserService {
 
     @Transactional
     @Nonnull
-    public User registerUser(@NotBlank String email, @NotBlank String password, 
-                           String displayName, String photoUrl) {
-        logger.info("Registering user with email: {}", email);
+    public User registerUser(@NotBlank String email, @NotBlank String password, String displayName, String photoUrl) {
+        logger.debug("Registering user with email: {}", email);
 
-        // Check if user already exists
         if (userRepository.existsByEmail(email)) {
             logger.warn("User with email {} already exists", email);
             throw new IllegalArgumentException("User with this email already exists");
         }
 
-        // Create new user
         User user = new User(email, passwordEncoder.encode(password));
         user.setDisplayName(displayName);
         user.setPhotoUrl(photoUrl);
@@ -44,8 +41,6 @@ public class UserService {
         user.setCreatedAt(java.time.LocalDateTime.now());
 
         userRepository.save(user);
-        logger.info("User registered successfully with email: {}", email);
-
         return user;
     }
 

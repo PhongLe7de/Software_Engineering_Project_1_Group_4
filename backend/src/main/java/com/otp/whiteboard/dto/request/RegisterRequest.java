@@ -17,8 +17,6 @@ public class RegisterRequest {
     private String displayName;
     private String photoUrl;
 
-    public RegisterRequest() {}
-
     public RegisterRequest(String email, String password, String displayName, String photoUrl) {
         this.email = email;
         this.password = password;

@@ -8,13 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users",
-        indexes = {
-                @Index(name = "idx_user_status", columnList = "status")
-        },
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uq_user_email", columnNames = "email")
-        })
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
