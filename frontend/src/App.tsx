@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import Canvas from "@/components/Canvas.tsx";
 import { AppSidebar } from "@/components/AppSidebar.tsx";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import type {DrawingEvent} from "@/types.ts";
 import useWebSocket from "@/hooks/useWebSocket.tsx";
 
-
-
-function App() {
+// Create a wrapper component that can use the sidebar context
+function AppContent() {
     const [userData, setUserData] = useState(undefined)
     const [sidebarVisible, setSidebarVisible] = useState(true);
     const [tool, setTool] = useState("pen");
@@ -19,22 +18,30 @@ function App() {
         sendCursorPosition,
     } = useWebSocket();
 
+    const { state } = useSidebar(); // Now we can access sidebar state
 
     const handleDrawingEvent = (event: DrawingEvent) => {
-        // TODO: send drawing event when backend is ready
         sendDrawingEvent(event);
     };
 
     const handleCursorMovement = (username: string, x: number, y: number) => {
-        // TODO: create Cursor component send cursor position when backend is ready
         sendCursorPosition(username, x, y);
     };
 
     return (
-        <SidebarProvider>
+        <>
             <AppSidebar />
+            {/* Position the trigger button based on sidebar state */}
+            <SidebarTrigger 
+                className={`
+                    fixed top-4 z-50 transition-all duration-200 ease-linear
+                    ${state === 'expanded' 
+                        ? 'left-[calc(var(--sidebar-width)+0.5rem)]' // Right of expanded sidebar
+                        : 'left-2' // Left side when collapsed
+                    }
+                `}
+            />
             <main className="flex-1 relative w-full h-screen">
-                <SidebarTrigger />
                 <Canvas
                     userData={userData}
                     sidebarVisible={sidebarVisible}
@@ -45,6 +52,14 @@ function App() {
                     onCursorMove={handleCursorMovement}
                 />
             </main>
+        </>
+    );
+}
+
+function App() {
+    return (
+        <SidebarProvider>
+            <AppContent />
         </SidebarProvider>
     )
 }
