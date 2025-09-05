@@ -1,6 +1,5 @@
 package com.otp.whiteboard.model;
 
-import com.otp.whiteboard.common.annotation.LibraryUseConstructor;
 import com.otp.whiteboard.enums.Status;
 import jakarta.persistence.*;
 

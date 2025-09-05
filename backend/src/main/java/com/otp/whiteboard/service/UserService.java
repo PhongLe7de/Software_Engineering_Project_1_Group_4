@@ -1,5 +1,6 @@
 package com.otp.whiteboard.service;
 
+import com.otp.whiteboard.dto.response.UserDto;
 import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.repository.UserRepository;
 import com.otp.whiteboard.enums.Status;
@@ -17,61 +18,18 @@ import java.util.Optional;
 @Service
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private final UserRepository userRepository;
+    public UserService (UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Transactional
     @Nonnull
-    public User registerUser(@NotBlank String email, @NotBlank String password, String displayName, String photoUrl) {
-        logger.debug("Registering user with email: {}", email);
-
-        if (userRepository.existsByEmail(email)) {
-            logger.warn("User with email {} already exists", email);
-            throw new IllegalArgumentException("User with this email already exists");
-        }
-
-        User user = new User(email, passwordEncoder.encode(password));
-        user.setDisplayName(displayName);
-        user.setPhotoUrl(photoUrl);
-        user.setStatus(Status.ACTIVE);
-        user.setCreatedAt(java.time.LocalDateTime.now());
-
-        userRepository.save(user);
-        return user;
+    public UserDto getUserProfilePicture(@NotBlank String displayName) {
+        logger.debug("Search user with display name: {}", displayName);
+        User user = userRepository.findUserByDisplayName(displayName)
+                .orElseThrow(() -> new IllegalArgumentException("Display name already in use"));
+        return new UserDto(user);
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 
-    public boolean validatePassword(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
-
-    @Transactional
-    public void updateProfile(String email, String displayName, String photoUrl) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        
-        user.setDisplayName(displayName);
-        user.setPhotoUrl(photoUrl);
-        userRepository.save(user);
-        
-        logger.info("Profile updated for user: {}", email);
-    }
-
-    @Transactional
-    public void updateStatus(String email, Status status) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        
-        user.setStatus(status);
-        userRepository.save(user);
-        
-        logger.info("Status updated to {} for user: {}", status, email);
-    }
 }
