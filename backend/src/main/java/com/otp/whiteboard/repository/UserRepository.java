@@ -35,4 +35,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return a list of users with the specified status.
      */
     List<User> findByStatus(@Nonnull Status status);
+
+
+    /**
+     * Finds a user by their display name.
+     *
+     * @param displayName the display name of the user.
+     * @return an {@link Optional} containing the user if found, or empty if not.
+     */
+    @Nonnull
+    Optional<User> findUserByDisplayName(@Nonnull String displayName);
 }

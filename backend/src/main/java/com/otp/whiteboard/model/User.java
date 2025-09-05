@@ -1,6 +1,5 @@
 package com.otp.whiteboard.model;
 
-import com.otp.whiteboard.common.annotation.LibraryUseConstructor;
 import com.otp.whiteboard.enums.Status;
 import jakarta.persistence.*;
 
@@ -33,7 +32,6 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @LibraryUseConstructor
     public User() {
     }
 
