@@ -48,7 +48,7 @@ const useWebSocket = () => {
         console.log("Sending event: ", event);
     };
 
-    const sendCursorPosition = (username: string, x: number, y: number) => {
+    const sendCursorPosition = (displayName: string, x: number, y: number) => {
     };
 
     return { isConnected, sendDrawingEvent, sendCursorPosition };

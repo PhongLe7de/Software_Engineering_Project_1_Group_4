@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import Canvas from "@/components/Canvas.tsx";
+import UserCreateModal from "@/components/UserCreateModal.tsx";
 import { AppSidebar } from "@/components/AppSidebar.tsx";
 import { SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import type {DrawingEvent} from "@/types.ts";
 import useWebSocket from "@/hooks/useWebSocket.tsx";
+import {Toaster} from "sonner";
 
-// Create a wrapper component that can use the sidebar context
 function AppContent() {
-    const [userData, setUserData] = useState(undefined)
-    const [sidebarVisible, setSidebarVisible] = useState(true);
+    const [userData, setUserData] = useState<{  displayName: string; photoUrl: string; } | undefined>(undefined);
+    const [sidebarVisible, setSidebarVisible] = useState(true); // TODO: initial state false for production
     const [tool, setTool] = useState("pen");
     const [brushSize, setBrushSize] = useState(5);
     const [brushColor, setBrushColor] = useState("#000000");
@@ -18,7 +19,7 @@ function AppContent() {
         sendCursorPosition,
     } = useWebSocket();
 
-    const { state } = useSidebar(); // Now we can access sidebar state
+    const { state } = useSidebar();
 
     const handleDrawingEvent = (event: DrawingEvent) => {
         sendDrawingEvent(event);
@@ -30,17 +31,22 @@ function AppContent() {
 
     return (
         <>
-            <AppSidebar />
+            <Toaster richColors position="top-center"/>
+            <UserCreateModal
+                activateSidebar={setSidebarVisible}
+                setUserData={setUserData}
+            />
+            {sidebarVisible && <AppSidebar/>}
             {/* Position the trigger button based on sidebar state */}
-            <SidebarTrigger 
+            {sidebarVisible && (<SidebarTrigger
                 className={`
                     fixed top-4 z-50 transition-all duration-200 ease-linear
-                    ${state === 'expanded' 
-                        ? 'left-[calc(var(--sidebar-width)+0.5rem)]' // Right of expanded sidebar
-                        : 'left-2' // Left side when collapsed
-                    }
+                    ${state === 'expanded'
+                    ? 'left-[calc(var(--sidebar-width)+0.5rem)]' // Right of expanded sidebar
+                    : 'left-2' // Left side when collapsed
+                }
                 `}
-            />
+            />)}
             <main className="flex-1 relative w-full h-screen">
                 <Canvas
                     userData={userData}
