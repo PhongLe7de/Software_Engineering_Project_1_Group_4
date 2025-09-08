@@ -19,15 +19,9 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import {
-  ColorPicker,
-  ColorPickerAlpha,
-  ColorPickerEyeDropper,
-  ColorPickerFormat,
-  ColorPickerHue,
-  ColorPickerOutput,
-  ColorPickerSelection,
-} from '@/components/ui/shadcn-io/color-picker';
+import { useState } from 'react'
+
+import { HexColorPicker } from "react-colorful";
 
 const data = {
     user: {
@@ -57,6 +51,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const [color, setColor] = useState("#aabbcc");
+
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -76,20 +72,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
-                <ColorPicker className="max-w-sm rounded-md border bg-background p-4 shadow-sm">
-                <ColorPickerSelection />
-                <div className="flex items-center gap-4">
-                <ColorPickerEyeDropper />
-                <div className="grid w-full gap-1">
-                    <ColorPickerHue />
-                    <ColorPickerAlpha />
-                </div>
-                </div>
-                <div className="flex items-center gap-2">
-                <ColorPickerOutput />
-                <ColorPickerFormat />
-                </div>
-            </ColorPicker>
+                <HexColorPicker color={color} onChange={setColor} />
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
