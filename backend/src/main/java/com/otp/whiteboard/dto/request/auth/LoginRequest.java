@@ -1,4 +1,4 @@
-package com.otp.whiteboard.dto.request;
+package com.otp.whiteboard.dto.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
 

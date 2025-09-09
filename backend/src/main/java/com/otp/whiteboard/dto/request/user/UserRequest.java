@@ -1,4 +1,4 @@
-package com.otp.whiteboard.dto.request;
+package com.otp.whiteboard.dto.request.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

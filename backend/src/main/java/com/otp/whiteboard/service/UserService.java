@@ -1,7 +1,9 @@
 package com.otp.whiteboard.service;
 
-import com.otp.whiteboard.dto.request.*;
-import com.otp.whiteboard.dto.response.UserDto;
+import com.otp.whiteboard.dto.request.auth.RegisterRequest;
+import com.otp.whiteboard.dto.request.user.UserByDisplayNameRequest;
+import com.otp.whiteboard.dto.request.user.UserUpdateRequest;
+import com.otp.whiteboard.dto.response.user.UserDto;
 import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.repository.UserRepository;
 import com.otp.whiteboard.enums.Status;
