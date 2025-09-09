@@ -1,7 +1,7 @@
 package com.otp.whiteboard.service;
 
-import com.otp.whiteboard.dto.request.LoginRequest;
-import com.otp.whiteboard.dto.response.UserDto;
+import com.otp.whiteboard.dto.request.auth.LoginRequest;
+import com.otp.whiteboard.dto.response.user.UserDto;
 import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
