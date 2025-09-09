@@ -1,4 +1,4 @@
-package com.otp.whiteboard.dto.request.user;
+package com.otp.whiteboard.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.otp.whiteboard.enums.Status;

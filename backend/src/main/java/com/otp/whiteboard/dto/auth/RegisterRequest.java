@@ -1,4 +1,4 @@
-package com.otp.whiteboard.dto.request.auth;
+package com.otp.whiteboard.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
