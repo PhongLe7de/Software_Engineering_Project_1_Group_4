@@ -1,4 +1,4 @@
-package com.otp.whiteboard.dto.response;
+package com.otp.whiteboard.dto.user;
 
 import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.enums.Status;
