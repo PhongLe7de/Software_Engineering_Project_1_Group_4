@@ -64,3 +64,18 @@ cd frontend
 npm install
 npm run dev
 ```
+
+### Run Unit Tests and Generate Coverage Report
+```bash
+cd backend
+mvn clean test
+```
+- Open the Coverage Report
+```bash
+cd backend
+open target/site/jacoco/index.html  #MacOs
+```
+```bash
+cd backend
+start target\site\jacoco\index.html #Window
+```
