@@ -1,8 +1,8 @@
 package com.otp.whiteboard.api.controller;
 
-import com.otp.whiteboard.dto.request.auth.LoginRequest;
-import com.otp.whiteboard.dto.request.auth.RegisterRequest;
-import com.otp.whiteboard.dto.response.user.UserDto;
+import com.otp.whiteboard.dto.auth.LoginRequest;
+import com.otp.whiteboard.dto.auth.RegisterRequest;
+import com.otp.whiteboard.dto.user.UserDto;
 import com.otp.whiteboard.service.AuthService;
 import com.otp.whiteboard.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
