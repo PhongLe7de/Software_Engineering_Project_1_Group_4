@@ -33,9 +33,12 @@ import {
 import { Input } from "@/components/ui/input"
 
 type User = {
-    displayName: string;
+    display_name: string;
     photoUrl: string;
+    email?: string;
+    password?: string;
 }
+
 
 type LoginModalProps = {
     activateSidebar: (show: boolean) => void;
@@ -64,7 +67,7 @@ export default function UserCreateModal({ activateSidebar, setUserData }: LoginM
 
     const createUser = async (userData: User) => {
         try {
-            const response = await fetch(`${import.meta.env.API_URL}user/profile`, {
+            const response = await fetch(`${import.meta.env.API_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,9 +90,12 @@ export default function UserCreateModal({ activateSidebar, setUserData }: LoginM
     const handleLogin = async (data: z.infer<typeof FormSchema>) => {
         try {
             const userData: User = {
-                displayName: data.displayName,
-                photoUrl: avatars[selectProfilePic]
+                email: "user@exaaaaaample11.com", //TODO: default values for now, updated user creation modal in a later sprint
+                password: "password",//TODO: default values for now, updated user creation modal in a later sprint
+                display_name: data.displayName,
+                photoUrl: avatars[selectProfilePic],
             };
+            console.log(userData);
 
             const newUser = await createUser(userData);
 
