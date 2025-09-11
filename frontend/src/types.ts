@@ -1,5 +1,7 @@
 export type CanvasProps = {
-    userData: {  displayName: string; photoUrl: string } | undefined;
+    userData: {
+        user_id: number;
+        display_name: string; photo_url: string } | undefined;
     sidebarVisible: boolean;
     tool: string;
     brushSize: number;

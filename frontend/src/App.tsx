@@ -8,8 +8,8 @@ import useWebSocket from "@/hooks/useWebSocket.tsx";
 import {Toaster} from "sonner";
 
 function AppContent() {
-    const [userData, setUserData] = useState<{  displayName: string; photoUrl: string; } | undefined>(undefined);
-    const [sidebarVisible, setSidebarVisible] = useState(true); // TODO: initial state false for production
+    const [userData, setUserData] = useState<{  user_id: number, display_name: string; photo_url: string; } | undefined>(undefined);
+    const [sidebarVisible, setSidebarVisible] = useState(false);
     const [tool, setTool] = useState("pen");
     const [brushSize, setBrushSize] = useState(5);
     const [brushColor, setBrushColor] = useState("#000000");
@@ -32,10 +32,10 @@ function AppContent() {
     return (
         <>
             <Toaster richColors position="top-center"/>
-            <UserCreateModal
+            {!sidebarVisible && (<UserCreateModal
                 activateSidebar={setSidebarVisible}
                 setUserData={setUserData}
-            />
+            />)}
             {sidebarVisible && <AppSidebar/>}
             {/* Position the trigger button based on sidebar state */}
             {sidebarVisible && (<SidebarTrigger
