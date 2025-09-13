@@ -25,7 +25,7 @@ public class User {
     private String displayName;
 
     @Column(name = "photo_url", columnDefinition = "TEXT")
-    private String photoUrl;
+        private String photoUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
