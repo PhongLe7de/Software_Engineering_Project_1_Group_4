@@ -2,16 +2,22 @@ import type {DrawingEvent} from "@/types.ts";
 import {Client} from "@stomp/stompjs";
 import {useEffect, useRef, useState} from "react";
 
-// TODO: api destinations for broadcasting
-const useWebSocket = () => {
+type UseWebSocketProps = {
+    sidebarVisible: boolean;
+    userData: {user_id: number, display_name: string, photo_url: string  } | undefined;
+};
+
+const useWebSocket = ({sidebarVisible, userData}: UseWebSocketProps) => {
     const clientRef = useRef<Client | null>(null);
     const [isConnected, setIsConnected] = useState(false);
+    const [remoteEvents, setRemoteEvents] = useState<DrawingEvent[]>([]);
+
 
     // https://stomp-js.github.io/guide/stompjs/using-stompjs-v5.html
     // Initialize stomp client and add subs and publish routes
     useEffect(() => {
         const client = new Client({
-            brokerURL: import.meta.env.WS_API_URL,
+            brokerURL: import.meta.env.VITE_WS_API_URL,
             // debug: function (str) {
             //     console.log("STOMP Debug:", str);
             // },
@@ -23,6 +29,17 @@ const useWebSocket = () => {
         client.onConnect = () => {
             console.log("Connected to STOMP");
             setIsConnected(true);
+
+            client.subscribe(`topic/draw`, (message) =>{
+                const event = JSON.parse(message.body);
+                console.log("Received event: ", event);
+                setRemoteEvents(prevEvents => [...prevEvents, event]);
+            })
+
+            client.subscribe(`topic/cursor`, (message)=>{
+                const event = JSON.parse(message.body);
+                console.log("Received cursor pos data: ", event);
+            })
 
         };
 
@@ -45,13 +62,24 @@ const useWebSocket = () => {
     }, []);
 
     const sendDrawingEvent = (event: DrawingEvent) => {
-        console.log("Sending event: ", event);
+        if (clientRef.current?.connected) {
+            clientRef.current.publish({
+                destination: "app/draw",
+                body: JSON.stringify(event),
+            });
+        }
     };
 
-    const sendCursorPosition = (displayName: string, x: number, y: number) => {
+    const sendCursorPosition = (x: number, y: number) => {
+        if (clientRef.current?.connected && sidebarVisible && userData) { // start broadcasting cursor pos only after user is created
+            clientRef.current.publish({
+                destination: "app/cursor",
+                body: JSON.stringify({ display_name: userData.display_name, photo_url: userData.photo_url, x, y }),
+            });
+        }
     };
 
-    return { isConnected, sendDrawingEvent, sendCursorPosition };
+    return { isConnected, remoteEvents, sendDrawingEvent, sendCursorPosition };
 }
 
 export default useWebSocket;
