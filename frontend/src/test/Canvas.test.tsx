@@ -1,7 +1,21 @@
 import Canvas from "../components/Canvas";
 import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
+
+const mockContext = {
+    lineCap: '',
+    lineJoin: '',
+    beginPath: vi.fn(),
+    strokeStyle: '',
+    lineWidth: 0,
+    moveTo: vi.fn(),
+    lineTo: vi.fn(),
+    stroke: vi.fn(),
+    closePath: vi.fn(),
+};
+
+HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(mockContext);
 
 describe("Canvas Component", () => {
     const defaultProps = {
@@ -14,9 +28,15 @@ describe("Canvas Component", () => {
         onCursorMove: vi.fn()
     };
 
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     it("renders the Canvas component", () => {
         render(<Canvas {...defaultProps} />);
-        const canvas = screen.getByRole('img');
+        screen.debug();
+
+        const canvas = document.querySelector('canvas');
         expect(canvas).toBeInTheDocument();
     });
 });
