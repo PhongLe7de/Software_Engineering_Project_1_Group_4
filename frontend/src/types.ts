@@ -8,13 +8,13 @@ export type CanvasProps = {
     brushColor: string;
     onDrawingEvent?: (event: DrawingEvent) => void;
     remoteEvents?: DrawingEvent[];
-    onCursorMove?: (username: string, x: number, y: number) => void;
+    onCursorMove?: ( x: number, y: number) => void;
 };
 
 export type DrawingEvent = {
     id: string;
-    userId: string;
-    displayName: string;
+    user_id: number;
+    display_name: string;
     timestamp: number;
     type: 'start' | 'draw' | 'end';
     tool: string;
