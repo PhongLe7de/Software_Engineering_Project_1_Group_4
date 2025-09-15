@@ -70,8 +70,8 @@ function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, onDrawi
         strokeId: string
     ): DrawingEvent => ({
         id: generateId(),
-        userId: userData?.userId || '',
-        displayName: userData?.displayName || 'Undefined username',
+        user_id: userData?.user_id ?? 0,
+        display_name: userData?.display_name || 'Undefined username',
         timestamp: Date.now(),
         type,
         tool,
@@ -189,8 +189,7 @@ function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, onDrawi
     const getCursorPosition = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const x = e.nativeEvent.offsetX;
         const y = e.nativeEvent.offsetY;
-        const username = userData?.displayName || "Undefined user";
-        onCursorMove?.(username, x, y);
+        onCursorMove?.( x, y);
     };
 
 

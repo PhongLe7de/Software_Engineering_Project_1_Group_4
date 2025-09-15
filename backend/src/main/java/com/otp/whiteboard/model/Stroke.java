@@ -39,7 +39,7 @@ public class Stroke implements Serializable {
     @Column(name = "y_cord", nullable = false)
     private Float y_cord;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     public Stroke() {
