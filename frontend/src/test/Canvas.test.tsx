@@ -39,4 +39,24 @@ describe("Canvas Component", () => {
         const canvas = document.querySelector('canvas');
         expect(canvas).toBeInTheDocument();
     });
+
+    it("applies correct cursor style based on tool", () => {
+        const { rerender } = render(<Canvas {...defaultProps} />);
+
+        const canvas = document.querySelector('canvas');
+        expect(canvas?.style.cursor).toBe('crosshair');
+
+        rerender(<Canvas {...defaultProps} tool="hand" />);
+        expect(canvas?.style.cursor).toBe('grab');
+
+        rerender(<Canvas {...defaultProps} tool="eraser" />);
+        expect(canvas?.style.cursor).toBe('crosshair');
+    });
+
+    it("does not render cursor when sidebar is not visible", () => {
+        render(<Canvas {...defaultProps} sidebarVisible={false} />);
+
+        const canvas = document.querySelector('canvas');
+        expect(canvas?.style.cursor).toBe('');
+    });
 });
