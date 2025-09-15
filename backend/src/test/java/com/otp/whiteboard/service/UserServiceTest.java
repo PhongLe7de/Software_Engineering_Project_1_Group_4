@@ -34,7 +34,7 @@ class UserServiceTest {
 
     private final static String EMAIL = "test@email.com";
     private final static String EXIT_EMAIL = "exit@email.com";
-
+    private final static String PHOTO_URL = "http://photo.url/image.jpg";
     private final static String DISPLAY_NAME = "Test User";
     private final static String UNEXIT_DISPLAY_NAME = "Not Found User";
 
@@ -92,7 +92,7 @@ class UserServiceTest {
     @Test
     void testCreateUserWithValidData(){
         //given
-        RegisterRequest request = new RegisterRequest(EMAIL, PASSWORD,DISPLAY_NAME );
+        RegisterRequest request = new RegisterRequest(EMAIL, PASSWORD, PHOTO_URL,DISPLAY_NAME);
         //when
         final UserDto result = userService.createUser(request);
         //then
@@ -108,7 +108,7 @@ class UserServiceTest {
     @Test
     void testCreateUserWithExistingEmail(){
         //given
-        RegisterRequest request = new RegisterRequest(EXIT_EMAIL, PASSWORD,DISPLAY_NAME );
+        RegisterRequest request = new RegisterRequest(EXIT_EMAIL, PASSWORD, PHOTO_URL, DISPLAY_NAME );
 
         //When & Then
         try{

@@ -1,45 +1,35 @@
-import React, { useState } from "react"
+import React, {useState} from "react"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-import { z } from "zod"
+import {zodResolver} from "@hookform/resolvers/zod"
+import {useForm} from "react-hook-form"
+import {toast} from "sonner"
+import {z} from "zod"
+import {faker} from '@faker-js/faker';
 
-import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
 import {
     Carousel,
+    type CarouselApi,
     CarouselContent,
     CarouselItem,
     CarouselNext,
     CarouselPrevious,
-    type CarouselApi,
 } from "@/components/ui/carousel"
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
+import {Input} from "@/components/ui/input"
 
 type User = {
-    displayName: string;
-    photoUrl: string;
+    display_name: string;
+    photo_url: string;
+    email: string;
+    password: string;
 }
+
 
 type LoginModalProps = {
     activateSidebar: (show: boolean) => void;
-    setUserData: (userData: { displayName: string; photoUrl: string; }) => void;
+    setUserData: (userData: { user_id: number, display_name: string; photo_url: string; }) => void;
 };
 
 const FormSchema = z.object({
@@ -58,13 +48,13 @@ export default function UserCreateModal({ activateSidebar, setUserData }: LoginM
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            displayName: "",
+            displayName: faker.internet.username(),  // faker for easier development, default value in prod ""
         },
     })
 
     const createUser = async (userData: User) => {
         try {
-            const response = await fetch(`${import.meta.env.API_URL}user/profile`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -76,8 +66,7 @@ export default function UserCreateModal({ activateSidebar, setUserData }: LoginM
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const newUser = await response.json();
-            return newUser;
+            return await response.json();
         } catch (error) {
             console.error('Error creating user:', error);
             throw error;
@@ -87,9 +76,12 @@ export default function UserCreateModal({ activateSidebar, setUserData }: LoginM
     const handleLogin = async (data: z.infer<typeof FormSchema>) => {
         try {
             const userData: User = {
-                displayName: data.displayName,
-                photoUrl: avatars[selectProfilePic]
+                email: faker.internet.email(), //TODO: faked values for now, updated user creation modal in a later sprint
+                password: "password",
+                display_name: data.displayName,
+                photo_url: avatars[selectProfilePic],
             };
+            console.log(userData);
 
             const newUser = await createUser(userData);
 
@@ -105,14 +97,13 @@ export default function UserCreateModal({ activateSidebar, setUserData }: LoginM
     // shadcn carousel api listener
     React.useEffect(() => {
         if (!api) return
-
+        console.log(import.meta.env.VITE_API_URL);
         const onSelect = () => {
             setSelectProfilePic(api.selectedScrollSnap())
         }
 
         api.on("select", onSelect)
         onSelect()
-
         return () => {
             api.off("select", onSelect)
         }

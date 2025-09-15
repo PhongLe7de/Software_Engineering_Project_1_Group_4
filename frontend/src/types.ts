@@ -1,18 +1,20 @@
 export type CanvasProps = {
-    userData: {  displayName: string; photoUrl: string } | undefined;
+    userData: {
+        user_id: number;
+        display_name: string; photo_url: string } | undefined;
     sidebarVisible: boolean;
     tool: string;
     brushSize: number;
     brushColor: string;
     onDrawingEvent?: (event: DrawingEvent) => void;
     remoteEvents?: DrawingEvent[];
-    onCursorMove?: (username: string, x: number, y: number) => void;
+    onCursorMove?: ( x: number, y: number) => void;
 };
 
 export type DrawingEvent = {
     id: string;
-    userId: string;
-    displayName: string;
+    user_id: number;
+    display_name: string;
     timestamp: number;
     type: 'start' | 'draw' | 'end';
     tool: string;

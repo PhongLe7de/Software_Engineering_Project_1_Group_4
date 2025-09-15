@@ -21,17 +21,17 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(unique = true, name = "display_name")
+    @Column(unique = true, name = "display_name", nullable = false)
     private String displayName;
 
     @Column(name = "photo_url", columnDefinition = "TEXT")
-    private String photoUrl;
+        private String photoUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     private Status status = Status.ACTIVE;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
