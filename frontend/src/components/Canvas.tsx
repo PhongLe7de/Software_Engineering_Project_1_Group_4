@@ -70,8 +70,8 @@ function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, onDrawi
         strokeId: string
     ): DrawingEvent => ({
         id: generateId(),
-        user_id: userData?.user_id ?? 0,
-        display_name: userData?.display_name || 'Undefined username',
+        userId: userData?.userID ?? 0,
+        displayName: userData?.displayName || 'Undefined username',
         timestamp: Date.now(),
         type,
         tool,

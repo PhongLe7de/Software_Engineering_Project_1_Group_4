@@ -4,8 +4,10 @@ import UserCreateModal from "@/components/UserCreateModal.tsx";
 import {AppSidebar} from "@/components/AppSidebar.tsx";
 import {SidebarProvider, SidebarTrigger, useSidebar} from "@/components/ui/sidebar";
 import type {DrawingEvent} from "@/types.ts";
-import useWebSocket from "@/hooks/useWebSocket.tsx";
+import useWebSocket, {type CursorPosition} from "@/hooks/useWebSocket.tsx";
 import {Toaster} from "sonner";
+import Cursor from "@/components/Cursor.tsx";
+import Cursors from "@/components/Cursor.tsx";
 
 function AppContent() {
     const [userData, setUserData] = useState<{
@@ -18,11 +20,14 @@ function AppContent() {
     const [tool, setTool] = useState("pen");
     const [brushSize, setBrushSize] = useState(5);
     const [brushColor, setBrushColor] = useState("#000000");
+    const [localCursorPosition, setLocalCursorPosition] = useState<CursorPosition | undefined>(undefined); // temporary only for testing
+
     const {
         isConnected,
         remoteEvents,
         sendDrawingEvent,
         sendCursorPosition,
+        remoteCursors
     } = useWebSocket({sidebarVisible, userData});
 
     const {state} = useSidebar();
@@ -33,6 +38,14 @@ function AppContent() {
 
     const handleCursorMovement = (x: number, y: number) => {
         sendCursorPosition(x, y);
+        if (userData) {  // This is testing out styles before backend is ready
+            setLocalCursorPosition({
+                display_name: userData.display_name,
+                photo_url: userData.photo_url,
+                x,
+                y,
+            });
+        }
     };
 
     return (
@@ -63,6 +76,8 @@ function AppContent() {
                 `}
             />)}
             <main className="flex-1 relative w-full h-screen">
+
+                <Cursor cursors={localCursorPosition ? [...remoteCursors, localCursorPosition] : remoteCursors} userData={userData} />
                 <Canvas
                     userData={userData}
                     sidebarVisible={sidebarVisible}
