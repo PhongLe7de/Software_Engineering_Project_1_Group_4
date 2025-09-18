@@ -81,13 +81,16 @@ export default function UserCreateModal({ activateSidebar, setUserData }: LoginM
                 display_name: data.displayName,
                 photo_url: avatars[selectProfilePic],
             };
-            console.log(userData);
-
             const newUser = await createUser(userData);
+            const transformUser = {
+                user_id: newUser.id,
+                display_name: newUser.displayName,
+                photo_url: newUser.photoUrl,
+            };
 
             toast.success(`Welcome ${data.displayName}!`);
-            setUserData(newUser);
-            console.log(newUser);
+            setUserData(transformUser);
+            console.log("userData set: ", transformUser);
             activateSidebar(true);
         } catch (e) {
             toast.error("Failed to create user. Please try again.");

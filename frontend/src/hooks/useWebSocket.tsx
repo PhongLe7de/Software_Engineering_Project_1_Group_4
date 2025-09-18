@@ -6,11 +6,17 @@ type UseWebSocketProps = {
     sidebarVisible: boolean;
     userData: {user_id: number, display_name: string, photo_url: string  } | undefined;
 };
-
+export interface CursorPosition {
+    display_name: string;
+    photo_url: string;
+    x: number;
+    y: number;
+}
 const useWebSocket = ({sidebarVisible, userData}: UseWebSocketProps) => {
     const clientRef = useRef<Client | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [remoteEvents, setRemoteEvents] = useState<DrawingEvent[]>([]);
+    const [remoteCursors, setRemoteCursors] = useState<Map<string, CursorPosition>>(new Map());
 
 
     // https://stomp-js.github.io/guide/stompjs/using-stompjs-v5.html
@@ -36,10 +42,15 @@ const useWebSocket = ({sidebarVisible, userData}: UseWebSocketProps) => {
                 setRemoteEvents(prevEvents => [...prevEvents, event]);
             })
 
-            client.subscribe(`topic/cursor`, (message)=>{
-                const event = JSON.parse(message.body);
-                console.log("Received cursor pos data: ", event);
-            })
+            // TODO: initial destination, no backend impl yet
+            client.subscribe("/topic/cursors", (message) => {
+                const cursorData: CursorPosition = JSON.parse(message.body);
+                setRemoteCursors((prev) => {
+                    const newMap = new Map(prev);
+                    newMap.set(cursorData.display_name, cursorData);
+                    return newMap;
+                });
+            });
 
         };
 
@@ -70,6 +81,7 @@ const useWebSocket = ({sidebarVisible, userData}: UseWebSocketProps) => {
         }
     };
 
+    // TODO: initial destination, no backend impl yet
     const sendCursorPosition = (x: number, y: number) => {
         if (clientRef.current?.connected && sidebarVisible && userData) { // start broadcasting cursor pos only after user is created
             clientRef.current.publish({
@@ -79,7 +91,7 @@ const useWebSocket = ({sidebarVisible, userData}: UseWebSocketProps) => {
         }
     };
 
-    return { isConnected, remoteEvents, sendDrawingEvent, sendCursorPosition };
+    return { isConnected, remoteEvents, remoteCursors: Array.from(remoteCursors.values()), sendDrawingEvent, sendCursorPosition };
 }
 
 export default useWebSocket;
