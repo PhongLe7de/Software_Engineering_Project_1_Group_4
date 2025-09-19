@@ -64,7 +64,10 @@ function AppContent() {
                 activateSidebar={setSidebarVisible}
                 setUserData={setUserData}
             />)}
-            {sidebarVisible && <AppSidebar/>}
+            {sidebarVisible && <AppSidebar
+                    brushColor={brushColor}
+                    setBrushColor={setBrushColor}
+            />}
             {/* Position the trigger button based on sidebar state */}
             {sidebarVisible && (<SidebarTrigger
                 className={`
