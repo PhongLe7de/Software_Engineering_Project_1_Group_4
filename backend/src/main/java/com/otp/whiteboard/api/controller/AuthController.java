@@ -3,13 +3,21 @@ package com.otp.whiteboard.api.controller;
 import com.otp.whiteboard.dto.auth.LoginRequest;
 import com.otp.whiteboard.dto.auth.RegisterRequest;
 import com.otp.whiteboard.dto.user.UserDto;
+import com.otp.whiteboard.security.CustomUserDetailService;
+import com.otp.whiteboard.security.CustomUserDetails;
+import com.otp.whiteboard.security.JwtUtil;
 import com.otp.whiteboard.service.AuthService;
 import com.otp.whiteboard.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 import static com.otp.whiteboard.api.Endpoint.AUTH_INTERNAL_API;
 
@@ -18,9 +26,16 @@ import static com.otp.whiteboard.api.Endpoint.AUTH_INTERNAL_API;
 public class AuthController {
     private final UserService userService;
     private final AuthService authService;
-    public AuthController(UserService userService, AuthService authService) {
+    private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailService customUserDetailService;
+    private final JwtUtil jwtUtil;
+
+    public AuthController(UserService userService, AuthService authService, AuthenticationManager authenticationManager, CustomUserDetailService customUserDetailService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.authService = authService;
+        this.authenticationManager = authenticationManager;
+        this.customUserDetailService = customUserDetailService;
+        this.jwtUtil = jwtUtil;
     }
 
     @Operation(
@@ -52,12 +67,18 @@ public class AuthController {
     )
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<UserDto> login(
+    public ResponseEntity<Map<String, String>> login(
             @RequestBody
             @NotNull (message = "request must not be null")
             @Valid final LoginRequest request) {
-        UserDto user = authService.login(request);
-        return ResponseEntity.ok(user);
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.email()
+                        , request.password()
+                )
+        );
+        String token = jwtUtil.generateToken(request.email());
+        return ResponseEntity.ok(Map.of("token", token));
     }
 
 }
