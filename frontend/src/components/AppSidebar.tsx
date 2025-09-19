@@ -25,6 +25,14 @@ const data = {
     },
 };
 
+const colorPalette = [
+    { name: 'Black', color: '#000000' },
+    { name: 'Red', color: '#ff0000' },
+    { name: 'Yellow', color: '#ffff00' },
+    { name: 'Green', color: '#00ff00' },
+    { name: 'Blue', color: '#0000ff' }
+];
+
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     brushColor: string;
     setBrushColor: (color: string) => void;
@@ -49,6 +57,14 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
             setBrushColor("#ffffff"); // Set brush color to white for eraser
         } else if (newTool == "pen") {
             setBrushColor(color); // Restore brush color
+        }
+    }
+
+    const handleColorSelect = (selectedColor: string) => {
+        if (tool == "pen") {
+            setBrushColor(selectedColor);
+        } else {
+            setColor(selectedColor);
         }
     }
 
@@ -119,8 +135,18 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
                                 setColor(c);
                             }
                         }}
-                        className=""
                     />
+                </div>
+                <div className="gap-2 flex justify-center">
+                    {colorPalette.map((colorItem) => (
+                        <button
+                            key={colorItem.name}
+                            onClick={() => handleColorSelect(colorItem.color)}
+                            className="w-8 h-8 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-colors cursor-pointer shadow-sm hover:shadow-md"
+                            style={{ backgroundColor: colorItem.color }}
+                            title={colorItem.name}
+                        />
+                    ))}
                 </div>
             </SidebarContent>
             <SidebarFooter>
