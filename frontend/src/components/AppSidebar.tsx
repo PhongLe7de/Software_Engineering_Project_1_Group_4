@@ -19,8 +19,6 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { useState } from "react";
-
 import { HexColorPicker } from "react-colorful";
 
 const data = {
@@ -50,9 +48,12 @@ const data = {
     ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const [color, setColor] = useState("#000000ff");
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+    brushColor: string;
+    setBrushColor: (color: string) => void;
+}
 
+export function AppSidebar({ brushColor, setBrushColor, ...props }: AppSidebarProps) {
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -72,7 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
-                <HexColorPicker color={color} onChange={setColor} className=""/>
+                <HexColorPicker color={brushColor} onChange={setBrushColor} className=""/>
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
