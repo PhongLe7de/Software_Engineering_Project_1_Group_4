@@ -67,6 +67,10 @@ function AppContent() {
             {sidebarVisible && <AppSidebar
                     brushColor={brushColor}
                     setBrushColor={setBrushColor}
+                    tool={tool}
+                    setTool={setTool}
+                    brushSize={brushSize}
+                    setBrushSize={setBrushSize}
             />}
             {/* Position the trigger button based on sidebar state */}
             {sidebarVisible && (<SidebarTrigger

@@ -51,9 +51,13 @@ const data = {
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     brushColor: string;
     setBrushColor: (color: string) => void;
+    tool: string;
+    setTool: (tool: string) => void;
+    brushSize: number;
+    setBrushSize: (size: number) => void;
 }
 
-export function AppSidebar({ brushColor, setBrushColor, ...props }: AppSidebarProps) {
+export function AppSidebar({ brushColor, setBrushColor, brushSize, setBrushSize, ...props }: AppSidebarProps) {
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -74,6 +78,19 @@ export function AppSidebar({ brushColor, setBrushColor, ...props }: AppSidebarPr
             <SidebarContent>
                 <NavMain items={data.navMain} />
                 <HexColorPicker color={brushColor} onChange={setBrushColor} className=""/>
+                <div className="px-4 py-2">
+                    <label className="block text-sm font-medium mb-2">
+                        Brush Size: {brushSize}px
+                    </label>
+                    <input
+                        type="range"
+                        min="1"
+                        max="50"
+                        value={brushSize}
+                        onChange={(e) => setBrushSize(Number(e.target.value))}
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                </div>
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
