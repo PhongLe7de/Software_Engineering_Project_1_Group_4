@@ -1,7 +1,7 @@
 package com.otp.whiteboard.api;
 
 public class Endpoint {
-    private static final String API = "/api";
+    public static final String API = "/api";
 
     private static final String USER = "/user";
     private static final String AUTH = "/auth";
