@@ -46,16 +46,17 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
             .addSecurityItem(new SecurityRequirement()
-                .addList("Firebase Bearer Authentication"))
+                .addList("Bearer Authentication"))
             .components(new Components()
-                .addSecuritySchemes("Firebase Bearer Authentication", 
+                .addSecuritySchemes("Bearer Authentication",
                     new io.swagger.v3.oas.models.security.SecurityScheme()
-                        .name("Firebase Bearer Authentication")
+                        .name("Bearer Authentication")
                         .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
                         .scheme("bearer")
                         .bearerFormat("JWT")
-                        .description("Firebase ID Token authentication. Get your token from Firebase Auth and use it as 'Bearer {token}'")
                 )
             );
     }
+
+
 }
