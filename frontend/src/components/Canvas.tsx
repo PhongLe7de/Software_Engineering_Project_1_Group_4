@@ -3,9 +3,10 @@ import type {CanvasProps, DrawingEvent} from "../types";
 import {generateId} from "../lib/utils";
 
 
-function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, onDrawingEvent, onCursorMove }: CanvasProps) {
+function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], onDrawingEvent, onCursorMove }: CanvasProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+    const [drawingEvents, setDrawingEvents] = useState<DrawingEvent[]>([]);
     const [isDrawing, setIsDrawing] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const [currentStrokeId, setCurrentStrokeId] = useState<string>("");
@@ -35,6 +36,62 @@ function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, onDrawi
             contextRef.current = ctx;
         }
     }, []);
+
+    // Clear on mount to prevent overlapping when history is loaded on connect
+    const clearCanvas = useCallback(() => {
+        const canvas = canvasRef.current;
+        const ctx = contextRef.current;
+        if (!canvas || !ctx) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }, []);
+
+    // Function to handle draw events from backend
+    const replayAllEvents = useCallback(() => {
+        const ctx = contextRef.current;
+        if (!ctx) return;
+
+        clearCanvas();
+        ctx.globalCompositeOperation = 'source-over';
+
+        const drawStrokes = (events: DrawingEvent[]) => {
+            const strokes = new Map<string, DrawingEvent[]>();
+            events.forEach(event => {
+                if (!strokes.has(event.strokeId)) {
+                    strokes.set(event.strokeId, []);
+                }
+                strokes.get(event.strokeId)!.push(event);
+            });
+
+            strokes.forEach(strokeEvents => {
+                if (strokeEvents.length === 0) return;
+
+                strokeEvents.sort((a, b) => a.timestamp - b.timestamp);
+                const firstEvent = strokeEvents[0];
+
+                ctx.beginPath();
+                ctx.strokeStyle = (firstEvent.tool === "eraser") ? "white" : firstEvent.brushColor;
+                ctx.lineWidth = firstEvent.brushSize;
+                ctx.moveTo(firstEvent.x, firstEvent.y);
+
+                strokeEvents.forEach(event => {
+                    if (event.type === 'draw') {
+                        ctx.lineTo(event.x, event.y);
+                    }
+                });
+                ctx.stroke();
+            });
+        };
+        // Draw remote events first that they're in the background
+        drawStrokes(remoteEvents);
+        drawStrokes(drawingEvents);
+
+    }, [drawingEvents, remoteEvents, clearCanvas]);
+
+    // Replay when events change
+    useEffect(() => {
+        replayAllEvents();
+    }, [replayAllEvents]);
 
     // context menu prevention and right-click dragging
     useEffect(() => {
@@ -70,7 +127,7 @@ function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, onDrawi
         strokeId: string
     ): DrawingEvent => ({
         id: generateId(),
-        userId: userData?.userID ?? 0,
+        userId: userData?.userId ?? 0,
         displayName: userData?.displayName || 'Undefined username',
         timestamp: Date.now(),
         type,
@@ -83,7 +140,8 @@ function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, onDrawi
     });
 
     const addDrawingEvent = (event: DrawingEvent) => {
-        onDrawingEvent?.(event);
+        setDrawingEvents((prev) => [...prev, event]); // local events
+        onDrawingEvent?.(event); // sending draw event to backend
     };
 
     const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {

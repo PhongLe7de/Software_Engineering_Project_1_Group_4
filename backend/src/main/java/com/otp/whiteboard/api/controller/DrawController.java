@@ -19,7 +19,6 @@ public class DrawController {
     @MessageMapping("/draw")
     @SendTo("/topic/draw")
     public DrawDto onDraw(@Payload DrawDto event) {
-        log.debug("Received draw event: {}", event);
         return event;
     }
 
@@ -28,7 +27,6 @@ public class DrawController {
     @MessageMapping("/cursor")
     @SendTo("/topic/cursor")
     public CursorDto onCursor(@Payload CursorDto cursor) {
-        log.debug("Received cursor event: {}", cursor);
         return cursor;
     }
 }
