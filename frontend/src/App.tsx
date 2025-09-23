@@ -4,10 +4,9 @@ import UserCreateModal from "@/components/UserCreateModal.tsx";
 import {AppSidebar} from "@/components/AppSidebar.tsx";
 import {SidebarProvider, SidebarTrigger, useSidebar} from "@/components/ui/sidebar";
 import type {DrawingEvent} from "@/types.ts";
-import useWebSocket, {type CursorPosition} from "@/hooks/useWebSocket.tsx";
+import useWebSocket from "@/hooks/useWebSocket.tsx";
 import {Toaster} from "sonner";
 import Cursor from "@/components/Cursor.tsx";
-import Cursors from "@/components/Cursor.tsx";
 
 function AppContent() {
     const [userData, setUserData] = useState<{
@@ -82,6 +81,7 @@ function AppContent() {
                     tool={tool}
                     brushSize={brushSize}
                     brushColor={brushColor}
+                    remoteEvents={remoteEvents}
                     onDrawingEvent={handleDrawingEvent}
                     onCursorMove={handleCursorMovement}
                 />

@@ -42,7 +42,6 @@ const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
             // Subscribe to cursor updates
             client.subscribe("/topic/cursor", (message) => {
                 const cursorData: CursorPosition = JSON.parse(message.body);
-                console.log("Received cursor update:", cursorData);
                 setRemoteCursors((prev) => {
                     const newMap = new Map(prev);
                     newMap.set(cursorData.displayName, cursorData);
@@ -82,15 +81,9 @@ const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
     // Publish cursor position to backend (/app/cursor)
     const sendCursorPosition = (x: number, y: number) => {
         if (clientRef.current?.connected && sidebarVisible && userData) {
-            const payload: CursorPosition = {
-                displayName: userData.displayName,
-                photoUrl: userData.photoUrl,
-                x,
-                y,
-            };
             clientRef.current.publish({
                 destination: "/app/cursor",
-                body: JSON.stringify(payload),
+                body: JSON.stringify({displayName: userData.displayName, photoUrl: userData.photoUrl, x, y}),
             });
         }
     };
