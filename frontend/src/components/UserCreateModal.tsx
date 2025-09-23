@@ -20,8 +20,8 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {Input} from "@/components/ui/input"
 
 type User = {
-    display_name: string;
-    photo_url: string;
+    displayName: string;
+    photoUrl: string;
     email: string;
     password: string;
 }
@@ -29,7 +29,7 @@ type User = {
 
 type LoginModalProps = {
     activateSidebar: (show: boolean) => void;
-    setUserData: (userData: { user_id: number, display_name: string; photo_url: string; }) => void;
+    setUserData: (userData: { userId: number, displayName: string; photoUrl: string; }) => void;
 };
 
 const FormSchema = z.object({
@@ -78,14 +78,14 @@ export default function UserCreateModal({ activateSidebar, setUserData }: LoginM
             const userData: User = {
                 email: faker.internet.email(), //TODO: faked values for now, updated user creation modal in a later sprint
                 password: "password",
-                display_name: data.displayName,
-                photo_url: avatars[selectProfilePic],
+                displayName: data.displayName,
+                photoUrl: avatars[selectProfilePic],
             };
             const newUser = await createUser(userData);
             const transformUser = {
-                user_id: newUser.id,
-                display_name: newUser.displayName,
-                photo_url: newUser.photoUrl,
+                userId: newUser.id,
+                displayName: newUser.displayName,
+                photoUrl: newUser.photoUrl,
             };
 
             toast.success(`Welcome ${data.displayName}!`);
@@ -157,4 +157,3 @@ export default function UserCreateModal({ activateSidebar, setUserData }: LoginM
         </Card>
     )
 }
-
