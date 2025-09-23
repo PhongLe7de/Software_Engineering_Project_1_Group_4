@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from "react";
 
 type UseWebSocketProps = {
     sidebarVisible: boolean;
-    userData: { user_id: number; display_name: string; photo_url: string } | undefined;
+    userData: { userId: number; displayName: string; photoUrl: string } | undefined;
 };
 
 export interface CursorPosition {
-    display_name: string;
-    photo_url: string;
+    displayName: string;
+    photoUrl: string;
     x: number;
     y: number;
 }
@@ -23,7 +23,7 @@ const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
     // Initialize STOMP client and subscriptions
     useEffect(() => {
         const client = new Client({
-            brokerURL: import.meta.env.VITE_WS_API_URL, // e.g. ws://localhost:8084/ws
+            brokerURL: import.meta.env.VITE_WS_API_URL,
             reconnectDelay: 5000,
             heartbeatIncoming: 4000,
             heartbeatOutgoing: 4000,
@@ -36,17 +36,16 @@ const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
             // Subscribe to drawing events
             client.subscribe("/topic/draw", (message) => {
                 const event: DrawingEvent = JSON.parse(message.body);
-                console.log("Received draw event:", event);
                 setRemoteEvents((prevEvents) => [...prevEvents, event]);
             });
 
             // Subscribe to cursor updates
             client.subscribe("/topic/cursor", (message) => {
                 const cursorData: CursorPosition = JSON.parse(message.body);
-                console.log("Received cursor event:", cursorData);
+                console.log("Received cursor update:", cursorData);
                 setRemoteCursors((prev) => {
                     const newMap = new Map(prev);
-                    newMap.set(cursorData.display_name, cursorData);
+                    newMap.set(cursorData.displayName, cursorData);
                     return newMap;
                 });
             });
@@ -77,7 +76,6 @@ const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
                 destination: "/app/draw",
                 body: JSON.stringify(event),
             });
-            console.log("Sent draw event:", event);
         }
     };
 
@@ -85,8 +83,8 @@ const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
     const sendCursorPosition = (x: number, y: number) => {
         if (clientRef.current?.connected && sidebarVisible && userData) {
             const payload: CursorPosition = {
-                display_name: userData.display_name,
-                photo_url: userData.photo_url,
+                displayName: userData.displayName,
+                photoUrl: userData.photoUrl,
                 x,
                 y,
             };
@@ -94,14 +92,13 @@ const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
                 destination: "/app/cursor",
                 body: JSON.stringify(payload),
             });
-            console.log("Sent cursor position:", payload);
         }
     };
 
     return {
         isConnected,
         remoteEvents,
-        remoteCursors: Array.from(remoteCursors.values()), // convert Map -> Array
+        remoteCursors: Array.from(remoteCursors.values()),
         sendDrawingEvent,
         sendCursorPosition,
     };

@@ -11,16 +11,15 @@ import Cursors from "@/components/Cursor.tsx";
 
 function AppContent() {
     const [userData, setUserData] = useState<{
-        user_id: number,
-        display_name: string;
-        photo_url: string;
+        userId: number,
+        displayName: string;
+        photoUrl: string;
     } | undefined>(undefined);
 
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const [tool, setTool] = useState("pen");
     const [brushSize, setBrushSize] = useState(5);
     const [brushColor, setBrushColor] = useState("#000000");
-    const [localCursorPosition, setLocalCursorPosition] = useState<CursorPosition | undefined>(undefined); // temporary only for testing
 
     const {
         isConnected,
@@ -38,14 +37,6 @@ function AppContent() {
 
     const handleCursorMovement = (x: number, y: number) => {
         sendCursorPosition(x, y);
-        if (userData) {  // This is testing out styles before backend is ready
-            setLocalCursorPosition({
-                display_name: userData.display_name,
-                photo_url: userData.photo_url,
-                x,
-                y,
-            });
-        }
     };
 
     return (
@@ -65,12 +56,12 @@ function AppContent() {
                 setUserData={setUserData}
             />)}
             {sidebarVisible && <AppSidebar
-                    brushColor={brushColor}
-                    setBrushColor={setBrushColor}
-                    tool={tool}
-                    setTool={setTool}
-                    brushSize={brushSize}
-                    setBrushSize={setBrushSize}
+               brushColor={brushColor}
+               setBrushColor={setBrushColor}
+               tool={tool}
+               setTool={setTool}
+               brushSize={brushSize}
+               setBrushSize={setBrushSize}
             />}
             {/* Position the trigger button based on sidebar state */}
             {sidebarVisible && (<SidebarTrigger
@@ -84,7 +75,7 @@ function AppContent() {
             />)}
             <main className="flex-1 relative w-full h-screen">
 
-                <Cursor cursors={localCursorPosition ? [...remoteCursors, localCursorPosition] : remoteCursors} userData={userData} />
+                <Cursor cursors={remoteCursors} userData={userData} />
                 <Canvas
                     userData={userData}
                     sidebarVisible={sidebarVisible}

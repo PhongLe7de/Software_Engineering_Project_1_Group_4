@@ -1,7 +1,7 @@
 export type CanvasProps = {
     userData: {
-        user_id: number;
-        display_name: string; photo_url: string } | undefined;
+        userId: number;
+        displayName: string; photoUrl: string } | undefined;
     sidebarVisible: boolean;
     tool: string;
     brushSize: number;
@@ -13,8 +13,8 @@ export type CanvasProps = {
 
 export type DrawingEvent = {
     id: string;
-    user_id: number;
-    display_name: string;
+    userId: number;
+    displayName: string;
     timestamp: number;
     type: 'start' | 'draw' | 'end';
     tool: string;

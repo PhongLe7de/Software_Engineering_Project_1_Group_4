@@ -6,7 +6,7 @@ import com.otp.whiteboard.enums.DrawingTool;
 public record DrawDto(
         String id,
         String userId,
-        String username,
+        String displayName,
         long timestamp,
         DrawEventType type,
         DrawingTool tool,

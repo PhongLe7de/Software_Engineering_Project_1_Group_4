@@ -3,10 +3,10 @@ import {useEffect, useState} from "react";
 
 interface CursorsProps {
     cursors: CursorPosition[];
-    userData: { user_id: number, display_name: string; photo_url: string; } | undefined;
+    userData: { userId: number, displayName: string; photoUrl: string; } | undefined;
 }
 
-const Cursor = ({display_name, photo_url, x, y}: CursorPosition) => {
+const Cursor = ({displayName, photoUrl, x, y}: CursorPosition) => {
     const [userColour, setUserColor] = useState('#000000');
     const colors = [
         '#FF6B6B',
@@ -23,9 +23,9 @@ const Cursor = ({display_name, photo_url, x, y}: CursorPosition) => {
 
     useEffect(() => {
         setUserColor(colors[Math.floor(Math.random() * colors.length)] || '#000000');
-    }, [display_name]);
+    }, [displayName]);
 
-    const userName = display_name ? display_name.replace('user-', 'User ') : 'Unknown User';
+    const userName = displayName ? displayName.replace('user-', 'User ') : 'Unknown User';
     return (
         <div
             className="absolute pointer-events-none z-50 transition-all duration-75 ease-out"
@@ -61,12 +61,12 @@ const Cursor = ({display_name, photo_url, x, y}: CursorPosition) => {
                         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                     }}
                 >
-                    {photo_url && (
+                    {photoUrl && (
                         <div
                             className=" flex items-center justify-center text-xs"
                             style={{fontSize: '45px'}}
                         >
-                            {photo_url}
+                            {photoUrl}
                         </div>
                     )}
                     {userName}
@@ -79,17 +79,17 @@ const Cursor = ({display_name, photo_url, x, y}: CursorPosition) => {
 const Cursors = ({userData, cursors}: CursorsProps) => {
     // Filter out the current user's cursor
     const remoteCursors = cursors.filter(cursor =>
-        cursor.display_name !== userData?.display_name
+        cursor.displayName !== userData?.displayName
     );
     return (
         <div className="absolute inset-0 pointer-events-none z-40">
-            {cursors.map((cursor, index) => (
+            {remoteCursors.map((cursor, index) => (
                 <Cursor
-                    key={`${cursor.display_name}-${index}`}
-                    display_name={cursor.display_name}
+                    key={`${cursor.displayName}-${index}`}
+                    displayName={cursor.displayName}
                     x={cursor.x}
                     y={cursor.y}
-                    photo_url={cursor.photo_url}
+                    photoUrl={cursor.photoUrl}
                 />
             ))}
         </div>
