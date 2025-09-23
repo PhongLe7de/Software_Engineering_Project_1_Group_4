@@ -5,4 +5,8 @@ public record CursorDto(
         String photoUrl,
         double x,
         double y
-) {}
+) {
+    public String getDisplayName() {
+        return displayName;
+    }
+}
