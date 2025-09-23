@@ -15,7 +15,7 @@ function AppContent() {
         photoUrl: string;
     } | undefined>(undefined);
 
-    const [sidebarVisible, setSidebarVisible] = useState(false);
+    const [sidebarVisible, setSidebarVisible] = useState(true);
     const [tool, setTool] = useState("pen");
     const [brushSize, setBrushSize] = useState(5);
     const [brushColor, setBrushColor] = useState("#000000");
