@@ -3,9 +3,7 @@ package com.otp.whiteboard.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "boards")
@@ -19,6 +17,17 @@ public class Board {
 
     @Column(unique = true, name = "owner_id")
     private Long ownerId;
+
+    @ElementCollection
+    @CollectionTable(name = "board_user_ids", joinColumns = @JoinColumn(name = "board_id"))
+    @Column(name = "user_id")
+    private List<Long> userIds = new ArrayList<>();
+
+    @Column(name = "amount_of_users")
+    private Integer amountOfUsers = 0;
+
+    @Column(name = "number_of_strokes", columnDefinition = "INT DEFAULT 0")
+    private Integer numberOfStrokes = 0;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -64,6 +73,30 @@ public class Board {
         this.ownerId = ownerId;
     }
 
+    public List<Long> getUserIds() {
+        return userIds;
+    }
+    public void setUserIds(List<Long> userIds) {
+        this.userIds = userIds;
+    }
+    public Set<UserBoard> getUsers() {
+        return users;
+    }
+    public void setUsers(Set<UserBoard> users) {
+        this.users = users;
+    }
+
+    public Integer getNumberOfStrokes() {
+        return numberOfStrokes;
+    }
+    public void setNumberOfStrokes(Integer numberOfStrokes) {
+        this.numberOfStrokes = numberOfStrokes;
+    }
+
+    public Integer getAmountOfUsers() {
+        return userIds.size();
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -90,6 +123,23 @@ public class Board {
         updatedAt = LocalDateTime.now();
     }
 
+    public void addUser(User user) {
+        if(!userIds.contains(user.getId())) {
+            userIds.add(user.getId());
+            UserBoard ub = new UserBoard(user, this);
+            users.add(ub);
+        }
+    }
+
+    public void removeUser(User user) {
+        userIds.remove(user.getId());
+        users.removeIf(ub -> ub.getUser().equals(user));
+    }
+
+    public void incrementStrokes() { numberOfStrokes++; }
+
+    public void decrementStrokes() { if(numberOfStrokes > 0) numberOfStrokes--; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -99,12 +149,15 @@ public class Board {
                 Objects.equals(name, board.name) &&
                 Objects.equals(ownerId, board.ownerId) &&
                 Objects.equals(createdAt, board.createdAt) &&
-                Objects.equals(updatedAt, board.updatedAt);
+                Objects.equals(updatedAt, board.updatedAt) &&
+                Objects.equals(userIds, board.userIds) &&
+                Objects.equals(numberOfStrokes, board.numberOfStrokes) &&
+                Objects.equals(amountOfUsers, board.amountOfUsers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, ownerId, createdAt, updatedAt);
+        return Objects.hash(id, name, ownerId, createdAt, updatedAt, userIds, amountOfUsers, numberOfStrokes);
     }
 }
 
