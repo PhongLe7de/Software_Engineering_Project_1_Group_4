@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import Canvas from "@/components/Canvas.tsx";
-import UserCreateModal from "@/components/UserCreateModal.tsx";
+import UserRegisterModal from "@/components/UserRegisterModal.tsx";
 import { AppSidebar } from "@/components/AppSidebar.tsx";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import type { DrawingEvent } from "@/types.ts";
@@ -42,13 +42,13 @@ function Index() {
         <>
             <div>
                 <span
-                    className={`fixed left-6 transform backdrop-blur-[4px] z-50 text-m
+                    className={`fixed right-6 transform backdrop-blur-[4px] z-50 text-m
                     ${isConnected ? 'text-green-600' : 'text-red-600'}`}
                 >
                     {isConnected ? '● Connected' : '● Disconnected'}
                 </span>
             </div>
-            {!sidebarVisible && (<UserCreateModal
+            {!sidebarVisible && (<UserRegisterModal
                 activateSidebar={setSidebarVisible}
                 setUserData={setUserData}
             />)}
