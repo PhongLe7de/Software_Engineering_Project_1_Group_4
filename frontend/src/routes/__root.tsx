@@ -1,19 +1,23 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
+import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import App from "@/App.tsx";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "sonner";
 
-const RootLayout = () => (
-    <>
-        <div className="p-2 border-b border-slate-300 mb-4">
-            <Link to="/">Home</Link> | <Link to="/about">About</Link>
-        </div>
-        <div className="p-2">
-            <Outlet />
-        </div>
+const RootComponent = () => (
+    <SidebarProvider
+        style={
+            {
+                "--sidebar-width": "calc(var(--spacing) * 72)",
+                "--header-height": "calc(var(--spacing) * 12)",
+                
+            } as React.CSSProperties
+        }>
+        <Toaster richColors position="top-center" />
+        <Outlet /> {/* Outlet renders next matching route automatically: index (ex App.tsx) */}
         <TanStackRouterDevtools position="bottom-right" />
-        <App />
-
-    </>
+    </SidebarProvider>
 )
 
-export const Route = createRootRoute({ component: RootLayout })
+export const Route = createRootRoute({
+    component: RootComponent,
+})

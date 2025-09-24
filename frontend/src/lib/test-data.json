@@ -1,0 +1,42 @@
+[
+  {
+    "id": "usr-001",
+    "name": "Alice Johnson",
+    "email": "alice.j@example.com",
+    "role": "Admin",
+    "status": "Active",
+    "createdAt": "2023-01-15T09:30:00Z"
+  },
+  {
+    "id": "usr-002",
+    "name": "Bob Williams",
+    "email": "bob.w@example.com",
+    "role": "Default User",
+    "status": "Active",
+    "createdAt": "2023-02-20T14:00:00Z"
+  },
+  {
+    "id": "usr-003",
+    "name": "Charlie Brown",
+    "email": "charlie.b@example.com",
+    "role": "Default User",
+    "status": "Banned",
+    "createdAt": "2023-03-10T11:45:00Z"
+  },
+  {
+    "id": "usr-004",
+    "name": "Diana Prince",
+    "email": "diana.p@example.com",
+    "role": "Default User",
+    "status": "Active",
+    "createdAt": "2023-04-05T18:20:00Z"
+  },
+  {
+    "id": "usr-005",
+    "name": "Ethan Hunt",
+    "email": "ethan.h@example.com",
+    "role": "Default User",
+    "status": "Active",
+    "createdAt": "2023-05-12T08:00:00Z"
+  }
+]
