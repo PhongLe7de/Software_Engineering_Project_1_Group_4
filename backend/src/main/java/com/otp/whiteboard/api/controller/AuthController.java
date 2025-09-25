@@ -1,5 +1,6 @@
 package com.otp.whiteboard.api.controller;
 
+import com.otp.whiteboard.dto.auth.AuthResponse;
 import com.otp.whiteboard.dto.auth.LoginRequest;
 import com.otp.whiteboard.dto.auth.RegisterRequest;
 import com.otp.whiteboard.dto.user.UserDto;
@@ -49,12 +50,19 @@ public class AuthController {
     )
     @PostMapping("/register")
     @ResponseBody
-    public ResponseEntity<UserDto> createUser(
+    public ResponseEntity<AuthResponse> createUser(
             @RequestBody
             @NotNull (message = "request must not be null")
             @Valid final RegisterRequest request) {
-        UserDto  newUser= userService.createUser(request);
-        return ResponseEntity.ok(newUser);
+        UserDto newUser = userService.createUser(request);
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.email()
+                        , request.password()
+                )
+        );
+        String token = jwtUtil.generateToken(request.email());
+        return ResponseEntity.ok(new AuthResponse(newUser, token));
     }
 
     @Operation(
