@@ -34,6 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain) throws ServletException, IOException {
         logger.debug("Processing authentication filter for request URI: {}", request.getRequestURI());
+
+        if (request.getRequestURI().startsWith("/ws")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             Optional<String> token = extractTokenFromHeader(request);
             if (token.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {
