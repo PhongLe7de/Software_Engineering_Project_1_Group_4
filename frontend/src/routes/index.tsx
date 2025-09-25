@@ -6,19 +6,15 @@ import { AppSidebar } from "@/components/AppSidebar.tsx";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import type { DrawingEvent } from "@/types.ts";
 import useWebSocket from "@/hooks/useWebSocket.tsx";
-import Cursor from "@/components/Cursor.tsx";
+import Cursors from "@/components/Cursor.tsx";
+import {useAuth} from "@/hooks/useAuth.tsx";
 
 function Index() {
-    const [userData, setUserData] = useState<{
-        userId: number,
-        displayName: string;
-        photoUrl: string;
-    } | undefined>(undefined);
-
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const [tool, setTool] = useState("pen");
     const [brushSize, setBrushSize] = useState(5);
     const [brushColor, setBrushColor] = useState("#000000");
+    const { user } = useAuth();
 
     const {
         isConnected,
@@ -26,7 +22,7 @@ function Index() {
         sendDrawingEvent,
         sendCursorPosition,
         remoteCursors
-    } = useWebSocket({ sidebarVisible, userData });
+    } = useWebSocket({ sidebarVisible });
 
     const { state } = useSidebar();
 
@@ -35,7 +31,7 @@ function Index() {
     };
 
     const handleCursorMovement = (x: number, y: number) => {
-        sendCursorPosition(x, y);
+        sendCursorPosition(user, x, y);
     };
 
     return (
@@ -50,7 +46,6 @@ function Index() {
             </div>
             {!sidebarVisible && (<UserRegisterModal
                 activateSidebar={setSidebarVisible}
-                setUserData={setUserData}
             />)}
             {sidebarVisible && <AppSidebar
                 brushColor={brushColor}
@@ -70,9 +65,8 @@ function Index() {
                 `}
             />)}
             <main className="flex-1 relative w-full h-screen">
-                <Cursor cursors={remoteCursors} userData={userData} />
+                <Cursors cursors={remoteCursors} />
                 <Canvas
-                    userData={userData}
                     sidebarVisible={sidebarVisible}
                     tool={tool}
                     brushSize={brushSize}

@@ -1,5 +1,6 @@
 import React, {useState} from "react"
-
+import type {User} from "../types.ts"
+import {useAuth} from "@/hooks/useAuth.tsx";
 import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
 import {toast} from "sonner"
@@ -20,20 +21,11 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {Input} from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-type User = {
-    displayName: string;
-    photoUrl: string;
-    email: string;
-    password: string;
-}
-
-
 type LoginModalProps = {
     activateSidebar: (show: boolean) => void;
-    setUserData: (userData: { userId: number, email: string, displayName: string; photoUrl: string; }) => void;
 };
 
-const FormSchema = z.object({
+const RegisterSchema = z.object({
     email: z.email({
         message: "Please enter a valid email address.",
     }),
@@ -42,63 +34,53 @@ const FormSchema = z.object({
     }),
     password: z.string().min(5, {
         message: "Password must be at least 5 characters.",
-    })
+    }),
+})
+
+const LoginSchema = z.object({
+    email: z.email({
+        message: "Please enter a valid email address.",
+    }),
+    password: z.string().min(5, {
+        message: "Password must be at least 5 characters.",
+    }),
 })
 
 // TODO: Placeholder layout, project part 2: user auth and oAuth 2.0(?)
-export default function UserRegisterModal({activateSidebar, setUserData}: LoginModalProps) {
+export default function UserRegisterModal({activateSidebar}: LoginModalProps) {
     const [api, setApi] = useState<CarouselApi>()
     const [selectProfilePic, setSelectProfilePic] = useState(0)
     const [toggleBetweenRegisterLogin, setToggleBetweenRegisterLogin] = useState(false)
+    const { login, register, logout } = useAuth();
 
     // TODO: Emojis are placeholder. Final ver.: File uploads and default profile pics
     const avatars = ["🦧", "👷"]
-    const registerForm = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+    const registerForm = useForm<z.infer<typeof RegisterSchema>>({
+        resolver: zodResolver(RegisterSchema),
         defaultValues: {
             email: faker.internet.email(), // TODO: Remove these for prod
             displayName: faker.internet.username(),
             password: "password"
         },
     })
-    const loginForm = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+    const loginForm = useForm<z.infer<typeof LoginSchema>>({
+        resolver: zodResolver(LoginSchema),
         defaultValues: {
             email: "", // TODO: Remove these for prod
-            displayName: "",
             password: ""
         },
     })
 
-    const createUser = async (userData: User) => {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}api/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json();
-    }
-
-    const handleRegister = async (data: z.infer<typeof FormSchema>) => {
+    const handleRegister = async (data: z.infer<typeof RegisterSchema>) => {
         try {
-            const userData: User = {
+            const userData = {
                 email: data.email,
                 password: data.password,
                 displayName: data.displayName,
                 photoUrl: avatars[selectProfilePic],
             };
-            const newUser = await createUser(userData);
+            await register(userData);
             toast.success(`Welcome ${data.displayName}!`);
-            setUserData(newUser);
-            console.log("userData set: ", newUser);
             activateSidebar(true);
         } catch (e) {
             if (e instanceof Error) {
@@ -110,8 +92,26 @@ export default function UserRegisterModal({activateSidebar, setUserData}: LoginM
         }
     }
 
-    const handleLogin = async (data: z.infer<typeof FormSchema>) => {}
-
+const handleLogin = async (data: z.infer<typeof LoginSchema>) => {
+    try {
+        const userData: { email: string; password: string } = {
+            email: data.email,
+            password: data.password,
+        }
+        const response = await login(userData);
+        if (response) {
+            toast.success(`Welcome back ${response.displayName}!`);
+            activateSidebar(true);
+        }
+    } catch (e) {
+        if (e instanceof Error) {
+            toast.error(e.message);
+        } else {
+            toast.error("An unknown error occurred during login.");
+        }
+        console.error("Error logging in:", e);
+    }
+}
 
     // shadcn carousel api listener
     React.useEffect(() => {
@@ -250,7 +250,7 @@ export default function UserRegisterModal({activateSidebar, setUserData}: LoginM
                                 )}
                             />
                                 <div className="flex mt-10 flex-col gap-3">
-                                    <Button type="button" className="w-full">
+                                    <Button type="submit" className="w-full">
                                         Login
                                     </Button>
                                     <Button variant="outline" className="w-full">
