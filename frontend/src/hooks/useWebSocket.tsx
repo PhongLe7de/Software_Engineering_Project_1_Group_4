@@ -1,10 +1,9 @@
-import type { DrawingEvent } from "@/types.ts";
-import { Client } from "@stomp/stompjs";
-import { useEffect, useRef, useState } from "react";
+import type {DrawingEvent, User} from "@/types.ts";
+import {Client} from "@stomp/stompjs";
+import {useEffect, useRef, useState} from "react";
 
 type UseWebSocketProps = {
     sidebarVisible: boolean;
-    userData: { userId: number; displayName: string; photoUrl: string } | undefined;
 };
 
 export interface CursorPosition {
@@ -14,7 +13,7 @@ export interface CursorPosition {
     y: number;
 }
 
-const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
+const useWebSocket = ({sidebarVisible}: UseWebSocketProps) => {
     const clientRef = useRef<Client | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [remoteEvents, setRemoteEvents] = useState<DrawingEvent[]>([]);
@@ -42,6 +41,7 @@ const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
             // Subscribe to cursor updates
             client.subscribe("/topic/cursor", (message) => {
                 const cursorData: CursorPosition = JSON.parse(message.body);
+                console.log("Received cursor update:", cursorData);
                 setRemoteCursors((prev) => {
                     const newMap = new Map(prev);
                     newMap.set(cursorData.displayName, cursorData);
@@ -79,11 +79,11 @@ const useWebSocket = ({ sidebarVisible, userData }: UseWebSocketProps) => {
     };
 
     // Publish cursor position to backend (/app/cursor)
-    const sendCursorPosition = (x: number, y: number) => {
-        if (clientRef.current?.connected && sidebarVisible && userData) {
+    const sendCursorPosition = (user: User | null, x: number, y: number) => {
+        if (clientRef.current?.connected && sidebarVisible && user) {
             clientRef.current.publish({
                 destination: "/app/cursor",
-                body: JSON.stringify({displayName: userData.displayName, photoUrl: userData.photoUrl, x, y}),
+                body: JSON.stringify({displayName: user.displayName, photoUrl: user.photoUrl, x, y}),
             });
         }
     };

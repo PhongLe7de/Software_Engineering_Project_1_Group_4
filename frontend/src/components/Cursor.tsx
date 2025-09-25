@@ -1,9 +1,9 @@
 import type {CursorPosition} from "@/hooks/useWebSocket";
 import {useEffect, useState} from "react";
+import {useAuth} from "@/hooks/useAuth.tsx";
 
 interface CursorsProps {
     cursors: CursorPosition[];
-    userData: { userId: number, displayName: string; photoUrl: string; } | undefined;
 }
 
 const Cursor = ({displayName, photoUrl, x, y}: CursorPosition) => {
@@ -76,10 +76,11 @@ const Cursor = ({displayName, photoUrl, x, y}: CursorPosition) => {
     );
 };
 
-const Cursors = ({userData, cursors}: CursorsProps) => {
+const Cursors = ({ cursors}: CursorsProps) => {
+    const { user } = useAuth()
     // Filter out the current user's cursor
     const remoteCursors = cursors.filter(cursor =>
-        cursor.displayName !== userData?.displayName
+        cursor.displayName !== user?.displayName
     );
     return (
         <div className="absolute inset-0 pointer-events-none z-40">

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="DataSourcePerFileMappings">
-    <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/V1__09032025140330_create_board_and_user_board_table.sql" value="ff57c86d-e6d4-45a4-84ef-62ee79cf0cc5" />
-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/ff57c86d-e6d4-45a4-84ef-62ee79cf0cc5/console.sql" value="ff57c86d-e6d4-45a4-84ef-62ee79cf0cc5" />
-  </component>
-</project>
