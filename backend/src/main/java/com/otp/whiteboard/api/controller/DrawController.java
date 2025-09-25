@@ -22,19 +22,19 @@ public class DrawController {
         this.drawEventService = drawEventService;
     }
 
-    @MessageMapping(DRAW_WEBSOCKET)
+    @MessageMapping("/draw")
     @SendTo("/topic/draw")
-    public void onDraw(@Payload DrawDto event) {
+    public DrawDto onDraw(@Payload DrawDto event) {
         log.debug("Received draw event: {}", event);
         drawEventService.publishDrawEvent(event);
+        return event; // This needs to return draw event for it to work
     }
     // Client sends to /app/cursor -> all subscribers of /topic/cursor receive the CursorDto
 
-    @MessageMapping(CURSOR_WEBSOCKET)
+    @MessageMapping("/cursor")
     @SendTo("/topic/cursor")
-    public void onCursor(@Payload CursorDto cursor) {
-        log.debug("Received cursor event: {}", cursor);
-        drawEventService.publishCursorEvent(cursor);
+    public CursorDto onCursor(@Payload CursorDto cursor) {
+        return cursor;
     }
 }
 
