@@ -28,8 +28,9 @@ public class DrawTestController {
     }
 
     @PostMapping()
-    public void testDraw(@RequestBody DrawDto event) {
+    public DrawDto testDraw(@RequestBody DrawDto event) {
         log.debug("Received draw event: {}", event);
         drawEventService.publishDrawEvent(event);
+        return event;
     }
 }
