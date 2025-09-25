@@ -1,5 +1,7 @@
 package com.otp.whiteboard.model;
 
+import com.otp.whiteboard.enums.DrawEventType;
+import com.otp.whiteboard.enums.DrawingTool;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -28,16 +30,16 @@ public class Stroke implements Serializable {
     private Long thickness;
 
     @Column(name = "type", nullable = false)
-    private String type;
+    private DrawEventType type;
 
     @Column(name = "tool")
-    private String tool;
+    private DrawingTool tool;
 
     @Column(name = "x_cord", nullable = false)
-    private Float x_cord;
+    private Double x_cord;
 
     @Column(name = "y_cord", nullable = false)
-    private Float y_cord;
+    private Double y_cord;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -46,7 +48,7 @@ public class Stroke implements Serializable {
 
     }
 
-    public Stroke(Board board, User user, String color, Long thickness, String type, String tool, Float x_cord, Float y_cord, LocalDateTime createdAt) {
+    public Stroke(Board board, User user, String color, Long thickness, DrawEventType type, DrawingTool tool, Double x_cord, Double y_cord, LocalDateTime createdAt) {
         this.board = board;
         this.user = user;
         this.color = color;
@@ -100,35 +102,35 @@ public class Stroke implements Serializable {
         this.thickness = thickness;
     }
 
-    public String getType() {
+    public DrawEventType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DrawEventType type) {
         this.type = type;
     }
 
-    public String getTool() {
+    public DrawingTool getTool() {
         return tool;
     }
 
-    public void setTool(String tool) {
+    public void setTool(DrawingTool tool) {
         this.tool = tool;
     }
 
-    public Float getX_cord() {
+    public Double getX_cord() {
         return x_cord;
     }
 
-    public void setX_cord(Float x_cord) {
+    public void setX_cord(Double x_cord) {
         this.x_cord = x_cord;
     }
 
-    public Float getY_cord() {
+    public Double getY_cord() {
         return y_cord;
     }
 
-    public void setY_cord(Float y_cord) {
+    public void setY_cord(Double y_cord) {
         this.y_cord = y_cord;
     }
 
