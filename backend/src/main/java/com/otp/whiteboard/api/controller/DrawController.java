@@ -24,9 +24,10 @@ public class DrawController {
 
     @MessageMapping("/draw")
     @SendTo("/topic/draw")
-    public void onDraw(@Payload DrawDto event) {
+    public DrawDto onDraw(@Payload DrawDto event) {
         log.debug("Received draw event: {}", event);
         drawEventService.publishDrawEvent(event);
+        return event; // This needs to return draw event for it to work
     }
     // Client sends to /app/cursor -> all subscribers of /topic/cursor receive the CursorDto
 
