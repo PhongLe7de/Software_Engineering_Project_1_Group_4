@@ -57,7 +57,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
 
         setUser(data.user);
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user)); // FIX: Use data.user from the response
+        localStorage.setItem('user', JSON.stringify(data.user));
         return data.user;
     };
 
@@ -76,10 +76,10 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
         }
 
         const data: AuthResponse = await res.json();
-
+        console.log(data)
         setUser(data.user);
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user)); // FIX: Use data.user from the response
+        localStorage.setItem('user', JSON.stringify(data.user));
         return data.user;
     };
 
