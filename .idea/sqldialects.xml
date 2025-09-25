@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/V1__09012025100350_users_table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/V1__09032025140330_create_board_and_user_board_table.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/V1__09032025154002_create_stroke_and_event_logs_table.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/backend/src/main/resources/test_board.sql" dialect="PostgreSQL" />
   </component>
 </project>

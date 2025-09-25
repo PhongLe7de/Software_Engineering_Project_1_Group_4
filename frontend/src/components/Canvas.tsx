@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import type {CanvasProps, DrawingEvent} from "../types";
 import {generateId} from "../lib/utils";
+import {useAuth} from "@/hooks/useAuth.tsx";
 
 
-function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], onDrawingEvent, onCursorMove }: CanvasProps) {
+function Canvas({ sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], onDrawingEvent, onCursorMove }: CanvasProps) {
+    const { user } = useAuth();
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
     const [drawingEvents, setDrawingEvents] = useState<DrawingEvent[]>([]);
@@ -127,8 +129,9 @@ function Canvas({ userData, sidebarVisible, tool, brushSize, brushColor, remoteE
         strokeId: string
     ): DrawingEvent => ({
         id: generateId(),
-        userId: userData?.userId ?? 0,
-        displayName: userData?.displayName || 'Undefined username',
+        boardId: 1, //TODO: TEMPORARY. BOARD HAS TO EXIST IN THE BACKEND. RUN THE SQL SCRIPT  test_board.sql
+        userId: user?.userId ?? 0,
+        displayName: user?.displayName || 'Undefined username',
         timestamp: Date.now(),
         type,
         tool,

@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach} from 'vitest';
-import UserCreateModal from '../components/UserCreateModal';
+import UserRegisterModal from '../components/UserRegisterModal.tsx';
 
 
 
@@ -24,7 +24,7 @@ vi.mock('@/components/ui/carousel', () => ({
     CarouselPrevious: () => <button>Previous</button>,
 }));
 
-describe('UserCreateModal', () => {
+describe('UserRegisterModal', () => {
     //  mock functions for the props passed to the component.
     const activateSidebar = vi.fn();
     const setUserData = vi.fn();
@@ -43,7 +43,7 @@ describe('UserCreateModal', () => {
             json: () => Promise.resolve(mockUserData),
         });
 
-        render(<UserCreateModal activateSidebar={activateSidebar} setUserData={setUserData} />);
+        render(<UserRegisterModal activateSidebar={activateSidebar} setUserData={setUserData} />);
 
         // Simulate a user typing a display name into the input field.
         const displayNameInput = screen.getByLabelText('Display name');
@@ -83,7 +83,7 @@ describe('UserCreateModal', () => {
             status: 500,
         });
 
-        render(<UserCreateModal activateSidebar={activateSidebar} setUserData={setUserData} />);
+        render(<UserRegisterModal activateSidebar={activateSidebar} setUserData={setUserData} />);
 
         // Simulate user input.
         const displayNameInput = screen.getByLabelText('Display name');
