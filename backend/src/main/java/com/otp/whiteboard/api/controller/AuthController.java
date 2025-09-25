@@ -4,6 +4,7 @@ import com.otp.whiteboard.dto.auth.AuthResponse;
 import com.otp.whiteboard.dto.auth.LoginRequest;
 import com.otp.whiteboard.dto.auth.RegisterRequest;
 import com.otp.whiteboard.dto.user.UserDto;
+import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.security.CustomUserDetailService;
 import com.otp.whiteboard.security.CustomUserDetails;
 import com.otp.whiteboard.security.JwtUtil;
@@ -75,7 +76,7 @@ public class AuthController {
     )
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> login(
+    public ResponseEntity<AuthResponse> login(
             @RequestBody
             @NotNull (message = "request must not be null")
             @Valid final LoginRequest request) {
@@ -86,7 +87,8 @@ public class AuthController {
                 )
         );
         String token = jwtUtil.generateToken(request.email());
-        return ResponseEntity.ok(Map.of("token", token));
+        User user = userService.getUserByEmail(request.email());
+        return ResponseEntity.ok(new AuthResponse(new UserDto(user), token));
     }
 
 }

@@ -116,6 +116,12 @@ public class UserService {
                 .toList();
     }
 
+    @Nonnull
+    public User getUserByEmail(@NotNull final String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+    }
+
     private void updateUserFields(User user, UserUpdateRequest request) {
         if (request.displayName() != null) {
             user.setDisplayName(request.displayName());
