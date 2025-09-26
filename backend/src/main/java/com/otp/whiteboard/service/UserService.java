@@ -116,6 +116,19 @@ public class UserService {
                 .toList();
     }
 
+    /**
+     * Retrieves a user's details based on their email address.
+     *
+     * @param email The email address of the user to retrieve.
+     * @return The user's details as a UserDto.
+     */
+    @NotNull
+    public UserDto getUserByEmail(@NotNull String email) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+    return new UserDto(user);
+    }
+
     private void updateUserFields(User user, UserUpdateRequest request) {
         if (request.displayName() != null) {
             user.setDisplayName(request.displayName());
