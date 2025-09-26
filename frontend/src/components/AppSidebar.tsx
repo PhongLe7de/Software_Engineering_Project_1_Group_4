@@ -16,14 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { HexColorPicker } from "react-colorful";
 import { useState } from "react";
-
-const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
-};
+import { useAuth } from "@/hooks/useAuth.tsx";
 
 const colorPalette = [
     { name: 'Black', color: '#000000' },
@@ -44,6 +37,17 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize, setBrushSize, ...props }: AppSidebarProps) {
     const [color, setColor] = useState(brushColor);
+    const { user } = useAuth();
+
+    console.log(user?.photoUrl);
+
+    const userData = {
+        user: {
+            name: user?.displayName || "Undefined username",
+            email: user?.email || "Undefined email",
+            avatar: user?.photoUrl || "Undefined photo",
+        },
+    };
 
     React.useEffect(() => {
         if (tool == "pen") {
@@ -150,7 +154,7 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
                 </div>
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <NavUser user={userData.user} />
             </SidebarFooter>
         </Sidebar>
     )
