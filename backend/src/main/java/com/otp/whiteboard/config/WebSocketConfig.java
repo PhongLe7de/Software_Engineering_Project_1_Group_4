@@ -21,6 +21,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("*");
+                .setAllowedOrigins("http://localhost:3000", "http://localhost:5173");
+
+        registry.addEndpoint("/ws-sockjs")
+                .setAllowedOrigins("http://localhost:3000", "http://localhost:5173")
+                .withSockJS()
+                .setWebSocketEnabled(true)
+                .setHttpMessageCacheSize(1000)
+                .setDisconnectDelay(30 * 1000);
     }
 }
