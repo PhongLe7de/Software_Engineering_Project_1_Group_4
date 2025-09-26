@@ -1,0 +1,44 @@
+services:
+  redis:
+    container_name: whiteboard-redis
+    image: redis
+    ports:
+      - '6379:6379'
+
+  db:
+    container_name: whiteboard-db
+    image: postgres:15
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: whiteboard
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d whiteboard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    container_name: whiteboard-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/whiteboard
+      DB_USER: user
+      DB_PASSWORD: password
+      SPRING_DATA_REDIS_HOST: redis
+
+volumes:
+  postgres_data:
