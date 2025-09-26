@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,7 +76,7 @@ public class AuthController {
     )
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> login(
+    public ResponseEntity<AuthResponse> login(
             @RequestBody
             @NotNull (message = "request must not be null")
             @Valid final LoginRequest request) {
@@ -86,7 +87,8 @@ public class AuthController {
                 )
         );
         String token = jwtUtil.generateToken(request.email());
-        return ResponseEntity.ok(Map.of("token", token));
+        UserDto user = userService.getUserByEmail(request.email());
+        return ResponseEntity.ok(new AuthResponse(user, token));
     }
 
 }
