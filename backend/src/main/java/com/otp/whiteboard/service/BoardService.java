@@ -3,6 +3,7 @@ package com.otp.whiteboard.service;
 import com.otp.whiteboard.dto.board.BoardCreatingRequest;
 import com.otp.whiteboard.dto.board.BoardDto;
 import com.otp.whiteboard.dto.board.BoardUpdateRequest;
+import com.otp.whiteboard.enums.Role;
 import com.otp.whiteboard.model.Board;
 import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.model.UserBoard;
@@ -46,14 +47,23 @@ public class BoardService {
                 logger.warn("Attempt to create board with existing name: {}", request.boardName());
                 throw new IllegalArgumentException("Board already exists with name: " + request.boardName());
             }
-            Board board = new Board();
-            board.setName(request.boardName());
-            board.setOwnerId(request.ownerId());
+            final Board newBoard = new Board();
+            newBoard.setName(request.boardName());
+            newBoard.setOwnerId(request.ownerId());
 
-            final Board newBoard = boardRepository.save(board);
+            final User owner = userRepository.findById(request.ownerId()).orElseThrow(
+                    () -> new IllegalArgumentException("Owner not found")
+            );
+            newBoard.addUser(owner);
+            boardRepository.save(newBoard);
+
+            final UserBoard userBoardExit = userBoardRepository.findUserBoardByBoardIdAndUserId(newBoard.getId(), owner.getId());
+            userBoardExit.setRole(Role.ADMIN);
+            userBoardRepository.save(userBoardExit);
+
             logger.info("Board created successfully with ID: {} and name: {}", newBoard.getId(), newBoard.getName());
             return new BoardDto(newBoard);
-        }catch (Exception error){
+        } catch (Exception error){
             logger.error("Error during board creation: {}");
             throw error;
         }
