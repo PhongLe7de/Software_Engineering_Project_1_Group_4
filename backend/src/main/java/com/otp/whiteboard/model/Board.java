@@ -9,13 +9,13 @@ import java.util.*;
 @Table(name = "boards")
 public class Board {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(unique = true, name = "owner_id")
+    @Column(name = "owner_id")
     private Long ownerId;
 
     @ElementCollection
@@ -115,7 +115,9 @@ public class Board {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        createdAt = now;
+        updatedAt = now;
     }
 
     @PreUpdate
