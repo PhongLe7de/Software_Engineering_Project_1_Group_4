@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Code Coverage') {
             steps {
-                sh 'mvn jacoco:report'
+                sh 'mvn test'
             }
         }
         stage('Publish Test Results') {
