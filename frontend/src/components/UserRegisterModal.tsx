@@ -1,5 +1,4 @@
 import React, {useState} from "react"
-import type {User} from "../types.ts"
 import {useAuth} from "@/hooks/useAuth.tsx";
 import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
@@ -17,9 +16,8 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
+import {Form, FormControl,  FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 
 type LoginModalProps = {
     activateSidebar: (show: boolean) => void;
@@ -51,7 +49,7 @@ export default function UserRegisterModal({activateSidebar}: LoginModalProps) {
     const [api, setApi] = useState<CarouselApi>()
     const [selectProfilePic, setSelectProfilePic] = useState(0)
     const [toggleBetweenRegisterLogin, setToggleBetweenRegisterLogin] = useState(false)
-    const { login, register, logout } = useAuth();
+    const {login, register} = useAuth();
 
     // TODO: Emojis are placeholder. Final ver.: File uploads and default profile pics
     const avatars = ["🦧", "👷"]
@@ -83,35 +81,27 @@ export default function UserRegisterModal({activateSidebar}: LoginModalProps) {
             toast.success(`Welcome ${data.displayName}!`);
             activateSidebar(true);
         } catch (e) {
-            if (e instanceof Error) {
-                toast.error(e.message);
-            } else {
-                toast.error("An unknown error occurred during registration.");
-            }
-            console.error("Error creating user:", e);
+            if (e instanceof TypeError && e.message.includes("NetworkError")) toast.error(e.message);
+            console.error("Registration failed:", e);
         }
     }
 
-const handleLogin = async (data: z.infer<typeof LoginSchema>) => {
-    try {
-        const userData: { email: string; password: string } = {
-            email: data.email,
-            password: data.password,
+    const handleLogin = async (data: z.infer<typeof LoginSchema>) => {
+        try {
+            const userData: { email: string; password: string } = {
+                email: data.email,
+                password: data.password,
+            }
+            const response = await login(userData);
+            if (response) {
+                toast.success(`Welcome back ${response.displayName}!`);
+                activateSidebar(true);
+            }
+        } catch (e) {
+            if (e instanceof TypeError && e.message.includes("NetworkError")) toast.error(e.message);
+            console.error("Login failed:", e);
         }
-        const response = await login(userData);
-        if (response) {
-            toast.success(`Welcome back ${response.displayName}!`);
-            activateSidebar(true);
-        }
-    } catch (e) {
-        if (e instanceof Error) {
-            toast.error(e.message);
-        } else {
-            toast.error("An unknown error occurred during login.");
-        }
-        console.error("Error logging in:", e);
     }
-}
 
     // shadcn carousel api listener
     React.useEffect(() => {
@@ -135,84 +125,86 @@ const handleLogin = async (data: z.infer<typeof LoginSchema>) => {
 
             {toggleBetweenRegisterLogin && (
                 <>
-                <CardHeader className="flex flex-col text-xl">
-                    <CardTitle>Register</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Carousel className="max-w-xs" setApi={setApi}>
-                        <CarouselContent>
-                            {avatars.map((avatar, index) => (
-                                <CarouselItem key={index} className="flex aspect-square items-center justify-center ">
-                                    <span className="text-9xl">{avatar}</span>
-                                </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                        <CarouselPrevious/>
-                        <CarouselNext/>
-                    </Carousel>
-                    <Form {...registerForm}>
-                        <form onSubmit={registerForm.handleSubmit(handleRegister)} className="">
-                            <FormField
-                                control={registerForm.control}
-                                name="email"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel className={"mt-4"}>Email</FormLabel>
-                                        <FormControl>
-                                            <Input type="email" placeholder="mail@mail.com" {...field} />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={registerForm.control}
-                                name="displayName"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Display name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Bob" {...field} />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={registerForm.control}
-                                name="password"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel className={"mt-4"}>Password</FormLabel>
-                                        <FormControl>
-                                            <Input type="password" placeholder="password" {...field} />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
+                    <CardHeader className="flex flex-col text-xl">
+                        <CardTitle>Register</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Carousel className="max-w-xs" setApi={setApi}>
+                            <CarouselContent>
+                                {avatars.map((avatar, index) => (
+                                    <CarouselItem key={index}
+                                                  className="flex aspect-square items-center justify-center ">
+                                        <span className="text-9xl">{avatar}</span>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious/>
+                            <CarouselNext/>
+                        </Carousel>
+                        <Form {...registerForm}>
+                            <form onSubmit={registerForm.handleSubmit(handleRegister)} className="">
+                                <FormField
+                                    control={registerForm.control}
+                                    name="email"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel className={"mt-4"}>Email</FormLabel>
+                                            <FormControl>
+                                                <Input type="email" placeholder="mail@mail.com" {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={registerForm.control}
+                                    name="displayName"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Display name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Bob" {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={registerForm.control}
+                                    name="password"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel className={"mt-4"}>Password</FormLabel>
+                                            <FormControl>
+                                                <Input type="password" placeholder="password" {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
 
 
-                            <Button className="mt-4 w-full" type="submit">Register {avatars[selectProfilePic]}</Button>
-                        </form>
-                    </Form>
+                                <Button className="mt-4 w-full"
+                                        type="submit">Register {avatars[selectProfilePic]}</Button>
+                            </form>
+                        </Form>
 
-                </CardContent>
-                <CardFooter className="flex-col gap-2">
-                    <div className=" text-center text-m">
-                        Already have an account?{" "}
-                        <a href="#" onClick={() =>
-                            setToggleBetweenRegisterLogin(!toggleBetweenRegisterLogin)
-                        } className="underline underline-offset-4">
-                            Log in
-                        </a>
-                    </div>
-                </CardFooter>
-            </>)}
+                    </CardContent>
+                    <CardFooter className="flex-col gap-2">
+                        <div className=" text-center text-m">
+                            Already have an account?{" "}
+                            <a href="#" onClick={() =>
+                                setToggleBetweenRegisterLogin(!toggleBetweenRegisterLogin)
+                            } className="underline underline-offset-4">
+                                Log in
+                            </a>
+                        </div>
+                    </CardFooter>
+                </>)}
 
             {/* ------ LOG IN MODAL ------ */}
 
-            { !toggleBetweenRegisterLogin && (
+            {!toggleBetweenRegisterLogin && (
                 <>
                     <CardHeader>
                         <CardTitle className={"text-xl"}>Login to your account</CardTitle>
@@ -222,33 +214,33 @@ const handleLogin = async (data: z.infer<typeof LoginSchema>) => {
                     </CardHeader>
                     <CardContent>
                         <Form {...loginForm}>
-                        <form onSubmit={loginForm.handleSubmit(handleLogin)} className="flex flex-col gap-1">
-                            <FormField
-                                control={loginForm.control}
-                                name="email"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel className={"mt-4"}>Email</FormLabel>
-                                        <FormControl>
-                                            <Input type="email" placeholder="mail@mail.com" {...field} />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={loginForm.control}
-                                name="password"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel htmlFor={"password"} className={"mt-4"}>Password</FormLabel>
-                                        <FormControl>
-                                            <Input  type="password" placeholder="password" {...field} />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
+                            <form onSubmit={loginForm.handleSubmit(handleLogin)} className="flex flex-col gap-1">
+                                <FormField
+                                    control={loginForm.control}
+                                    name="email"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel className={"mt-4"}>Email</FormLabel>
+                                            <FormControl>
+                                                <Input type="email" placeholder="mail@mail.com" {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={loginForm.control}
+                                    name="password"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel htmlFor={"password"} className={"mt-4"}>Password</FormLabel>
+                                            <FormControl>
+                                                <Input type="password" placeholder="password" {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
                                 <div className="flex mt-10 flex-col gap-3">
                                     <Button type="submit" className="w-full">
                                         Login
@@ -263,15 +255,15 @@ const handleLogin = async (data: z.infer<typeof LoginSchema>) => {
                                         Login with Google
                                     </Button>
                                 </div>
-                            <div className="mt-4 text-center text-m">
-                                Don't have an account?{" "}
-                                <a href="#" onClick={() =>
-                                    setToggleBetweenRegisterLogin(!toggleBetweenRegisterLogin)
-                                } className="underline underline-offset-4">
-                                   Sign up
-                                </a>
-                            </div>
-                        </form>
+                                <div className="mt-4 text-center text-m">
+                                    Don't have an account?{" "}
+                                    <a href="#" onClick={() =>
+                                        setToggleBetweenRegisterLogin(!toggleBetweenRegisterLogin)
+                                    } className="underline underline-offset-4">
+                                        Sign up
+                                    </a>
+                                </div>
+                            </form>
                         </Form>
                     </CardContent>
                 </>

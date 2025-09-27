@@ -1,5 +1,6 @@
 import {createContext, useEffect, useState} from "react";
 import type {User} from "../types";
+import {toast} from "sonner";
 
 export const AuthContext = createContext<{
     user: User | null;
@@ -40,47 +41,50 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     }, []);
 
     const register = async (userData: registerData) => {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}api/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        });
+            const res = await fetch(`${import.meta.env.VITE_API_URL}api/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
 
-        if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
-        }
+            if (!res.ok) {
+                const errorData = await res.json();
+                if (errorData.status === 500) toast.error(errorData.message);
+                else toast.error(errorData.message);
+                throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+            }
 
-        const data: AuthResponse = await res.json();
+           const data: AuthResponse = await res.json();
 
-        setUser(data.user);
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        return data.user;
+           setUser(data.user);
+           localStorage.setItem('token', data.token);
+           localStorage.setItem('user', JSON.stringify(data.user));
+           return data.user;
     };
 
     const login = async (userData: loginData) => {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}api/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        });
+            const res = await fetch(`${import.meta.env.VITE_API_URL}api/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
 
-        if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
-        }
+            if (!res.ok) {
+                const errorData = await res.json();
+                if (errorData.status === 403) toast.error('Invalid email or password');
+                throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+            }
 
-        const data: AuthResponse = await res.json();
-        console.log(data)
-        setUser(data.user);
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        return data.user;
+            const data: AuthResponse = await res.json();
+            console.log(data)
+            setUser(data.user);
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data.user;
     };
 
     const logout = () => {

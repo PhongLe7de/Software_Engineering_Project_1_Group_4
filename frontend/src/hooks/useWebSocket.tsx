@@ -41,7 +41,6 @@ const useWebSocket = ({sidebarVisible}: UseWebSocketProps) => {
             // Subscribe to cursor updates
             client.subscribe("/topic/cursor", (message) => {
                 const cursorData: CursorPosition = JSON.parse(message.body);
-                console.log("Received cursor update:", cursorData);
                 setRemoteCursors((prev) => {
                     const newMap = new Map(prev);
                     newMap.set(cursorData.displayName, cursorData);
