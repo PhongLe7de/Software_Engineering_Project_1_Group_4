@@ -4,6 +4,7 @@ package com.otp.whiteboard.api.controller;
 import com.otp.whiteboard.dto.board.BoardCreatingRequest;
 import com.otp.whiteboard.dto.board.BoardDto;
 import com.otp.whiteboard.dto.board.BoardUpdateRequest;
+import com.otp.whiteboard.dto.board.ModifyBoardUserRequest;
 import com.otp.whiteboard.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -45,21 +46,23 @@ public class BoardController {
         return ResponseEntity.ok(boardDto);
     }
 
-    @Operation(
-            summary = "Add a user to a board"
-            ,description = """
-            This endpoint adds a user to a specified board based on the provided board ID and user ID.
-            It accepts the board ID and user ID as request parameters and returns the updated board details.
-            """
-    )
-    @PostMapping("/edit/addUser")
-    public ResponseEntity<BoardDto> addUserToBoard(
-            @RequestParam("boardId") Long boardId,
-            @RequestParam("userId") Long userId
-    ) {
-        BoardDto response = boardService.addUserToBoard(boardId, userId);
-        return ResponseEntity.ok(response);
-    }
+        @Operation(
+                summary = "Add a user to a board"
+                ,description = """
+                This endpoint adds a user to a specified board based on the provided board ID and user ID.
+                It accepts the board ID and user ID as request parameters and returns the updated board details.
+                """
+        )
+        @PostMapping("{boardId}/edit/addUser")
+        public ResponseEntity<BoardDto> addUserToBoard(
+                @RequestParam("boardId") Long boardId,
+                @RequestBody
+                @NotNull
+                @Valid final ModifyBoardUserRequest request
+        ) {
+            BoardDto response = boardService.addUserToBoard(boardId, request.userId());
+            return ResponseEntity.ok(response);
+        }
 
     @Operation(
             summary = "Remove a user from a board"
@@ -68,12 +71,14 @@ public class BoardController {
             It accepts the board ID and user ID as request parameters and returns the updated board details.
             """
     )
-    @PostMapping("/edit/removeUser")
+    @PostMapping("{boardId}/edit/removeUser")
     public ResponseEntity<BoardDto> removeUserFromBoard(
             @RequestParam("boardId") Long boardId,
-            @RequestParam("userId") Long userId
+            @RequestBody
+            @NotNull
+            @Valid final ModifyBoardUserRequest request
     ) {
-        BoardDto response = boardService.removeUserFromBoard(boardId, userId);
+        BoardDto response = boardService.removeUserFromBoard(boardId,request.userId());
         return ResponseEntity.ok(response);
     }
 

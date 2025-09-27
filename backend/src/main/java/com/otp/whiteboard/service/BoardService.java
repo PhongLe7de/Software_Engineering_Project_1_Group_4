@@ -121,8 +121,9 @@ public class BoardService {
             Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
 
-            User user = userRepository.getUsersById(userId);
-            if (user == null) throw new IllegalArgumentException("User not found with ID: " + userId);
+            User user = userRepository.findById(userId).orElseThrow(
+                    () -> new IllegalArgumentException("User not found with ID: " + userId)
+            );
 
             UserBoard isUserExitsInBoard = userBoardRepository.findUserBoardByBoardIdAndUserId(boardId, userId);
             if (isUserExitsInBoard != null) {
@@ -153,8 +154,9 @@ public class BoardService {
     @Nonnull
     public BoardDto removeUserFromBoard(@NotNull Long boardId, @NotNull Long userId) {
         try{
-            User user = userRepository.getUsersById(userId);
-            if (user == null) throw new IllegalArgumentException("User not found with ID: " + userId);
+            User user = userRepository.findById(userId).orElseThrow(
+                    () -> new IllegalArgumentException("User not found with ID: " + userId)
+            );
 
             UserBoard userBoard = userBoardRepository.findUserBoardByBoardIdAndUserId(boardId,userId);
             if (userBoard == null) {

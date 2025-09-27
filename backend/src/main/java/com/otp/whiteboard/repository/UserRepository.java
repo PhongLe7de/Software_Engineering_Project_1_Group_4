@@ -46,11 +46,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Nonnull
     Optional<User> findUserByDisplayName(@Nonnull String displayName);
 
-    /**
-     * Finds a user by their ID.
-     * @param id
-     * @return
-     */
-    @Nonnull
-    User getUsersById(Long id);
 }
