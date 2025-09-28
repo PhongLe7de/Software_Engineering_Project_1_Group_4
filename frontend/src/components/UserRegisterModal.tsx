@@ -5,7 +5,7 @@ import {useForm} from "react-hook-form"
 import {toast} from "sonner"
 import {z} from "zod"
 import {faker} from '@faker-js/faker';
-
+import {PuffLoader} from "react-spinners";
 import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
 import {
@@ -16,12 +16,8 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
-import {Form, FormControl,  FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
-
-type LoginModalProps = {
-    activateSidebar: (show: boolean) => void;
-};
 
 const RegisterSchema = z.object({
     email: z.email({
@@ -45,10 +41,11 @@ const LoginSchema = z.object({
 })
 
 // TODO: Placeholder layout, project part 2: user auth and oAuth 2.0(?)
-export default function UserRegisterModal({activateSidebar}: LoginModalProps) {
+export default function UserRegisterModal() {
     const [api, setApi] = useState<CarouselApi>()
+    const [isLoading, setIsLoading] = useState(false)
     const [selectProfilePic, setSelectProfilePic] = useState(0)
-    const [toggleBetweenRegisterLogin, setToggleBetweenRegisterLogin] = useState(false)
+    const [toggleBetweenRegisterLogin, setToggleBetweenRegisterLogin] = useState(true)
     const {login, register} = useAuth();
 
     // TODO: Emojis are placeholder. Final ver.: File uploads and default profile pics
@@ -70,6 +67,7 @@ export default function UserRegisterModal({activateSidebar}: LoginModalProps) {
     })
 
     const handleRegister = async (data: z.infer<typeof RegisterSchema>) => {
+        setIsLoading(true)
         try {
             const userData = {
                 email: data.email,
@@ -79,14 +77,17 @@ export default function UserRegisterModal({activateSidebar}: LoginModalProps) {
             };
             await register(userData);
             toast.success(`Welcome ${data.displayName}!`);
-            activateSidebar(true);
+            setIsLoading(false)
         } catch (e) {
             if (e instanceof TypeError && e.message.includes("NetworkError")) toast.error(e.message);
             console.error("Registration failed:", e);
+        } finally {
+            setIsLoading(false)
         }
     }
 
     const handleLogin = async (data: z.infer<typeof LoginSchema>) => {
+        setIsLoading(true)
         try {
             const userData: { email: string; password: string } = {
                 email: data.email,
@@ -95,11 +96,12 @@ export default function UserRegisterModal({activateSidebar}: LoginModalProps) {
             const response = await login(userData);
             if (response) {
                 toast.success(`Welcome back ${response.displayName}!`);
-                activateSidebar(true);
             }
         } catch (e) {
             if (e instanceof TypeError && e.message.includes("NetworkError")) toast.error(e.message);
             console.error("Login failed:", e);
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -120,7 +122,10 @@ export default function UserRegisterModal({activateSidebar}: LoginModalProps) {
 
     return (
         <Card className="fixed top-30 left-1/2 transform -translate-x-1/2 flex flex-col w-full max-w-sm z-50">
-
+            <div
+                className={"bg-white/30 backdrop-blur-xs absolute top-0 left-0 w-full h-full z-50 flex items-center justify-center" + (isLoading ? " " : " invisible")}>
+                <PuffLoader size={80} loading={isLoading} />
+            </div>
             {/* ------ REGISTER MODAL ------ */}
 
             {toggleBetweenRegisterLogin && (

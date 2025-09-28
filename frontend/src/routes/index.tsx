@@ -10,11 +10,10 @@ import Cursors from "@/components/Cursor.tsx";
 import {useAuth} from "@/hooks/useAuth.tsx";
 
 function Index() {
-    const [sidebarVisible, setSidebarVisible] = useState(false);
     const [tool, setTool] = useState("pen");
     const [brushSize, setBrushSize] = useState(5);
     const [brushColor, setBrushColor] = useState("#000000");
-    const { user } = useAuth();
+    const { user, sidebarVisible } = useAuth();
 
     const {
         isConnected,
@@ -45,7 +44,6 @@ function Index() {
                 </span>
             </div>
             {!sidebarVisible && (<UserRegisterModal
-                activateSidebar={setSidebarVisible}
             />)}
             {sidebarVisible && <AppSidebar
                 brushColor={brushColor}
