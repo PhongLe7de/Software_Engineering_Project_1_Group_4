@@ -4,6 +4,7 @@ import {toast} from "sonner";
 
 export const AuthContext = createContext<{
     user: User | null;
+    sidebarVisible: boolean;
     login: (userData: loginData) => Promise<User>;
     register: (userData: registerData) => Promise<User>;
     logout: () => void;
@@ -27,16 +28,26 @@ type loginData = {
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [user, setUser] = useState<User | null>(null);
+    const [sidebarVisible, setSidebarVisible] = useState(false);
 
     useEffect(() => {
         const savedUser = localStorage.getItem('user');
         if (savedUser) {
             try {
-                setUser(JSON.parse(savedUser));
+                const parsedUser: User = JSON.parse(savedUser);
+                setUser(parsedUser);
+                setSidebarVisible(true);
+                toast.success(`Welcome back, ${parsedUser?.displayName}!`);
             } catch (e) {
                 console.error("Failed to parse user from localStorage", e);
                 localStorage.removeItem('user');
             }
+        }
+        return ()=> {  // Clean up function for testing login/register
+            // setUser(null);
+            // setSidebarVisible(false);
+            // localStorage.removeItem('user');
+            // localStorage.removeItem('token');
         }
     }, []);
 
@@ -61,6 +72,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
            setUser(data.user);
            localStorage.setItem('token', data.token);
            localStorage.setItem('user', JSON.stringify(data.user));
+           setSidebarVisible(true);
            return data.user;
     };
 
@@ -84,17 +96,19 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
             setUser(data.user);
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
+            setSidebarVisible(true);
             return data.user;
     };
 
     const logout = () => {
         setUser(null);
+        setSidebarVisible(false);
         localStorage.removeItem('user');
         localStorage.removeItem('token');
     };
 
     return (
-        <AuthContext.Provider value={{user, login, register, logout}}>
+        <AuthContext.Provider value={{user, sidebarVisible, login, register, logout}}>
             {children}
         </AuthContext.Provider>
     );
