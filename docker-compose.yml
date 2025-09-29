@@ -33,7 +33,7 @@ services:
       redis:
         condition: service_started
     ports:
-      - "8080:8080"
+      - "8085:8085"
     environment:
       DB_URL: jdbc:postgresql://db:5432/whiteboard
       DB_USER: user
