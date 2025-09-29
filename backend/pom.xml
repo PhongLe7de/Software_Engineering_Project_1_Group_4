@@ -157,7 +157,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>WhiteboardApplication</mainClass>
+                            <mainClass>com.otp.whiteboard.WhiteboardApplication</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
