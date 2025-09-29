@@ -39,8 +39,6 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
     const [color, setColor] = useState(brushColor);
     const { user } = useAuth();
 
-    console.log(user?.photoUrl);
-
     const userData = {
         user: {
             name: user?.displayName || "Undefined username",
