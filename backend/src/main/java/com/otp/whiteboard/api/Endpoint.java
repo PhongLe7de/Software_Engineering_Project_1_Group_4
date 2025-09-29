@@ -17,4 +17,5 @@ public class Endpoint {
 
     public static final String DRAW_WEBSOCKET = DRAW;
     public static final String CURSOR_WEBSOCKET = CURSOR;
+    public static final String HISTORY_WEBSOCKET = "/history";
 }
