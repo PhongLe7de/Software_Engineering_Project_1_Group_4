@@ -24,22 +24,29 @@ services:
 
   app:
     container_name: whiteboard-backend
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ckapiainen/otp_1_group_4-backend:latest
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
     ports:
-      - "8085:8085"
+      - "8084:8084"
     environment:
-      SERVER_PORT: 8085
+      SERVER_PORT: 8084
       DB_URL: jdbc:postgresql://db:5432/whiteboard
       DB_USER: user
       DB_PASSWORD: password
       SPRING_DATA_REDIS_HOST: redis
+
+  frontend:
+    container_name: whiteboard-frontend
+    image: ckapiainen/otp_1_group_4-frontend:latest
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - app
 
 volumes:
   postgres_data:
