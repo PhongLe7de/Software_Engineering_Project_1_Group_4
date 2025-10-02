@@ -1,10 +1,9 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach} from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import UserRegisterModal from '../components/UserRegisterModal.tsx';
-
-
+import  { AuthContext } from "@/context/AuthContext.tsx";
 
 vi.mock('@faker-js/faker', () => ({
     faker: {
@@ -24,79 +23,78 @@ vi.mock('@/components/ui/carousel', () => ({
     CarouselPrevious: () => <button>Previous</button>,
 }));
 
-describe('UserRegisterModal', () => {
-    //  mock functions for the props passed to the component.
-    const activateSidebar = vi.fn();
-    const setUserData = vi.fn();
+const mockRegister = vi.fn();
+const mockLogin = vi.fn();
+const mockLogout = vi.fn();
 
+const renderWithAuthProvider = (component: React.ReactElement) => {
+    return render(
+        <AuthContext.Provider value={{
+            user: null,
+            sidebarVisible: false,
+            register: mockRegister,
+            login: mockLogin,
+            logout: mockLogout
+        }}>
+            {component}
+        </AuthContext.Provider>
+    );
+};
+
+
+describe('UserRegisterModal', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        global.fetch = vi.fn();
     });
 
-    it('should create a user successfully on form submission', async () => {
-        const user = userEvent.setup(); // Set up user-event for simulating user interactions.
-        const mockUserData = { user_id: 1, display_name: 'JohnDoe', photo_url: '🦧' };
-
-        (global.fetch as vi.Mock).mockResolvedValue({
-            ok: true,
-            json: () => Promise.resolve(mockUserData),
-        });
-
-        render(<UserRegisterModal activateSidebar={activateSidebar} setUserData={setUserData} />);
-
-        // Simulate a user typing a display name into the input field.
-        const displayNameInput = screen.getByLabelText('Display name');
-        await user.clear(displayNameInput);
-        await user.type(displayNameInput, 'JohnDoe');
-
-        // simulate submit button
-        const submitButton = screen.getByRole('button', { name: /submit/i });
-        await user.click(submitButton);
-
-        await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-            expect(global.fetch).toHaveBeenCalledWith(
-                expect.stringContaining('api/auth/register'), // Check if the URL is correct.
-                expect.objectContaining({ // Check if the request options are correct.
-                    method: 'POST',
-                    body: JSON.stringify({
-                        email: 'test-user@example.com',
-                        password: 'password',
-                        display_name: 'JohnDoe',
-                        photo_url: '🦧',
-                    }),
-                })
-            );
-        });
-
-        await waitFor(() => {
-            expect(setUserData).toHaveBeenCalledWith(mockUserData);
-            expect(activateSidebar).toHaveBeenCalledWith(true);
-        });
-    });
-
-    it('should show an error message if user creation fails', async () => {
+    it('should call register function on form submission', async () => {
         const user = userEvent.setup();
-        (global.fetch as vi.Mock).mockResolvedValue({
-            ok: false,
-            status: 500,
+        const mockUserData = {
+            email: 'JohnDoe@example.com',
+            password: 'password123',
+            displayName: 'JohnDoe',
+            photoUrl: '🦧',
+        };
+        mockRegister.mockResolvedValue({ user_id: 1, display_name: 'JohnDoe', photo_url: '🦧' });
+
+        renderWithAuthProvider(<UserRegisterModal />);
+
+        const emailInput = screen.getByLabelText('Email');
+        await user.clear(emailInput);
+        await user.type(emailInput, mockUserData.email);
+
+        const displayNameInput = screen.getByLabelText('Display name');
+        await user.clear(displayNameInput);
+        await user.type(displayNameInput, mockUserData.displayName);
+
+        const passwordInput = screen.getByLabelText('Password');
+        await user.clear(passwordInput);
+        await user.type(passwordInput, mockUserData.password);
+
+        const submitButton = screen.getByRole('button', { name: /Register/i });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(mockRegister).toHaveBeenCalledTimes(1);
+            expect(mockRegister).toHaveBeenCalledWith(mockUserData);
         });
+    });
 
-        render(<UserRegisterModal activateSidebar={activateSidebar} setUserData={setUserData} />);
+    it('should show an error message if registration fails', async () => {
+        const user = userEvent.setup();
+        mockRegister.mockRejectedValue(new Error("Registration failed"));
 
-        // Simulate user input.
+        renderWithAuthProvider(<UserRegisterModal />);
+
         const displayNameInput = screen.getByLabelText('Display name');
         await user.clear(displayNameInput);
         await user.type(displayNameInput, 'JohnDoe');
 
-        const submitButton = screen.getByRole('button', { name: /submit/i });
+        const submitButton = screen.getByRole('button', { name: /Register/i });
         await user.click(submitButton);
 
         await waitFor(() => {
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-            expect(setUserData).not.toHaveBeenCalled();
-            expect(activateSidebar).not.toHaveBeenCalled();
+            expect(mockRegister).toHaveBeenCalledTimes(1);
         });
     });
 });
