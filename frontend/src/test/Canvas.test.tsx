@@ -1,7 +1,8 @@
 import Canvas from "../components/Canvas";
 import { vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { describe, it, expect, beforeEach } from "vitest";
+import AuthProvider from "@/context/AuthContext.tsx";
 
 const mockContext = {
     lineCap: '',
@@ -13,13 +14,13 @@ const mockContext = {
     lineTo: vi.fn(),
     stroke: vi.fn(),
     closePath: vi.fn(),
+    clearRect: vi.fn(),
 };
 
 HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(mockContext);
 
 describe("Canvas Component", () => {
     const defaultProps = {
-        userData: { user_id: 1, display_name: 'Test User', photo_url: 'test.jpg' },
         sidebarVisible: true,
         tool: 'pen',
         brushSize: 5,
@@ -33,28 +34,47 @@ describe("Canvas Component", () => {
     });
 
     it("renders the Canvas component", () => {
-        render(<Canvas {...defaultProps} />);
-        screen.debug();
+        render(
+            <AuthProvider>
+                <Canvas {...defaultProps} />
+            </AuthProvider>
+        );
 
         const canvas = document.querySelector('canvas');
         expect(canvas).toBeInTheDocument();
     });
 
     it("applies correct cursor style based on tool", () => {
-        const { rerender } = render(<Canvas {...defaultProps} />);
+        const { rerender } = render(
+            <AuthProvider>
+                <Canvas {...defaultProps} />
+            </AuthProvider>
+        );
 
         const canvas = document.querySelector('canvas');
         expect(canvas?.style.cursor).toBe('crosshair');
 
-        rerender(<Canvas {...defaultProps} tool="hand" />);
+        rerender(
+            <AuthProvider>
+                <Canvas {...defaultProps} tool="hand" />
+            </AuthProvider>
+        );
         expect(canvas?.style.cursor).toBe('grab');
 
-        rerender(<Canvas {...defaultProps} tool="eraser" />);
+        rerender(
+            <AuthProvider>
+                <Canvas {...defaultProps} tool="eraser" />
+            </AuthProvider>
+        );
         expect(canvas?.style.cursor).toBe('crosshair');
     });
 
     it("does not render cursor when sidebar is not visible", () => {
-        render(<Canvas {...defaultProps} sidebarVisible={false} />);
+        render(
+            <AuthProvider>
+                <Canvas {...defaultProps} sidebarVisible={false} />
+            </AuthProvider>
+        );
 
         const canvas = document.querySelector('canvas');
         expect(canvas?.style.cursor).toBe('');
