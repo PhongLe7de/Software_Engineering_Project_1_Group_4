@@ -76,13 +76,8 @@ public class BoardService {
      */
     @Nonnull
     public List<BoardDto> getAllBoards() {
-        try{
             List<Board> boards = boardRepository.findAll();
             return boards.stream().map(BoardDto::new).toList();
-        } catch (Exception error){
-            logger.error("Error during fetching all boards: {}", error.getMessage());
-            throw error;
-        }
     }
 
     /**

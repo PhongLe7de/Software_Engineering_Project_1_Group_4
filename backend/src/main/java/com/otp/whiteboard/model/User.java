@@ -45,6 +45,14 @@ public class User {
         this.password = password;
     }
 
+    public User(Long id, String email, String displayName, String password, Status status) {
+        this.id = id;
+        this.email = email;
+        this.displayName = displayName;
+        this.password = password;
+        this.status = status;
+    }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
