@@ -82,6 +82,8 @@ class UserServiceTest {
         when(userRepository.findUserByDisplayName(DISPLAY_NAME))
                 .thenReturn(java.util.Optional.of(testUser));
         when(userRepository.findAll()).thenReturn(java.util.List.of(testUser));
+        when(userRepository.findByEmail(EXIT_EMAIL))
+                .thenReturn(java.util.Optional.of(new User(2L, EXIT_EMAIL,DISPLAY_NAME,"encodedPassword",Status.ACTIVE)));
 
     }
     void setupTestTarget(){
@@ -109,7 +111,10 @@ class UserServiceTest {
     void testCreateUserWithExistingEmail(){
         //given
         RegisterRequest request = new RegisterRequest(EXIT_EMAIL, PASSWORD, PHOTO_URL, DISPLAY_NAME );
-
+        User existingUser = new User();
+        existingUser.setEmail(EXIT_EMAIL);
+        when(userRepository.findByEmail(EXIT_EMAIL))
+                .thenReturn(java.util.Optional.of(existingUser));
         //When & Then
         try{
             userService.createUser(request);
@@ -188,4 +193,15 @@ class UserServiceTest {
         assertEquals(1, result.size());
         assertEquals(testUser.getId(), result.get(0).id());
     }
+
+    @DisplayName("As a user, I want to search for a user profile by display name so that I can view their details")
+    @Test
+    void getUserByEmail(){
+        //when
+        UserDto result = userService.getUserByEmail(EXIT_EMAIL);
+        //then
+        assertNotNull(result);
+        assertEquals(EXIT_EMAIL, result.email());
+    }
+
 }
