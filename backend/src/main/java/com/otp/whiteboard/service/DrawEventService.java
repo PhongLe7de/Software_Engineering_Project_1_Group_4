@@ -55,42 +55,46 @@ public class DrawEventService {
         redisTemplate.convertAndSend(redisChannel, event);
         redisTemplate.opsForList().rightPush(DRAWING_EVENTS_PREFIX + event.getBoardId(), event);
         redisTemplate.expire(DRAWING_EVENTS_PREFIX + event.getBoardId(), java.time.Duration.ofHours(1));
+        try {
+            var boardOpt = boardRepository.findById(event.getBoardId());
+            if (boardOpt.isEmpty()) {
+                log.warn("publishDrawEvent: board {} not found – skipping DB save (event id={})",
+                        event.getBoardId(), event.getId());
+                throw new IllegalArgumentException("Board not found: " + event.getBoardId());
+            }
 
-        // Best-effort DB persistence (no exceptions)
-        var boardOpt = boardRepository.findById(event.getBoardId());
-        if (boardOpt.isEmpty()) {
-            log.warn("publishDrawEvent: board {} not found – skipping DB save (event id={})",
-                    event.getBoardId(), event.getId());
-            return;
+            var userOpt = userRepository.findUserByDisplayName(event.getDisplayName());
+            if (userOpt.isEmpty()) {
+                log.warn("publishDrawEvent: user '{}' not found – skipping DB save (event id={})",
+                        event.getDisplayName(), event.getId());
+                throw new IllegalArgumentException("User not found: " + event.getDisplayName());
+            }
+
+            Board board = boardOpt.get();
+            User user = userOpt.get();
+
+            Stroke stroke = new Stroke(
+                    board,
+                    user,
+                    event.getBrushColor(),
+                    event.getBrushSize(),
+                    event.getType(),
+                    event.getTool(),
+                    event.getX(),
+                    event.getY(),
+                    LocalDateTime.now()
+            );
+
+            strokeRepository.save(stroke);
+
+            // Optional: keep a counter on the board
+            board.incrementStrokes();
+            boardRepository.save(board);
+        } catch (Exception e) {
+            log.error("Error during removing user from board", e);
+            throw e;
         }
 
-        var userOpt = userRepository.findUserByDisplayName(event.getDisplayName());
-        if (userOpt.isEmpty()) {
-            log.warn("publishDrawEvent: user '{}' not found – skipping DB save (event id={})",
-                    event.getDisplayName(), event.getId());
-            return;
-        }
-
-        Board board = boardOpt.get();
-        User user = userOpt.get();
-
-        Stroke stroke = new Stroke(
-                board,
-                user,
-                event.getBrushColor(),
-                event.getBrushSize(),
-                event.getType(),
-                event.getTool(),
-                event.getX(),
-                event.getY(),
-                LocalDateTime.now()
-        );
-
-        strokeRepository.save(stroke);
-
-        // Optional: keep a counter on the board
-        board.incrementStrokes();
-        boardRepository.save(board);
     }
 
     public void publishCursorEvent(CursorDto event) {
