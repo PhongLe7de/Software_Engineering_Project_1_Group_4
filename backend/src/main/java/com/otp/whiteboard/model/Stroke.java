@@ -150,4 +150,8 @@ public class Stroke implements Serializable {
     public int hashCode() {
         return Objects.hash(id, board, user, color, thickness, type, tool, x_cord, y_cord, createdAt);
     }
+
+    public void setCreatedAt(LocalDateTime now) {
+        this.createdAt = now;
+    }
 }
