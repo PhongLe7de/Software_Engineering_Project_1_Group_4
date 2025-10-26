@@ -9,6 +9,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { useTranslation } from "react-i18next"
 
 type User = {
     id: string
@@ -22,8 +23,10 @@ type User = {
 // Data table of users in admin panel
 
 const UserDataTable = ({users}: { users: User[] }) => {
-    const [data, setData] = React.useState<User[]>(users)
+    const { t } = useTranslation();
+    
 
+    const [data, setData] = React.useState<User[]>(users)
     const toggleBan = (id: string) => {
         setData((prev) =>
             prev.map((user) =>
@@ -46,13 +49,13 @@ const UserDataTable = ({users}: { users: User[] }) => {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Created At</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead>{t('user.')}</TableHead>
+                        <TableHead>{t('user.name')}</TableHead>
+                        <TableHead>{t('user.email')}</TableHead>
+                        <TableHead>{t('user.role')}</TableHead>
+                        <TableHead>{t('user.status')}</TableHead>
+                        <TableHead>{t('user.createdAt')}</TableHead>
+                        <TableHead className="text-right">{t('user.actions')}</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -83,14 +86,14 @@ const UserDataTable = ({users}: { users: User[] }) => {
                                         variant="outline"
                                         onClick={() => toggleBan(user.id)}
                                     >
-                                        {user.status === "Banned" ? "Unban" : "Ban"}
+                                        {user.status === "Banned" ? t('user.unban') : t('user.ban')}
                                     </Button>
                                     <Button
                                         size="sm"
                                         variant="destructive"
                                         onClick={() => removeUser(user.id)}
                                     >
-                                        Remove
+                                        {t('user.remove')}
                                     </Button>
                                 </TableCell>
                             </TableRow>
@@ -98,7 +101,7 @@ const UserDataTable = ({users}: { users: User[] }) => {
                     ) : (
                         <TableRow>
                             <TableCell colSpan={7} className="text-center">
-                                No users found.
+                                {t('user.no_users_found')}
                             </TableCell>
                         </TableRow>
                     )}

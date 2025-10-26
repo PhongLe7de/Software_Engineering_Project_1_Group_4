@@ -1,0 +1,69 @@
+{
+  "dashboard": {
+    "realtime_whiteboard": "Realtime Whiteboard",
+    "total_visitors": "Total Visitors",
+    "last_3_months": "Last 3 months",
+    "last_7_days": "Last 7 days",
+    "last_30_days": "Last 30 days",
+    "total_for_last_3_months": "Total for the last 3 months"
+  },
+  "team": {
+    "add_team": "Add team"
+  },
+  "user": {
+    "id": "ID",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "created_at": "Created At",
+    "actions": "Actions",
+    "ban": "Ban",
+    "unban": "Unban",
+    "remove": "Remove",
+    "no_users_found": "No users found"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password", 
+    "login": "Login",
+    "register": "Register",
+    "sign_up": "Sign Up",
+    "display_name": "Display name",
+    "login_to_your_account": "Login to your account",
+     "enter_email_to_login": "Enter your email below to login to your account",
+     "login_with_google": "Login with Google",
+     "dont_have_account": "Don't have an account?",
+     "already_have_account": "Already have an account?",
+     "welvome_back": "Welcome back!"
+  },
+  "ui": {
+    "previous_slide": "Previous slide",
+    "next_slide": "Next slide",
+    "close": "Close",
+    "toggle_sidebar": "Toggle Sidebar",
+    "show_mobile_sidebar": "Show the mobile sidebar"
+  },
+  "common": {
+    "more": "More",
+    "close": "Close",
+    "sidebar": "Sidebar",
+    "sidebar_description": "Displays the mobile sidebar",
+    "toggle_sidebar": "Toggle Sidebar",
+    "undefined_username": "Undefined username"
+  },
+  "toolbar": {
+    "pen": "Pen",
+    "eraser": "Eraser",
+    "select": "Select",
+    "rectangle": "Rectangle",
+    "circle": "Circle",
+    "line": "Line",
+    "text": "Text",
+    "color_picker": "Color Picker",
+    "undo": "Undo",
+    "redo": "Redo",
+    "clear_board": "Clear Board",
+    "brush_size": "Brush Size"
+  }
+}
