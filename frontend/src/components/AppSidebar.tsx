@@ -17,6 +17,7 @@ import {
 import { HexColorPicker } from "react-colorful";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth.tsx";
+import { useTranslation } from "react-i18next";
 
 const colorPalette = [
     { name: 'Black', color: '#000000' },
@@ -38,6 +39,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize, setBrushSize, ...props }: AppSidebarProps) {
     const [color, setColor] = useState(brushColor);
     const { user } = useAuth();
+    const { t } = useTranslation();
 
     const userData = {
         user: {
@@ -81,7 +83,7 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
                         >
                             <a href="#">
                                 <IconPhotoEdit className="!size-5" />
-                                <span className="text-base font-semibold">Realtime Whiteboard</span>
+                                <span className="text-base font-semibold">{t('realtime_whiteboard')}</span>
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -90,7 +92,7 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
             <SidebarContent>
                 <div className="px-4 py-2">
                     <label className="block text-sm font-medium mb-2">
-                        Brush Size: {brushSize}px
+                        {t('toolbar.brush_size')}: {brushSize}px
                     </label>
                     <input
                         type="range"
@@ -112,7 +114,7 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
                             }`}
                         >
                             <IconPencil size={16} />
-                            Pen
+                            {t('toolbar.pen')}
                         </button>
                         <button
                             onClick={() => handleToolChange("eraser")}
@@ -123,7 +125,7 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
                             }`}
                         >
                             <IconEraser size={16} />
-                            Eraser
+                            {t('toolbar.eraser')}
                         </button>
                     </div>
                 </div>

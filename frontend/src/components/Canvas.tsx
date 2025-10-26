@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import type {CanvasProps, DrawingEvent} from "../types";
 import {generateId} from "../lib/utils";
 import {useAuth} from "@/hooks/useAuth.tsx";
+import { useTranslation } from "react-i18next";
 
 
 function Canvas({ sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], onDrawingEvent, onCursorMove }: CanvasProps) {
@@ -12,6 +13,8 @@ function Canvas({ sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], 
     const [isDrawing, setIsDrawing] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const [currentStrokeId, setCurrentStrokeId] = useState<string>("");
+    
+    const { t } = useTranslation();
 
     // Viewport position state for hand tool navigation
     const [viewportX, setViewportX] = useState(0);
@@ -131,7 +134,7 @@ function Canvas({ sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], 
         id: generateId(),
         boardId: 1, //TODO: TEMPORARY. BOARD HAS TO EXIST IN THE BACKEND. RUN THE SQL SCRIPT  test_board.sql
         userId: user?.userId ?? 0,
-        displayName: user?.displayName || 'Undefined username',
+        displayName: user?.displayName || t('common.undefined_username'),
         timestamp: Date.now(),
         type,
         tool,
