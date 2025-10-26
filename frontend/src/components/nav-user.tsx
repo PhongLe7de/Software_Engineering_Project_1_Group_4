@@ -3,6 +3,7 @@ import {
   IconLogout,
   IconUserCircle,
 } from "@tabler/icons-react"
+import { useTranslation } from "react-i18next"
 
 import {
   Avatar,
@@ -37,6 +38,7 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const { logout } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <SidebarMenu>
@@ -86,13 +88,13 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <IconUserCircle />
-                Account Settings
+                {t('common.account_settings')}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout}>
               <IconLogout />
-              Log out
+              {t('common.log_out')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

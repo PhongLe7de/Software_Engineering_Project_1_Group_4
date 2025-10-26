@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "realtime_whiteboard": "实时白板",
+    "total_visitors": "总访问量",
+    "last_3_months": "最近3个月",
+    "last_7_days": "最近7天",
+    "last_30_days": "最近30天",
+    "total_for_last_3_months": "最近3个月总计"
+  },
+  "team": {
+    "teams": "团队",
+    "add_team": "添加团队"
+  },
+  "user": {
+    "id": "ID",
+    "name": "姓名",
+    "email": "邮箱",
+    "role": "角色",
+    "status": "状态",
+    "created_at": "创建时间",
+    "actions": "操作",
+    "ban": "封禁",
+    "unban": "解封",
+    "remove": "移除",
+    "no_users_found": "未找到用户"
+  },
+  "auth": {
+    "email": "邮箱",
+    "password": "密码",
+    "login": "登录",
+    "register": "注册",
+    "sign_up": "注册",
+    "display_name": "显示名称",
+    "login_to_your_account": "登录您的账户",
+    "enter_email_to_login": "在下方输入您的邮箱以登录您的账户",
+    "login_with_google": "使用Google登录",
+    "dont_have_account": "还没有账户？",
+    "already_have_account": "已有账户？",
+    "welcome_back": "欢迎回来！"
+  },
+  "ui": {
+    "previous_slide": "上一页",
+    "next_slide": "下一页",
+    "close": "关闭",
+    "toggle_sidebar": "切换侧边栏",
+    "show_mobile_sidebar": "显示移动侧边栏"
+  },
+  "common": {
+    "more": "更多",
+    "close": "关闭",
+    "sidebar": "侧边栏",
+    "sidebar_description": "显示移动侧边栏",
+    "toggle_sidebar": "切换侧边栏",
+    "undefined_username": "未定义用户名",
+    "undefined_email": "未定义邮箱",
+    "undefined_photo": "未定义照片",
+    "account_settings": "账户设置",
+    "log_out": "退出登录"
+  },
+  "toolbar": {
+    "pen": "画笔",
+    "eraser": "橡皮擦",
+    "select": "选择",
+    "rectangle": "矩形",
+    "circle": "圆形",
+    "line": "直线",
+    "text": "文本",
+    "color_picker": "颜色选择器",
+    "undo": "撤销",
+    "redo": "重做",
+    "clear_board": "清空画板",
+    "brush_size": "画笔大小"
+  }
+}
