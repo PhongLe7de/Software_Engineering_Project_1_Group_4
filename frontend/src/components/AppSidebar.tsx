@@ -43,9 +43,9 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
 
     const userData = {
         user: {
-            name: user?.displayName || "Undefined username",
-            email: user?.email || "Undefined email",
-            avatar: user?.photoUrl || "Undefined photo",
+            name: user?.displayName || t('common.undefined_username'),
+            email: user?.email || t('common.undefined_email'),
+            avatar: user?.photoUrl || t('common.undefined_photo'),
         },
     };
 
@@ -83,7 +83,7 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
                         >
                             <a href="#">
                                 <IconPhotoEdit className="!size-5" />
-                                <span className="text-base font-semibold">{t('realtime_whiteboard')}</span>
+                                <span className="text-base font-semibold">{t('dashboard.realtime_whiteboard')}</span>
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

@@ -8,6 +8,7 @@
     "total_for_last_3_months": "Total for the last 3 months"
   },
   "team": {
+    "teams": "Teams",
     "add_team": "Add team"
   },
   "user": {
@@ -35,7 +36,7 @@
      "login_with_google": "Login with Google",
      "dont_have_account": "Don't have an account?",
      "already_have_account": "Already have an account?",
-     "welvome_back": "Welcome back!"
+     "welcome_back": "Welcome back!"
   },
   "ui": {
     "previous_slide": "Previous slide",
@@ -50,7 +51,11 @@
     "sidebar": "Sidebar",
     "sidebar_description": "Displays the mobile sidebar",
     "toggle_sidebar": "Toggle Sidebar",
-    "undefined_username": "Undefined username"
+    "undefined_username": "Undefined username",
+    "undefined_email": "Undefined email",
+    "undefined_photo": "Undefined photo",
+    "account_settings": "Account Settings",
+    "log_out": "Log out"
   },
   "toolbar": {
     "pen": "Pen",
