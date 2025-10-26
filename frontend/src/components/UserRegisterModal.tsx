@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/carousel"
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
+import { useTranslation } from "react-i18next";
 
 const RegisterSchema = z.object({
     email: z.email({
@@ -47,6 +48,8 @@ export default function UserRegisterModal() {
     const [selectProfilePic, setSelectProfilePic] = useState(0)
     const [toggleBetweenRegisterLogin, setToggleBetweenRegisterLogin] = useState(true)
     const {login, register} = useAuth();
+
+    const {t} = useTranslation();
 
     // TODO: Emojis are placeholder. Final ver.: File uploads and default profile pics
     const avatars = ["🦧", "👷"]
@@ -95,7 +98,7 @@ export default function UserRegisterModal() {
             }
             const response = await login(userData);
             if (response) {
-                toast.success(`Welcome back ${response.displayName}!`);
+                toast.success(`${t('auth.welcome_back')} ${response.displayName}!`);
             }
         } catch (e) {
             if (e instanceof TypeError && e.message.includes("NetworkError")) toast.error(e.message);
@@ -131,7 +134,7 @@ export default function UserRegisterModal() {
             {toggleBetweenRegisterLogin && (
                 <>
                     <CardHeader className="flex flex-col text-xl">
-                        <CardTitle>Register</CardTitle>
+                        <CardTitle>{t('auth.register')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Carousel className="max-w-xs" setApi={setApi}>
@@ -153,7 +156,7 @@ export default function UserRegisterModal() {
                                     name="email"
                                     render={({field}) => (
                                         <FormItem>
-                                            <FormLabel className={"mt-4"}>Email</FormLabel>
+                                            <FormLabel className={"mt-4"}>{t('auth.email')}</FormLabel>
                                             <FormControl>
                                                 <Input type="email" placeholder="mail@mail.com" {...field} />
                                             </FormControl>
@@ -166,7 +169,7 @@ export default function UserRegisterModal() {
                                     name="displayName"
                                     render={({field}) => (
                                         <FormItem>
-                                            <FormLabel>Display name</FormLabel>
+                                            <FormLabel>{t('auth.display_name')}</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Bob" {...field} />
                                             </FormControl>
@@ -179,7 +182,7 @@ export default function UserRegisterModal() {
                                     name="password"
                                     render={({field}) => (
                                         <FormItem>
-                                            <FormLabel className={"mt-4"}>Password</FormLabel>
+                                            <FormLabel className={"mt-4"}>{t('auth.password')}</FormLabel>
                                             <FormControl>
                                                 <Input type="password" placeholder="password" {...field} />
                                             </FormControl>
@@ -190,18 +193,18 @@ export default function UserRegisterModal() {
 
 
                                 <Button className="mt-4 w-full"
-                                        type="submit">Register {avatars[selectProfilePic]}</Button>
+                                        type="submit">{t('auth.register')} {avatars[selectProfilePic]}</Button>
                             </form>
                         </Form>
 
                     </CardContent>
                     <CardFooter className="flex-col gap-2">
                         <div className=" text-center text-m">
-                            Already have an account?{" "}
+                            {t('auth.already_have_account')}{" "}
                             <a href="#" onClick={() =>
                                 setToggleBetweenRegisterLogin(!toggleBetweenRegisterLogin)
                             } className="underline underline-offset-4">
-                                Log in
+                                {t('auth.login')}
                             </a>
                         </div>
                     </CardFooter>
@@ -212,9 +215,9 @@ export default function UserRegisterModal() {
             {!toggleBetweenRegisterLogin && (
                 <>
                     <CardHeader>
-                        <CardTitle className={"text-xl"}>Login to your account</CardTitle>
+                        <CardTitle className={"text-xl"}>{t('auth.login_to_your_account')}</CardTitle>
                         <CardDescription>
-                            Enter your email below to login to your account
+                            {t('auth.enter_email_to_login')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -225,7 +228,7 @@ export default function UserRegisterModal() {
                                     name="email"
                                     render={({field}) => (
                                         <FormItem>
-                                            <FormLabel className={"mt-4"}>Email</FormLabel>
+                                            <FormLabel className={"mt-4"}>{t('auth.email')}</FormLabel>
                                             <FormControl>
                                                 <Input type="email" placeholder="mail@mail.com" {...field} />
                                             </FormControl>
@@ -238,7 +241,7 @@ export default function UserRegisterModal() {
                                     name="password"
                                     render={({field}) => (
                                         <FormItem>
-                                            <FormLabel htmlFor={"password"} className={"mt-4"}>Password</FormLabel>
+                                            <FormLabel htmlFor={"password"} className={"mt-4"}>{t('auth.password')}</FormLabel>
                                             <FormControl>
                                                 <Input type="password" placeholder="password" {...field} />
                                             </FormControl>
@@ -248,7 +251,7 @@ export default function UserRegisterModal() {
                                 />
                                 <div className="flex mt-10 flex-col gap-3">
                                     <Button type="submit" className="w-full">
-                                        Login
+                                        {t('auth.login')}
                                     </Button>
                                     <Button variant="outline" className="w-full">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -257,15 +260,15 @@ export default function UserRegisterModal() {
                                                 fill="currentColor"
                                             />
                                         </svg>
-                                        Login with Google
+                                        {t('auth.login_with_google')}
                                     </Button>
                                 </div>
                                 <div className="mt-4 text-center text-m">
-                                    Don't have an account?{" "}
+                                    {t('auth.dont_have_account')}{" "}
                                     <a href="#" onClick={() =>
                                         setToggleBetweenRegisterLogin(!toggleBetweenRegisterLogin)
                                     } className="underline underline-offset-4">
-                                        Sign up
+                                        {t('auth.sign_up')}
                                     </a>
                                 </div>
                             </form>
