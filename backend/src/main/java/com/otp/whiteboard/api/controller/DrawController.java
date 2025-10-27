@@ -35,7 +35,7 @@ public class DrawController {
     @MessageMapping(DRAW_WEBSOCKET)
     @SendTo("/topic/draw")
     public DrawDto onDraw(@Payload DrawDto event) {
-        log.debug("Received draw event: {}", event);
+        //log.debug("Received draw event: {}", event);
         drawEventService.publishDrawEvent(event);
         return event;
     }
@@ -43,7 +43,7 @@ public class DrawController {
     @MessageMapping(CURSOR_WEBSOCKET)
     @SendTo("/topic/cursor")
     public CursorDto onCursor(@Payload CursorDto cursor) {
-        log.debug("Received cursor event: {}", cursor);
+        //log.debug("Received cursor event: {}", cursor);
         drawEventService.publishCursorEvent(cursor);
         return cursor;
     }
