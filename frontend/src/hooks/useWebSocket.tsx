@@ -47,7 +47,21 @@ const useWebSocket = ({sidebarVisible}: UseWebSocketProps) => {
                     return newMap;
                 });
             });
+
+            client.subscribe("/user/queue/history", (message) => {
+                console.log("Received history from server:", message.body);
+                const events: DrawingEvent[] = JSON.parse(message.body);
+                setRemoteEvents((prev) => [...prev, ...events]);
+            });
+
+            // Confirm for backend to send history after subbing ^
+            client.publish({
+                destination: "/app/history",
+                body: JSON.stringify({boardId: 1}), // Hardcoded value, no individual board functionality yet
+            });
+
         };
+
 
         client.onDisconnect = () => {
             console.log("Disconnected from STOMP");
