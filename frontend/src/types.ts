@@ -29,3 +29,17 @@ export type DrawingEvent = {
     brushColor: string;
     strokeId: string;
 };
+
+export type BoardDto = {
+    id: number;
+    boardName: string;
+    ownerId: number;
+    userIds: number[];
+    amountOfUsers: number;
+    numberOfStrokes: number;
+};
+
+export type CreateBoardRequest = {
+    boardName: string;
+    ownerId: number;
+};
