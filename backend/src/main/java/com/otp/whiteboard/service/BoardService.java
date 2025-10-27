@@ -125,9 +125,8 @@ public class BoardService {
                 throw new IllegalArgumentException("User with ID: " + userId + " is already in board with ID: " + boardId);
             }
 
-            UserBoard userBoard = new UserBoard( user,board);
-            userBoardRepository.save(userBoard);
-
+            // Saving board will cascade save the UserBoard (cascade = CascadeType.ALL)
+            // No need to manually save UserBoard: prevents duplicate insertion
             board.addUser(user);
             boardRepository.save(board);
 

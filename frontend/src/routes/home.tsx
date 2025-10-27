@@ -44,7 +44,7 @@ function RouteComponent() {
     const handleJoinBoard = async (boardId: number) => {
         if (!user) return;
         try {
-            await joinBoard(boardId, user.userId);
+            await joinBoard(boardId, user.id);
             toast.success('Welcome!');
             await loadBoards();
         } catch (error) {
@@ -57,7 +57,7 @@ function RouteComponent() {
         if (!user) return;
 
         try {
-            await leaveBoard(boardId, user.userId);
+            await leaveBoard(boardId, user.id);
             toast.success('Left board successfully!');
             await loadBoards(); // Refresh the board list
         } catch (error) {
@@ -81,7 +81,7 @@ function RouteComponent() {
 
     // Filter boards
     const myBoards = boards.filter(
-        (board) => board.userIds.includes(user.userId) || board.ownerId === user.userId
+        (board) => board.userIds.includes(user.id) || board.ownerId === user.id
     );
     const allBoards = boards;
 
@@ -98,7 +98,7 @@ function RouteComponent() {
                                 Manage your whiteboards and collaborate with others
                             </p>
                         </div>
-                        <CreateBoardDialog ownerId={user.userId} onBoardCreated={handleBoardCreated} />
+                        <CreateBoardDialog ownerId={user.id} onBoardCreated={handleBoardCreated} />
                     </div>
 
                     {/* Tabs for My Boards and All Boards */}
@@ -134,7 +134,7 @@ function RouteComponent() {
                                             <BoardCard
                                                 key={board.id}
                                                 board={board}
-                                                currentUserId={user.userId}
+                                                currentUserId={user.id}
                                                 onJoinBoard={handleJoinBoard}
                                                 onLeaveBoard={handleLeaveBoard}
                                             />
@@ -166,7 +166,7 @@ function RouteComponent() {
                                             <BoardCard
                                                 key={board.id}
                                                 board={board}
-                                                currentUserId={user.userId}
+                                                currentUserId={user.id}
                                                 onJoinBoard={handleJoinBoard}
                                                 onLeaveBoard={handleLeaveBoard}
                                             />

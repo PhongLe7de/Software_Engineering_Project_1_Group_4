@@ -133,7 +133,7 @@ function Canvas({ sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], 
     ): DrawingEvent => ({
         id: generateId(),
         boardId: 1, //TODO: TEMPORARY. BOARD HAS TO EXIST IN THE BACKEND. RUN THE SQL SCRIPT  test_board.sql
-        userId: user?.userId ?? 0,
+        userId: user?.id ?? 0,
         displayName: user?.displayName || t('common.undefined_username'),
         timestamp: Date.now(),
         type,

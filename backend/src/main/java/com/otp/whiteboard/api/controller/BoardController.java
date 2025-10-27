@@ -55,11 +55,12 @@ public class BoardController {
         )
         @PostMapping("{boardId}/edit/addUser")
         public ResponseEntity<BoardDto> addUserToBoard(
-                @RequestParam("boardId") Long boardId,
+                @PathVariable("boardId") Long boardId,
                 @RequestBody
                 @NotNull
                 @Valid final ModifyBoardUserRequest request
         ) {
+            System.out.println(request.toString());
             BoardDto response = boardService.addUserToBoard(boardId, request.userId());
             return ResponseEntity.ok(response);
         }
@@ -73,7 +74,7 @@ public class BoardController {
     )
     @PostMapping("{boardId}/edit/removeUser")
     public ResponseEntity<BoardDto> removeUserFromBoard(
-            @RequestParam("boardId") Long boardId,
+            @PathVariable("boardId") Long boardId,
             @RequestBody
             @NotNull
             @Valid final ModifyBoardUserRequest request
