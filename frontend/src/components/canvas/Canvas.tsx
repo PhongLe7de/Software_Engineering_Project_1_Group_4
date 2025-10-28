@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import type {CanvasProps, DrawingEvent} from "../types";
-import {generateId} from "../lib/utils";
+import type {CanvasProps, DrawingEvent} from "../../types.ts";
+import {generateId} from "../../lib/utils.ts";
 import {useAuth} from "@/hooks/useAuth.tsx";
 import { useTranslation } from "react-i18next";
 

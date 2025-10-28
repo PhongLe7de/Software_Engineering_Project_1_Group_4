@@ -6,9 +6,9 @@ import {
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
-} from '@/components/ui/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import type { User } from '@/types';
+} from '@/components/ui/sidebar.tsx';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
+import type { User } from '@/types.ts';
 import { LayoutDashboard } from 'lucide-react';
 
 interface BoardListSidebarProps {

@@ -4,7 +4,7 @@ import {
     IconPencil,
     IconEraser
 } from "@tabler/icons-react"
-import { NavUser } from "@/components/nav-user"
+import { NavUser } from "@/components/nav-user.tsx"
 import {
     Sidebar,
     SidebarContent,
@@ -13,7 +13,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/sidebar.tsx";
 import { HexColorPicker } from "react-colorful";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth.tsx";
