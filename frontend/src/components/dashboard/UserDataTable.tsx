@@ -1,6 +1,6 @@
 import * as React from "react"
-import {Badge} from "@/components/ui/badge"
-import {Button} from "@/components/ui/button"
+import {Badge} from "@/components/ui/badge.tsx"
+import {Button} from "@/components/ui/button.tsx"
 import {
     Table,
     TableBody,
@@ -8,7 +8,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table.tsx"
 import { useTranslation } from "react-i18next"
 
 type User = {

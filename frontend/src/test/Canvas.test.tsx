@@ -1,4 +1,4 @@
-import Canvas from "../components/Canvas";
+import Canvas from "../components/canvas/Canvas.tsx";
 import { vi } from "vitest";
 import { render } from "@testing-library/react";
 import { describe, it, expect, beforeEach } from "vitest";
@@ -21,6 +21,7 @@ HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(mockContext);
 
 describe("Canvas Component", () => {
     const defaultProps = {
+        boardId: 1,
         sidebarVisible: true,
         tool: 'pen',
         brushSize: 5,

@@ -1,11 +1,12 @@
 export type User = {
-    userId: number;
+    id: number;
     displayName: string;
     photoUrl: string;
     email: string;
 } | null;
 
 export type CanvasProps = {
+    boardId: number;
     sidebarVisible: boolean;
     tool: string;
     brushSize: number;
@@ -28,4 +29,18 @@ export type DrawingEvent = {
     brushSize: number;
     brushColor: string;
     strokeId: string;
+};
+
+export type BoardDto = {
+    id: number;
+    boardName: string;
+    ownerId: number;
+    userIds: number[];
+    amountOfUsers: number;
+    numberOfStrokes: number;
+};
+
+export type CreateBoardRequest = {
+    boardName: string;
+    ownerId: number;
 };
