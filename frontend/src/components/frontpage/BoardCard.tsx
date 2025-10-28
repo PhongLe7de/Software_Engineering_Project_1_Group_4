@@ -1,7 +1,7 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import type { BoardDto } from '@/types';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import type { BoardDto } from '@/types.ts';
 import { Users, Pencil, LogOut } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 

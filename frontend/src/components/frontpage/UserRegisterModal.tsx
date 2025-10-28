@@ -6,8 +6,8 @@ import {toast} from "sonner"
 import {z} from "zod"
 import {faker} from '@faker-js/faker';
 import {PuffLoader} from "react-spinners";
-import {Button} from "@/components/ui/button"
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
+import {Button} from "@/components/ui/button.tsx"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card.tsx"
 import {
     Carousel,
     type CarouselApi,
@@ -15,9 +15,9 @@ import {
     CarouselItem,
     CarouselNext,
     CarouselPrevious,
-} from "@/components/ui/carousel"
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
-import {Input} from "@/components/ui/input"
+} from "@/components/ui/carousel.tsx"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form.tsx"
+import {Input} from "@/components/ui/input.tsx"
 import { useTranslation } from "react-i18next";
 
 const RegisterSchema = z.object({

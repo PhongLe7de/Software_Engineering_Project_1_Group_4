@@ -1,6 +1,6 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {ChartAreaInteractive} from "@/components/chart-area-interactive"
-import UserDataTable from "@/components/UserDataTable.tsx"
+import {ChartAreaInteractive} from "@/components/dashboard/chart-area-interactive.tsx"
+import UserDataTable from "@/components/dashboard/UserDataTable.tsx"
 
 import data from "../lib/test-data.json"
 

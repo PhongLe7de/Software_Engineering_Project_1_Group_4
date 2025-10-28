@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import Canvas from "@/components/Canvas.tsx";
-import UserRegisterModal from "@/components/UserRegisterModal.tsx";
-import { AppSidebar } from "@/components/AppSidebar.tsx";
+import Canvas from "@/components/canvas/Canvas.tsx";
+import UserRegisterModal from "@/components/frontpage/UserRegisterModal.tsx";
+import { AppSidebar } from "@/components/canvas/AppSidebar.tsx";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import type { DrawingEvent } from "@/types.ts";
 import useWebSocket from "@/hooks/useWebSocket.tsx";
-import Cursors from "@/components/Cursor.tsx";
+import Cursors from "@/components/canvas/Cursor.tsx";
 import {useAuth} from "@/hooks/useAuth.tsx";
 
 function BoardCanvas() {

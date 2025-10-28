@@ -10,12 +10,12 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/dialog.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
 import { toast } from 'sonner';
-import { createBoard } from '@/services/boardService';
+import { createBoard } from '@/services/boardService.ts';
 import { Plus } from 'lucide-react';
 
 const formSchema = z.object({
