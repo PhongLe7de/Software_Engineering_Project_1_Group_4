@@ -1,4 +1,4 @@
-import type {CursorPosition} from "@/hooks/useWebSocket";
+import type {CursorPosition} from "@/hooks/useWebSocket.tsx";
 import {useEffect, useState} from "react";
 import {useAuth} from "@/hooks/useAuth.tsx";
 

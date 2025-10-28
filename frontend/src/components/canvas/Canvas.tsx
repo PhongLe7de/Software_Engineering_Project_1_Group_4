@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import type {CanvasProps, DrawingEvent} from "../types";
-import {generateId} from "../lib/utils";
+import type {CanvasProps, DrawingEvent} from "../../types.ts";
+import {generateId} from "../../lib/utils.ts";
 import {useAuth} from "@/hooks/useAuth.tsx";
 import { useTranslation } from "react-i18next";
 
-
-function Canvas({ sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], onDrawingEvent, onCursorMove }: CanvasProps) {
+// TODO: REMOVE CURSOR WHEN USER LEAVES
+function Canvas({ boardId, sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], onDrawingEvent, onCursorMove }: CanvasProps) {
     const { user } = useAuth();
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -132,8 +132,8 @@ function Canvas({ sidebarVisible, tool, brushSize, brushColor, remoteEvents=[], 
         strokeId: string
     ): DrawingEvent => ({
         id: generateId(),
-        boardId: 1, //TODO: TEMPORARY. BOARD HAS TO EXIST IN THE BACKEND. RUN THE SQL SCRIPT  test_board.sql
-        userId: user?.userId ?? 0,
+        boardId: boardId,
+        userId: user?.id ?? 0,
         displayName: user?.displayName || t('common.undefined_username'),
         timestamp: Date.now(),
         type,

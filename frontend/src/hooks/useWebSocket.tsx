@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react";
 
 type UseWebSocketProps = {
     sidebarVisible: boolean;
+    boardId: number;
 };
 
 export interface CursorPosition {
@@ -13,7 +14,7 @@ export interface CursorPosition {
     y: number;
 }
 
-const useWebSocket = ({sidebarVisible}: UseWebSocketProps) => {
+const useWebSocket = ({sidebarVisible, boardId}: UseWebSocketProps) => {
     const clientRef = useRef<Client | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [remoteEvents, setRemoteEvents] = useState<DrawingEvent[]>([]);
@@ -57,7 +58,7 @@ const useWebSocket = ({sidebarVisible}: UseWebSocketProps) => {
             // Confirm for backend to send history after subbing ^
             client.publish({
                 destination: "/app/history",
-                body: JSON.stringify({boardId: 1}), // Hardcoded value, no individual board functionality yet
+                body: JSON.stringify({boardId: boardId}),
             });
 
         };
@@ -79,7 +80,7 @@ const useWebSocket = ({sidebarVisible}: UseWebSocketProps) => {
         return () => {
             client.deactivate();
         };
-    }, []);
+    }, [boardId]);
 
     // Publish a drawing event to backend (/app/draw)
     const sendDrawingEvent = (event: DrawingEvent) => {
