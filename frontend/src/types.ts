@@ -6,6 +6,7 @@ export type User = {
 } | null;
 
 export type CanvasProps = {
+    boardId: number;
     sidebarVisible: boolean;
     tool: string;
     brushSize: number;
