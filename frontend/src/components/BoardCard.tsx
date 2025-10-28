@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { BoardDto } from '@/types';
 import { Users, Pencil, LogOut } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
 
 interface BoardCardProps {
     board: BoardDto;
@@ -11,9 +12,21 @@ interface BoardCardProps {
     onLeaveBoard: (boardId: number) => void;
 }
 
+// Has all the board info, used to navigate into a board
 export function BoardCard({ board, currentUserId, onJoinBoard, onLeaveBoard }: BoardCardProps) {
+    const navigate = useNavigate();
     const isOwner = board.ownerId === currentUserId;
     const isMember = board.userIds.includes(currentUserId);
+
+    // Navigate to joined board
+    const handleJoinBoard = async () => {
+        await onJoinBoard(board.id);
+        navigate({ to: '/board/$boardId', params: { boardId: board.id.toString() } });
+    };
+
+    const handleOpenBoard = () => {
+        navigate({ to: '/board/$boardId', params: { boardId: board.id.toString() } });
+    };
 
     return (
         <Card className="hover:shadow-lg transition-shadow">
@@ -39,12 +52,21 @@ export function BoardCard({ board, currentUserId, onJoinBoard, onLeaveBoard }: B
                 </div>
             </CardContent>
             <CardFooter className="flex gap-2">
-                <Button
-                    onClick={() => onJoinBoard(board.id)}
-                    className="flex-1"
-                >
-                    Join
-                </Button>
+                {isMember ? (
+                    <Button
+                        onClick={handleOpenBoard}
+                        className="flex-1"
+                    >
+                        Open Board
+                    </Button>
+                ) : (
+                    <Button
+                        onClick={handleJoinBoard}
+                        className="flex-1"
+                    >
+                        Join Board
+                    </Button>
+                )}
                 {isMember && !isOwner && (
                     <Button
                         onClick={() => onLeaveBoard(board.id)}

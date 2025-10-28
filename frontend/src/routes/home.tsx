@@ -79,7 +79,7 @@ function RouteComponent() {
         );
     }
 
-    // Filter boards
+    // Filter joined boards
     const myBoards = boards.filter(
         (board) => board.userIds.includes(user.id) || board.ownerId === user.id
     );
