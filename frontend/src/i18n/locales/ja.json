@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "realtime_whiteboard": "リアルタイムホワイトボード",
+    "total_visitors": "総訪問者数",
+    "last_3_months": "過去3か月",
+    "last_7_days": "過去7日間",
+    "last_30_days": "過去30日間",
+    "total_for_last_3_months": "過去3か月の合計"
+  },
+  "team": {
+    "teams": "チーム",
+    "add_team": "チームを追加"
+  },
+  "user": {
+    "id": "ID",
+    "name": "名前",
+    "email": "メール",
+    "role": "役割",
+    "status": "状態",
+    "created_at": "作成日",
+    "actions": "アクション",
+    "ban": "禁止",
+    "unban": "禁止解除",
+    "remove": "取り除く",
+    "no_users_found": "ユーザーが見つかりません"
+  },
+  "auth": {
+    "email": "メール",
+    "password": "パスワード",
+    "login": "ログイン",
+    "register": "登録する",
+    "sign_up": "サインアップ",
+    "display_name": "表示名",
+    "login_to_your_account": "アカウントにログイン",
+    "enter_email_to_login": "アカウントにログインするには、以下のメールアドレスを入力してください。",
+    "login_with_google": "Googleでログイン",
+    "dont_have_account": "アカウントをお持ちではありませんか？",
+    "already_have_account": "すでにアカウントをお持ちですか?",
+    "welcome_back": "おかえり！"
+  },
+  "ui": {
+    "previous_slide": "前のスライド",
+    "next_slide": "次のスライド",
+    "close": "近い",
+    "toggle_sidebar": "サイドバーを切り替える",
+    "show_mobile_sidebar": "モバイルサイドバーを表示する"
+  },
+  "common": {
+    "more": "もっと",
+    "close": "近い",
+    "sidebar": "サイドバー",
+    "sidebar_description": "モバイルサイドバーを表示します",
+    "toggle_sidebar": "サイドバーを切り替える",
+    "undefined_username": "未定義のユーザー名",
+    "undefined_email": "未定義のメールアドレス",
+    "undefined_photo": "未定義の写真",
+    "account_settings": "アカウント設定",
+    "log_out": "ログアウト"
+  },
+  "toolbar": {
+    "pen": "ペン",
+    "eraser": "消しゴム",
+    "select": "選択",
+    "rectangle": "矩形",
+    "circle": "丸",
+    "line": "ライン",
+    "text": "文章",
+    "color_picker": "カラーピッカー",
+    "undo": "元に戻す",
+    "redo": "やり直す",
+    "clear_board": "クリアボード",
+    "brush_size": "ブラシサイズ"
+  }
+}

@@ -5,6 +5,7 @@ import LanguageDetector from
         'i18next-browser-languagedetector';
 
 import en from './locales/en.json';
+import ja from "./locales/ja.json";
 import ru from './locales/ru.json';
 import zh from './locales/zh.json';
 
@@ -13,6 +14,7 @@ i18n.use(LanguageDetector) // Detects browser language and automatically sets ap
     .init({
             resources: {
                 en: {translation: en},
+                ja: {translation: ja},
                 ru: {translation: ru},
                 zh: {translation: zh},
             },
