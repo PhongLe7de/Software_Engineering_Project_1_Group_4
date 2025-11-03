@@ -84,6 +84,14 @@
     "welcome": "Welcome!",
     "failed_to_join_board": "Failed to join board. Please try again.",
     "left_board_successfully": "Left board successfully!",
-    "failed_to_leave_board": "Failed to leave board. Please try again."
+    "failed_to_leave_board": "Failed to leave board. Please try again.",
+    "owner": "Owner",
+    "board_number": "Board #",
+    "member": "member",
+    "members": "members",
+    "stroke": "stroke",
+    "strokes": "strokes",
+    "open_board": "Open Board",
+    "join_board": "Join Board"
   }
 }

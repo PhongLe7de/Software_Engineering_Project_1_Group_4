@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge.tsx';
 import type { BoardDto } from '@/types.ts';
 import { Users, Pencil, LogOut } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 
 interface BoardCardProps {
     board: BoardDto;
@@ -15,6 +16,7 @@ interface BoardCardProps {
 // Has all the board info, used to navigate into a board
 export function BoardCard({ board, currentUserId, onJoinBoard, onLeaveBoard }: BoardCardProps) {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const isOwner = board.ownerId === currentUserId;
     const isMember = board.userIds.includes(currentUserId);
 
@@ -34,21 +36,21 @@ export function BoardCard({ board, currentUserId, onJoinBoard, onLeaveBoard }: B
                 <div className="flex items-start justify-between">
                     <CardTitle className="text-xl">{board.boardName}</CardTitle>
                     {isOwner && (
-                        <Badge variant="default">Owner</Badge>
+                        <Badge variant="default">{t('home.owner')}</Badge>
                     )}
                 </div>
                 <CardDescription>
-                    Board #{board.id}
+                    {t('home.board_number')}{board.id}
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Users className="h-4 w-4" />
-                    <span>{board.amountOfUsers} {board.amountOfUsers === 1 ? 'member' : 'members'}</span>
+                    <span>{board.amountOfUsers} {board.amountOfUsers === 1 ? t('home.member') : t('home.members')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Pencil className="h-4 w-4" />
-                    <span>{board.numberOfStrokes} {board.numberOfStrokes === 1 ? 'stroke' : 'strokes'}</span>
+                    <span>{board.numberOfStrokes} {board.numberOfStrokes === 1 ? t('home.stroke') : t('home.strokes')}</span>
                 </div>
             </CardContent>
             <CardFooter className="flex gap-2">
@@ -57,14 +59,14 @@ export function BoardCard({ board, currentUserId, onJoinBoard, onLeaveBoard }: B
                         onClick={handleOpenBoard}
                         className="flex-1"
                     >
-                        Open Board
+                        {t('home.open_board')}
                     </Button>
                 ) : (
                     <Button
                         onClick={handleJoinBoard}
                         className="flex-1"
                     >
-                        Join Board
+                        {t('home.join_board')}
                     </Button>
                 )}
                 {isMember && !isOwner && (

@@ -11,6 +11,7 @@ import type { User } from '@/types.ts';
 import { LayoutDashboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavUser } from '@/components/nav-user.tsx';
+import {LanguageSelector} from "@/components/LanguageSelector.tsx";
 
 interface BoardListSidebarProps {
     user: User;
@@ -48,13 +49,17 @@ export function BoardListSidebar({ user }: BoardListSidebarProps) {
                             </div>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
+
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                {/* Content area can be expanded later if needed */}
+                <div className="flex flex-col mt-2 ml-2 ">
+                <LanguageSelector />
+                <NavUser user={userData.user}/>
+                </div>
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={userData.user} />
+
             </SidebarFooter>
         </Sidebar>
     );

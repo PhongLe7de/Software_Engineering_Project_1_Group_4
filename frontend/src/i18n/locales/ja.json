@@ -84,6 +84,14 @@
     "welcome": "ようこそ！",
     "failed_to_join_board": "ボードへの参加に失敗しました。もう一度お試しください。",
     "left_board_successfully": "ボードから正常に退出しました！",
-    "failed_to_leave_board": "ボードの退出に失敗しました。もう一度お試しください。"
+    "failed_to_leave_board": "ボードの退出に失敗しました。もう一度お試しください。",
+    "owner": "オーナー",
+    "board_number": "ボード #",
+    "member": "メンバー",
+    "members": "メンバー",
+    "stroke": "ストローク",
+    "strokes": "ストローク",
+    "open_board": "ボードを開く",
+    "join_board": "ボードに参加"
   }
 }
