@@ -19,6 +19,7 @@ import {
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form.tsx"
 import {Input} from "@/components/ui/input.tsx"
 import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "../LanguageSelector";
 
 const RegisterSchema = z.object({
     email: z.email({
@@ -135,6 +136,7 @@ export default function UserRegisterModal() {
                 <>
                     <CardHeader className="flex flex-col text-xl">
                         <CardTitle>{t('auth.register')}</CardTitle>
+                        <LanguageSelector />
                     </CardHeader>
                     <CardContent>
                         <Carousel className="max-w-xs" setApi={setApi}>
@@ -216,6 +218,7 @@ export default function UserRegisterModal() {
                 <>
                     <CardHeader>
                         <CardTitle className={"text-xl"}>{t('auth.login_to_your_account')}</CardTitle>
+                        <LanguageSelector />
                         <CardDescription>
                             {t('auth.enter_email_to_login')}
                         </CardDescription>
