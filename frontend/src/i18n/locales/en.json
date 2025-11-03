@@ -93,5 +93,21 @@
     "strokes": "strokes",
     "open_board": "Open Board",
     "join_board": "Join Board"
+  },
+  "settings": {
+    "account_settings": "Account Settings",
+    "name": "Change Name",
+    "name_placeholder": "Enter new name",
+    "email": "Change Email",
+    "email_placeholder": "Enter new email",
+    "language": "Change Language",
+    "current_password": "Current Password (Required)",
+    "current_password_placeholder": "Enter current password",
+    "new_password": "New Password",
+    "new_password_placeholder": "Enter new password",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Confirm new password",
+    "cancel": "Cancel",
+    "save_changes": "Save Changes"
   }
 }
