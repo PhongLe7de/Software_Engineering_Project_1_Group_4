@@ -70,5 +70,20 @@
     "redo": "重做",
     "clear_board": "清空画板",
     "brush_size": "画笔大小"
+  },
+  "home": {
+    "board_manager": "白板管理",
+    "manage_whiteboards": "管理您的白板并与他人协作",
+    "all_boards": "所有白板",
+    "my_boards": "我的白板",
+    "no_boards_yet": "还没有白板",
+    "create_first_board": "创建您的第一个白板开始吧！",
+    "no_boards_available": "没有可用的白板",
+    "be_first_to_create": "成为第一个创建白板的人！",
+    "failed_to_load_boards": "加载白板失败，请重试。",
+    "welcome": "欢迎！",
+    "failed_to_join_board": "加入白板失败，请重试。",
+    "left_board_successfully": "成功退出白板！",
+    "failed_to_leave_board": "退出白板失败，请重试。"
   }
 }
