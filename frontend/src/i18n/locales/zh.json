@@ -84,6 +84,14 @@
     "welcome": "欢迎！",
     "failed_to_join_board": "加入白板失败，请重试。",
     "left_board_successfully": "成功退出白板！",
-    "failed_to_leave_board": "退出白板失败，请重试。"
+    "failed_to_leave_board": "退出白板失败，请重试。",
+    "owner": "所有者",
+    "board_number": "白板 #",
+    "member": "成员",
+    "members": "成员",
+    "stroke": "笔画",
+    "strokes": "笔画",
+    "open_board": "打开白板",
+    "join_board": "加入白板"
   }
 }
