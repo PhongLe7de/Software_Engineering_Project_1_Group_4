@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
@@ -47,32 +46,38 @@ export function UserAccountSettings({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>{t('common.account_settings')}</DialogTitle>
-                    <DialogDescription>
-                        Update your account information and password
-                    </DialogDescription>
+                    <DialogTitle>{t('settings.account_settings')}</DialogTitle>
                 </DialogHeader>
 
                 <div className="space-y-6 py-4">
                     <div className="space-y-4">
+                        <div className="flex items-center">
+                            <LanguageSelector />
+                            <Label htmlFor="language">{t('settings.language')}</Label>
+                        </div>
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name">{t('settings.name')}</Label>
                             <Input
                                 id="name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                placeholder="Enter your name"
+                                placeholder={t('settings.name_placeholder')}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email">{t('settings.email')}</Label>
                             <Input
                                 id="email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
+                                placeholder={t('settings.email_placeholder')}
                             />
                         </div>
                     </div>
@@ -80,45 +85,36 @@ export function UserAccountSettings({
                     <Separator />
 
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="language">Language</Label>
-                            <LanguageSelector />
-                        </div>
-                    </div>
-
-                    <Separator />
-
-                    <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="current-password">Current Password (Required)</Label>
+                            <Label htmlFor="current-password">{t('settings.current_password')}</Label>
                             <Input
                                 id="current-password"
                                 type="password"
                                 value={currentPassword}
                                 onChange={(e) => setCurrentPassword(e.target.value)}
-                                placeholder="Enter current password"
+                                placeholder={t('settings.current_password_placeholder')}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="new-password">New Password</Label>
+                            <Label htmlFor="new-password">{t('settings.new_password')}</Label>
                             <Input
                                 id="new-password"
                                 type="password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                placeholder="Enter new password"
+                                placeholder={t('settings.new_password_placeholder')}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="confirm-password">Confirm New Password</Label>
+                            <Label htmlFor="confirm-password">{t('settings.confirm_password')}</Label>
                             <Input
                                 id="confirm-password"
                                 type="password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                placeholder="Confirm new password"
+                                placeholder={t('settings.confirm_password_placeholder')}
                             />
                         </div>
                     </div>
@@ -126,9 +122,9 @@ export function UserAccountSettings({
 
                 <div className="flex justify-end gap-2 pt-4">
                     <Button variant="outline" onClick={() => onOpenChange(false)}>
-                        Cancel
+                        {t('settings.cancel')}
                     </Button>
-                    <Button onClick={handleSave}>Save Changes</Button>
+                    <Button onClick={handleSave}>{t('settings.save_changes')}</Button>
                 </div>
             </DialogContent>
         </Dialog>

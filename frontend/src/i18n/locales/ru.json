@@ -93,5 +93,21 @@
     "strokes": "штрихов",
     "open_board": "Открыть доску",
     "join_board": "Присоединиться к доске"
+  },
+  "settings": {
+    "account_settings": "Настройки аккаунта",
+    "name": "Изменить имя",
+    "name_placeholder": "Введите новое имя",
+    "email": "Изменить адрес электронной почты",
+    "email_placeholder": "Введите новый адрес электронной почты",
+    "language": "Изменить язык",
+    "current_password": "Текущий пароль (обязательно)",
+    "current_password_placeholder": "Введите текущий пароль",
+    "new_password": "Новый пароль",
+    "new_password_placeholder": "Введите новый пароль",
+    "confirm_password": "Подтвердите пароль",
+    "confirm_password_placeholder": "Подтвердите новый пароль",
+    "cancel": "Отмена",
+    "save_changes": "Сохранить изменения"
   }
 }
