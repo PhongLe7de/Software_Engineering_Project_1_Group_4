@@ -7,36 +7,44 @@ import {
     SidebarMenuItem,
     SidebarMenuButton,
 } from '@/components/ui/sidebar.tsx';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
 import type { User } from '@/types.ts';
 import { LayoutDashboard } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { NavUser } from '@/components/nav-user.tsx';
 
 interface BoardListSidebarProps {
     user: User;
 }
 
 export function BoardListSidebar({ user }: BoardListSidebarProps) {
+    const { t } = useTranslation();
+
     if (!user) return null;
 
-    const initials = user.displayName
-        .split(' ')
-        .map(n => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2);
+    const userData = {
+        user: {
+            name: user.displayName || t('common.undefined_username'),
+            email: user.email || t('common.undefined_email'),
+            avatar: user.photoUrl || t('common.undefined_photo'),
+        },
+    };
 
     return (
         <Sidebar collapsible="icon">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+                        <SidebarMenuButton
+                            size="lg"
+                            tooltip={t('home.board_manager')}
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                        >
                             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                                 <LayoutDashboard className="size-4" />
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">Whiteboard</span>
-                                <span className="truncate text-xs">Board Manager</span>
+                                <span className="truncate font-semibold">{t('dashboard.realtime_whiteboard')}</span>
+                                <span className="truncate text-xs">{t('home.board_manager')}</span>
                             </div>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -46,20 +54,7 @@ export function BoardListSidebar({ user }: BoardListSidebarProps) {
                 {/* Content area can be expanded later if needed */}
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-                            <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarImage src={user.photoUrl} alt={user.displayName} />
-                                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-                            </Avatar>
-                            <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">{user.displayName}</span>
-                                <span className="truncate text-xs">{user.email}</span>
-                            </div>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                <NavUser user={userData.user} />
             </SidebarFooter>
         </Sidebar>
     );
