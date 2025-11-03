@@ -134,7 +134,7 @@ export default function UserRegisterModal() {
 
             {toggleBetweenRegisterLogin && (
                 <>
-                    <CardHeader className="flex flex-col text-xl">
+                    <CardHeader className="flex flex-col text-xl" style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                         <CardTitle>{t('auth.register')}</CardTitle>
                         <LanguageSelector />
                     </CardHeader>
