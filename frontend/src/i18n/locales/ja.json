@@ -70,5 +70,20 @@
     "redo": "やり直す",
     "clear_board": "クリアボード",
     "brush_size": "ブラシサイズ"
+  },
+  "home": {
+    "board_manager": "ボードマネージャー",
+    "manage_whiteboards": "ホワイトボードを管理し、他のユーザーと協力する",
+    "all_boards": "すべてのボード",
+    "my_boards": "マイボード",
+    "no_boards_yet": "まだボードがありません",
+    "create_first_board": "最初のボードを作成して始めましょう！",
+    "no_boards_available": "利用可能なボードがありません",
+    "be_first_to_create": "最初にボードを作成しましょう！",
+    "failed_to_load_boards": "ボードの読み込みに失敗しました。もう一度お試しください。",
+    "welcome": "ようこそ！",
+    "failed_to_join_board": "ボードへの参加に失敗しました。もう一度お試しください。",
+    "left_board_successfully": "ボードから正常に退出しました！",
+    "failed_to_leave_board": "ボードの退出に失敗しました。もう一度お試しください。"
   }
 }

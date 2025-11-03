@@ -70,5 +70,20 @@
     "redo": "Redo",
     "clear_board": "Clear Board",
     "brush_size": "Brush Size"
+  },
+  "home": {
+    "board_manager": "Board Manager",
+    "manage_whiteboards": "Manage your whiteboards and collaborate with others",
+    "all_boards": "All Boards",
+    "my_boards": "My Boards",
+    "no_boards_yet": "No boards yet",
+    "create_first_board": "Create your first board to get started!",
+    "no_boards_available": "No boards available",
+    "be_first_to_create": "Be the first to create a board!",
+    "failed_to_load_boards": "Failed to load boards. Please try again.",
+    "welcome": "Welcome!",
+    "failed_to_join_board": "Failed to join board. Please try again.",
+    "left_board_successfully": "Left board successfully!",
+    "failed_to_leave_board": "Failed to leave board. Please try again."
   }
 }

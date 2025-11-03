@@ -12,6 +12,7 @@ import UserRegisterModal from '@/components/frontpage/UserRegisterModal.tsx';
 import type { BoardDto } from '@/types';
 import { fetchAllBoards, joinBoard, leaveBoard } from '@/services/boardService';
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export const Route = createFileRoute('/home')({
     component: RouteComponent,
@@ -19,6 +20,7 @@ export const Route = createFileRoute('/home')({
 
 function RouteComponent() {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const [boards, setBoards] = useState<BoardDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -29,7 +31,7 @@ function RouteComponent() {
             setBoards(fetchedBoards);
         } catch (error) {
             console.error('Failed to load boards:', error);
-            toast.error('Failed to load boards. Please try again.');
+            toast.error(t('home.failed_to_load_boards'));
         } finally {
             setIsLoading(false);
         }
@@ -45,11 +47,11 @@ function RouteComponent() {
         if (!user) return;
         try {
             await joinBoard(boardId, user.id);
-            toast.success('Welcome!');
+            toast.success(t('home.welcome'));
             await loadBoards();
         } catch (error) {
             console.error('Failed to join board:', error);
-            toast.error('Failed to join board. Please try again.');
+            toast.error(t('home.failed_to_join_board'));
         }
     };
 
@@ -58,11 +60,11 @@ function RouteComponent() {
 
         try {
             await leaveBoard(boardId, user.id);
-            toast.success('Left board successfully!');
+            toast.success(t('home.left_board_successfully'));
             await loadBoards(); // Refresh the board list
         } catch (error) {
             console.error('Failed to leave board:', error);
-            toast.error('Failed to leave board. Please try again.');
+            toast.error(t('home.failed_to_leave_board'));
         }
     };
 
@@ -93,9 +95,9 @@ function RouteComponent() {
                     {/* Header with Create Board button */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight">Board Manager</h1>
+                            <h1 className="text-3xl font-bold tracking-tight">{t('home.board_manager')}</h1>
                             <p className="text-muted-foreground">
-                                Manage your whiteboards and collaborate with others
+                                {t('home.manage_whiteboards')}
                             </p>
                         </div>
                         <CreateBoardDialog ownerId={user.id} onBoardCreated={handleBoardCreated} />
@@ -105,10 +107,10 @@ function RouteComponent() {
                     <Tabs defaultValue="all-boards" className="flex-1">
                         <TabsList className="grid w-full max-w-md grid-cols-2">
                             <TabsTrigger value="all-boards">
-                                All Boards ({allBoards.length})
+                                {t('home.all_boards')} ({allBoards.length})
                             </TabsTrigger>
                             <TabsTrigger value="my-boards">
-                                My Boards ({myBoards.length})
+                                {t('home.my_boards')} ({myBoards.length})
                             </TabsTrigger>
                         </TabsList>
 
@@ -121,10 +123,10 @@ function RouteComponent() {
                             ) : myBoards.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center h-64 text-center">
                                     <p className="text-lg font-medium text-muted-foreground">
-                                        No boards yet
+                                        {t('home.no_boards_yet')}
                                     </p>
                                     <p className="text-sm text-muted-foreground mt-2">
-                                        Create your first board to get started!
+                                        {t('home.create_first_board')}
                                     </p>
                                 </div>
                             ) : (
@@ -153,10 +155,10 @@ function RouteComponent() {
                             ) : allBoards.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center h-64 text-center">
                                     <p className="text-lg font-medium text-muted-foreground">
-                                        No boards available
+                                        {t('home.no_boards_available')}
                                     </p>
                                     <p className="text-sm text-muted-foreground mt-2">
-                                        Be the first to create a board!
+                                        {t('home.be_first_to_create')}
                                     </p>
                                 </div>
                             ) : (
