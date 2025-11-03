@@ -88,7 +88,7 @@ function RouteComponent() {
     const allBoards = boards;
 
     return (
-        <SidebarProvider>
+        <SidebarProvider defaultOpen={false}>
             <BoardListSidebar user={user} />
             <SidebarInset>
                 <div className="flex flex-1 flex-col gap-4 p-4">
