@@ -93,5 +93,21 @@
     "strokes": "笔画",
     "open_board": "打开白板",
     "join_board": "加入白板"
+  },
+  "settings": {
+    "account_settings": "账户设置",
+    "name": "修改姓名",
+    "name_placeholder": "输入新姓名",
+    "email": "修改邮箱",
+    "email_placeholder": "输入新邮箱",
+    "language": "更改语言",
+    "current_password": "当前密码（必填）",
+    "current_password_placeholder": "输入当前密码",
+    "new_password": "新密码",
+    "new_password_placeholder": "输入新密码",
+    "confirm_password": "确认密码",
+    "confirm_password_placeholder": "确认新密码",
+    "cancel": "取消",
+    "save_changes": "保存更改"
   }
 }
