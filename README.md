@@ -103,3 +103,67 @@ open target/site/jacoco/index.html  #MacOs
 cd backend
 start target\site\jacoco\index.html #Window
 ```
+## 🌍 Internationalization (i18n) and Localization
+
+### Overview
+All user-facing text (buttons, labels, tooltips, etc.) is stored in translation files for easy updates and language switching.
+
+### Folder Structure
+
+```bash
+frontend/
+├── src/
+│   ├── i18n/
+│   │   ├── index.ts
+│   │   ├── locales/
+│   │   │   ├── en.json
+│   │   │   ├── fi.json
+│   │   │   └── vi.json
+│   └── components/
+│       └── ...
+```
+
+### Adding a New Language
+
+1. Create a new folder under `src/i18n/locales/` (e.g., `en` for English).
+2. Add a `en.json` file inside it:
+   ```json
+   {
+     "user": {
+       "id": "ID",
+       "name": "名前"
+     }
+   }
+   ```
+3. Register it in the i18n configuration (`src/i18n/index.ts`):
+   ```ts
+   i18n.init({
+     resources: {
+       en: { translation: en },
+       fi: { translation: fi },
+       vi: { translation: vi },
+       fr: { translation: fr },
+     },
+     fallbackLng: "en",
+   });
+   ```
+
+### Selecting a Language
+Add a language selector in your UI:
+
+```tsx
+import { useTranslation } from "react-i18next";
+
+const { t } = useTranslation();
+
+    <Button>{t("home.join_board")} </Button>;
+```
+
+### Running Localized Frontend
+
+To test localization:
+
+```bash
+cd frontend
+npm run dev
+```
