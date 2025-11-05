@@ -19,6 +19,30 @@
 - Fallback to PostgreSQL when Redis is unavailable
 - Collaborative drawing with cursor tracking
 - Type-safe frontend with React and TypeScript
+- Multi-language support with automatic browser detection
+
+## Localization
+
+The application supports multiple languages with automatic detection and manual selection.
+
+### Supported Languages
+- **English** (en)
+- **Japanese** (ja) - 日本語
+- **Russian** (ru) - Русский
+- **Chinese** (zh) - 中文
+
+### Language Selection
+Users can change the application language using the **LanguageSelector** component:
+1. Click the globe icon in the application header
+2. Select preferred language from the dropdown menu
+3. The selection is automatically saved to browser localStorage
+
+### Localization Framework
+The application uses **react-i18next** with the following features:
+- **Automatic detection**: Browser language is detected on first load via `i18next-browser-languagedetector`
+- **Persistent preference**: Language selection is stored in localStorage
+- **Fallback language**: Defaults to English if selected language is unavailable
+- **Translation files**: Located in `frontend/src/i18n/locales/*.json`
 
 ## Technology Rationale
 
