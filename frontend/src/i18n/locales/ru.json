@@ -92,7 +92,13 @@
     "stroke": "штрих",
     "strokes": "штрихов",
     "open_board": "Открыть доску",
-    "join_board": "Присоединиться к доске"
+    "join_board": "Присоединиться к доске",
+    "create_new_board": "Создать новую доску",
+    "board_name": "Название доски",
+    "board_name_placeholder": "Моя потрясающая доска",
+    "create_new_board_description": "Введите название для вашей новой доски. Нажмите создать, когда закончите.",
+    "create_board": "Создать доску",
+    "creating": "Создание..."
   },
   "settings": {
     "account_settings": "Настройки аккаунта",

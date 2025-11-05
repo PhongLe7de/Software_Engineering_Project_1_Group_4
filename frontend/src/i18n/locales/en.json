@@ -92,7 +92,13 @@
     "stroke": "stroke",
     "strokes": "strokes",
     "open_board": "Open Board",
-    "join_board": "Join Board"
+    "join_board": "Join Board",
+    "create_new_board": "Create New Board",
+    "board_name": "Board Name",
+    "board_name_placeholder": "My Awesome Board",
+    "create_new_board_description": "Enter a name for your new whiteboard. Click create when you're done.",
+    "create_board": "Create Board",
+    "creating": "Creating..."
   },
   "settings": {
     "account_settings": "Account Settings",

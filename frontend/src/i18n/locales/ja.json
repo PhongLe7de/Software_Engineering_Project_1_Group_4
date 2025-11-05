@@ -92,7 +92,13 @@
     "stroke": "ストローク",
     "strokes": "ストローク",
     "open_board": "ボードを開く",
-    "join_board": "ボードに参加"
+    "join_board": "ボードに参加",
+    "create_new_board": "新しいボードを作成",
+    "board_name": "ボード名",
+    "board_name_placeholder": "私の素晴らしいボード",
+    "create_new_board_description": "新しいホワイトボードの名前を入力してください。作成が完了したら、作成をクリックします。",
+    "create_board": "ボードを作成",
+    "creating": "作成中..."
   },
   "settings": {
     "account_settings": "アカウント設定",
