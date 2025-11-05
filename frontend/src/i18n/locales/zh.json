@@ -92,7 +92,13 @@
     "stroke": "笔画",
     "strokes": "笔画",
     "open_board": "打开白板",
-    "join_board": "加入白板"
+    "join_board": "加入白板",
+    "create_new_board": "创建新白板",
+    "board_name": "白板名称",
+    "board_name_placeholder": "我的精彩白板",
+    "create_new_board_description": "为您的新白板输入一个名称。完成后点击创建。",
+    "create_board": "创建白板",
+    "creating": "创建中..."
   },
   "settings": {
     "account_settings": "账户设置",
