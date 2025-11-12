@@ -37,7 +37,7 @@ public class UserService {
      * @return The created user's details as a UserDto.
      */
     @Nonnull
-    public UserDto createUser(@Valid final RegisterRequest request) {
+    public User createUser(@Valid final RegisterRequest request) {
         logger.debug("Creating user with email: {}", request.email());
         try {
             final Optional<User> existingUser = userRepository.findByEmail(request.email());
@@ -55,7 +55,7 @@ public class UserService {
 
             final User savedUser = userRepository.save(user);
             logger.info("User created successfully with ID: {} and email: {}", savedUser.getId(), savedUser.getEmail());
-            return new UserDto(savedUser);
+            return savedUser;
         } catch (Exception error) {
             logger.error("Error during user creation: {}", error.getMessage());
             throw error;
@@ -123,10 +123,9 @@ public class UserService {
      * @return The user's details as a UserDto.
      */
     @NotNull
-    public UserDto getUserByEmail(@NotNull String email) {
-    User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
-    return new UserDto(user);
+    public  User getUserByEmail(@NotNull String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
     }
 
     private void updateUserFields(User user, UserUpdateRequest request) {
@@ -142,5 +141,26 @@ public class UserService {
         if (request.photoUrl() != null) {
             user.setPhotoUrl(request.photoUrl());
         }
+        if (request.locale() != null) {
+            user.setLocale(request.locale());
+        }
+    }
+
+    @NotNull
+    public void storeLocale(@NotNull User user, @NotNull String locale) {
+        user.setLocale(locale);
+        userRepository.save(user);
+    }
+
+    @NotNull
+    public String getLocale(@NotNull User user) {
+        final String localeCode = user.getLocale();
+        if (localeCode == null) {
+            final String defaultLocale = "en";
+            user.setLocale(defaultLocale);
+            userRepository.save(user);
+            return defaultLocale;
+        }
+        return localeCode;
     }
 }
