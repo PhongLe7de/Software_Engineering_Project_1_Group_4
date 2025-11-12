@@ -4,9 +4,7 @@ import com.otp.whiteboard.enums.Status;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -27,15 +25,15 @@ public class User {
     @Column(name = "photo_url", columnDefinition = "TEXT")
         private String photoUrl;
 
+    @Column(name = "locale", length = 5)
+    private String locale;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private Status status = Status.ACTIVE;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserBoard> boards = new HashSet<>();
 
     public User() {
     }
@@ -109,6 +107,14 @@ public class User {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     @Override
