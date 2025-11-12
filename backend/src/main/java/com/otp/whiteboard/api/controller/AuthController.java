@@ -53,7 +53,6 @@ public class AuthController {
                 )
         );
         final String token = jwtUtil.generateToken(request.email());
-        userService.storeLocale(newUser, request.locale());
         final AuthResponse authResponse = new AuthResponse(new UserDto(newUser), token);
         return ResponseEntity.ok(authResponse);
     }
