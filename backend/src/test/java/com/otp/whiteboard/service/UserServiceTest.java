@@ -94,9 +94,9 @@ class UserServiceTest {
     @Test
     void testCreateUserWithValidData(){
         //given
-        RegisterRequest request = new RegisterRequest(EMAIL, PASSWORD, PHOTO_URL,DISPLAY_NAME);
+        final RegisterRequest request = new RegisterRequest(EMAIL, PASSWORD, PHOTO_URL,DISPLAY_NAME,"vi" );
         //when
-        final UserDto result = userService.createUser(request);
+        final UserDto result = new UserDto( userService.createUser(request));
         //then
         assertNotNull(result);
         assertEquals(1L, result.id());
@@ -110,8 +110,8 @@ class UserServiceTest {
     @Test
     void testCreateUserWithExistingEmail(){
         //given
-        RegisterRequest request = new RegisterRequest(EXIT_EMAIL, PASSWORD, PHOTO_URL, DISPLAY_NAME );
-        User existingUser = new User();
+        final RegisterRequest request = new RegisterRequest(EXIT_EMAIL, PASSWORD, PHOTO_URL, DISPLAY_NAME,"vi" );
+        final User existingUser = new User();
         existingUser.setEmail(EXIT_EMAIL);
         when(userRepository.findByEmail(EXIT_EMAIL))
                 .thenReturn(java.util.Optional.of(existingUser));
@@ -131,7 +131,7 @@ class UserServiceTest {
         final ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         //given
         final User updatedUser = testUser;
-        UserUpdateRequest request = new UserUpdateRequest("newemail@gmail.com", null, null, null);
+        final UserUpdateRequest request = new UserUpdateRequest("newemail@gmail.com", Status.ACTIVE, "http://photo.com", "testUser", "en");
         //when
         userService.updateUser(updatedUser.getId(), request);
         //then
@@ -146,8 +146,8 @@ class UserServiceTest {
     @Test
     void testUpdateProfileWithNotFoundUser() {
         //given
-        Long notFoundId = 3L;
-        UserUpdateRequest request = new UserUpdateRequest(EMAIL, null, null, null);
+        final Long notFoundId = 3L;
+        final UserUpdateRequest request = new UserUpdateRequest(EMAIL, null, null, null, null);
         //When & Then
         try {
             userService.updateUser(notFoundId, request);
@@ -162,9 +162,9 @@ class UserServiceTest {
     @Test
     void getUserProfileByDisplayName() {
         //given
-        UserByDisplayNameRequest request = new UserByDisplayNameRequest(DISPLAY_NAME);
+        final UserByDisplayNameRequest request = new UserByDisplayNameRequest(DISPLAY_NAME);
         //when
-        UserDto result = userService.getUserProfileByDisplayName(request);
+        final UserDto result = userService.getUserProfileByDisplayName(request);
         //then
         assertNotNull(result);
         assertEquals(request.displayName(), result.displayName());
@@ -173,7 +173,7 @@ class UserServiceTest {
     @Test
     void getUserProfileByNotExistingDisplayName() {
         //given
-        UserByDisplayNameRequest request = new UserByDisplayNameRequest(UNEXIT_DISPLAY_NAME);
+        final UserByDisplayNameRequest request = new UserByDisplayNameRequest(UNEXIT_DISPLAY_NAME);
         //When & Then
         try {
             userService.getUserProfileByDisplayName(request);
@@ -198,7 +198,7 @@ class UserServiceTest {
     @Test
     void getUserByEmail(){
         //when
-        UserDto result = userService.getUserByEmail(EXIT_EMAIL);
+        final UserDto result = new UserDto(userService.getUserByEmail(EXIT_EMAIL));
         //then
         assertNotNull(result);
         assertEquals(EXIT_EMAIL, result.email());

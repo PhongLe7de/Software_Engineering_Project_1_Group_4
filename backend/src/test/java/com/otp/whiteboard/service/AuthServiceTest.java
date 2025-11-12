@@ -70,7 +70,7 @@ class AuthServiceTest {
     @Test
     void testLoginWithValidCredentials() {
         //given
-        final LoginRequest request = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
+        final LoginRequest request = new LoginRequest(VALID_EMAIL, VALID_PASSWORD,"vi");
         //when
         UserDto userDto = authService.login(request);
         //then
@@ -84,7 +84,7 @@ class AuthServiceTest {
     @Test
     void testLoginWithInvalidUser() {
         //given
-        final LoginRequest request = new LoginRequest(INVALID_EMAIL, VALID_PASSWORD);
+        final LoginRequest request = new LoginRequest(INVALID_EMAIL, VALID_PASSWORD,"vi");
 
         //when
         try {
@@ -102,7 +102,7 @@ class AuthServiceTest {
     @Test
     void testLoginWithInvalidPassword() {
         //given
-        final LoginRequest request = new LoginRequest(VALID_EMAIL, INVALID_PASSWORD);
+        final LoginRequest request = new LoginRequest(VALID_EMAIL, INVALID_PASSWORD,"vi");
         //when
         try {
             authService.login(request);

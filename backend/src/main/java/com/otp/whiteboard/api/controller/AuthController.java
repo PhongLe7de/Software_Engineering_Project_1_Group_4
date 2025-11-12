@@ -4,10 +4,8 @@ import com.otp.whiteboard.dto.auth.AuthResponse;
 import com.otp.whiteboard.dto.auth.LoginRequest;
 import com.otp.whiteboard.dto.auth.RegisterRequest;
 import com.otp.whiteboard.dto.user.UserDto;
-import com.otp.whiteboard.security.CustomUserDetailService;
-import com.otp.whiteboard.security.CustomUserDetails;
+import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.security.JwtUtil;
-import com.otp.whiteboard.service.AuthService;
 import com.otp.whiteboard.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -15,11 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 import static com.otp.whiteboard.api.Endpoint.AUTH_INTERNAL_API;
 
@@ -27,16 +21,12 @@ import static com.otp.whiteboard.api.Endpoint.AUTH_INTERNAL_API;
 @RequestMapping(AUTH_INTERNAL_API)
 public class AuthController {
     private final UserService userService;
-    private final AuthService authService;
     private final AuthenticationManager authenticationManager;
-    private final CustomUserDetailService customUserDetailService;
     private final JwtUtil jwtUtil;
 
-    public AuthController(UserService userService, AuthService authService, AuthenticationManager authenticationManager, CustomUserDetailService customUserDetailService, JwtUtil jwtUtil) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
-        this.authService = authService;
         this.authenticationManager = authenticationManager;
-        this.customUserDetailService = customUserDetailService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -55,15 +45,16 @@ public class AuthController {
             @RequestBody
             @NotNull (message = "request must not be null")
             @Valid final RegisterRequest request) {
-        UserDto newUser = userService.createUser(request);
+        final User newUser = userService.createUser(request);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.email()
                         , request.password()
                 )
         );
-        String token = jwtUtil.generateToken(request.email());
-        return ResponseEntity.ok(new AuthResponse(newUser, token));
+        final String token = jwtUtil.generateToken(request.email());
+        final AuthResponse authResponse = new AuthResponse(new UserDto(newUser), token);
+        return ResponseEntity.ok(authResponse);
     }
 
     @Operation(
@@ -86,9 +77,11 @@ public class AuthController {
                         , request.password()
                 )
         );
-        String token = jwtUtil.generateToken(request.email());
-        UserDto user = userService.getUserByEmail(request.email());
-        return ResponseEntity.ok(new AuthResponse(user, token));
+        final String token = jwtUtil.generateToken(request.email());
+        final User user = userService.getUserByEmail(request.email());
+        userService.storeLocale(user, request.locale());
+        AuthResponse authResponse = new AuthResponse(new UserDto(user), token);
+        return ResponseEntity.ok(authResponse);
     }
 
 }
