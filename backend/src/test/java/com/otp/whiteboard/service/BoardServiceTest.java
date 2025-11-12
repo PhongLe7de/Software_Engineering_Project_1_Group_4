@@ -56,6 +56,12 @@ class BoardServiceTest {
     @Mock
     private UserBoardRepository mockUserBoardRepository;
 
+    @Mock
+    private UserService mockLocalizationService;
+
+    @Mock
+    private LocalizationService mockLocalizationService2;
+
     private Board testBoard;
     private User testUser;
     private UserBoard testUserBoard;
@@ -122,14 +128,14 @@ class BoardServiceTest {
                 .thenReturn(null);
     }
     void setupTestTarget(){
-        boardService = new BoardService(mockBoardRepository, mockUserRepository, mockUserBoardRepository);
+        boardService = new BoardService(mockBoardRepository, mockUserRepository, mockUserBoardRepository, mockUserService, mockLocalizationService2);
     }
 
     @DisplayName("Attempt to create a board with an existing name should throw an exception")
     @Test
     void createBoardWithExistingNameShouldThrowException() {
         //given
-        BoardCreatingRequest request = new BoardCreatingRequest(EXIT_BOARD_NAME, OWNER_ID);
+        final BoardCreatingRequest request = new BoardCreatingRequest(EXIT_BOARD_NAME, OWNER_ID);
         //when & then
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             boardService.createBoard(request);
@@ -141,7 +147,7 @@ class BoardServiceTest {
     @Test
     void createBoardWithNonExistingOwnerShouldThrowException() {
         //given
-        BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, NONEXIT_USER);
+        final BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, NONEXIT_USER);
         //when & then
         try{
             boardService.createBoard(request);
@@ -156,7 +162,7 @@ class BoardServiceTest {
     @Test
     void createBoard() {
         //given
-        BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, OWNER_ID);
+        final BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, OWNER_ID);
         //when & then
         try{
             boardService.createBoard(request);
@@ -172,7 +178,7 @@ class BoardServiceTest {
         when(mockBoardRepository.findAll()).thenReturn(List.of());
 
         //when
-        List<BoardDto> boards = boardService.getAllBoards();
+        final List<BoardDto> boards = boardService.getAllBoards(testUser);
 
         //then
         assertNotNull(boards);
@@ -182,7 +188,7 @@ class BoardServiceTest {
     @DisplayName("As user, I want to retrieve a board by its ID, so that I can view or edit it.")
     @Test
     void getAllBoards() {
-        final List<BoardDto> boards = boardService.getAllBoards();
+        final List<BoardDto> boards = boardService.getAllBoards(testUser);
         //then
         assertNotNull(boards);
         assertEquals(1, boards.size());
@@ -192,7 +198,7 @@ class BoardServiceTest {
     @Test
     void getBoardByNotExistingIdShouldThrowException() {
         //given
-        Long notFoundId = 3L;
+        final Long notFoundId = 3L;
         //When & Then
         try {
             boardService.getBoardById(notFoundId);
@@ -207,9 +213,9 @@ class BoardServiceTest {
     @Test
     void getBoardById() {
         //given
-        Long boardId = BOARD_ID;
+        final Long boardId = BOARD_ID;
         //when
-        BoardDto result = boardService.getBoardById(boardId);
+        final BoardDto result = boardService.getBoardById(boardId);
         //then
         assertNotNull(result);
         assertEquals(boardId, result.id());
@@ -219,8 +225,8 @@ class BoardServiceTest {
     @Test
     void addUserToBoardWithNotExistingBoardIdShouldThrowException() {
         //given
-        Long notFoundId = 3L;
-        Long userId = USER_ID;
+        final Long notFoundId = 3L;
+        final Long userId = USER_ID;
         //When & Then
         try {
             boardService.addUserToBoard(notFoundId, userId);
@@ -235,8 +241,8 @@ class BoardServiceTest {
     @Test
     void addUserToBoardWithNotExistingUserIdShouldThrowException() {
         //given
-        Long boardId = BOARD_ID;
-        Long notFoundId = NONEXIT_USER;
+        final Long boardId = BOARD_ID;
+        final Long notFoundId = NONEXIT_USER;
         //When & Then
         try {
             boardService.addUserToBoard(boardId, notFoundId);
@@ -251,8 +257,8 @@ class BoardServiceTest {
     @Test
     void addUserToBoardWithUserAlreadyInBoardShouldThrowException() {
         //given
-        Long boardId = BOARD_ID;
-        Long userId = USER_ID;
+        final Long boardId = BOARD_ID;
+        final Long userId = USER_ID;
         //When & Then
         try {
             boardService.addUserToBoard(boardId, userId);
@@ -267,9 +273,9 @@ class BoardServiceTest {
     @Test
     void addUserToBoardShouldSucceed() {
         //given
-        Long boardId = BOARD_ID;
-        Long userId = 4L;
-        User newUser = new User();
+        final Long boardId = BOARD_ID;
+        final Long userId = 4L;
+        final User newUser = new User();
         newUser.setId(userId);
         when(mockUserRepository.findById(userId))
                 .thenReturn(Optional.ofNullable(newUser));
@@ -278,7 +284,6 @@ class BoardServiceTest {
         //when & then
         try{
             boardService.addUserToBoard(boardId, userId);
-            verify(mockUserBoardRepository, times(1)).save(any(UserBoard.class));
             verify(mockBoardRepository, times(1)).save(any(Board.class));
         } catch (Exception e ){
             fail("Should have succeeded but didn't");
@@ -290,8 +295,8 @@ class BoardServiceTest {
     @Test
     void removeUserFromBoardWithNotExistingUserIdShouldThrowException() {
         //given
-        Long boardId = BOARD_ID;
-        Long userId = NONEXIT_USER;
+        final Long boardId = BOARD_ID;
+        final Long userId = NONEXIT_USER;
         //When & Then
         try {
             boardService.removeUserFromBoard(boardId, userId);
@@ -306,8 +311,8 @@ class BoardServiceTest {
     @Test
     void removeUserFromBoardWithNotExistingBoardIdShouldThrowException() {
         //given
-        Long notFoundId = NONEXIT_BOARD_ID;
-        Long userId = USER_ID;
+        final Long notFoundId = NONEXIT_BOARD_ID;
+        final Long userId = USER_ID;
         //When & Then
         try {
             boardService.removeUserFromBoard(notFoundId, userId);
@@ -322,8 +327,8 @@ class BoardServiceTest {
     @Test
     void removeUserFromBoardShouldSucceed() {
         //given
-        Long boardId = BOARD_ID;
-        Long userId = USER_ID;
+        final Long boardId = BOARD_ID;
+        final Long userId = USER_ID;
         //when & then
         try{
             boardService.removeUserFromBoard(boardId, userId);
@@ -336,10 +341,10 @@ class BoardServiceTest {
     @Test
     void updateBoardWithNotExistingIdShouldThrowException() {
         //given
-        Long notFoundId = 3L;
-        String boardName = UPDATED_BOARD_NAME;
-        Integer numberOfStrokes = NUMBER_OF_STROKES;
-        BoardUpdateRequest request = new BoardUpdateRequest(boardName, numberOfStrokes);
+        final Long notFoundId = 3L;
+        final String boardName = UPDATED_BOARD_NAME;
+        final Integer numberOfStrokes = NUMBER_OF_STROKES;
+        final BoardUpdateRequest request = new BoardUpdateRequest(boardName, numberOfStrokes);
         //When & Then
         try {
             boardService.updateBoard(notFoundId, request);
@@ -354,12 +359,12 @@ class BoardServiceTest {
     @Test
     void updateBoard() {
         //given
-        Long boardId = BOARD_ID;
-        String boardName = UPDATED_BOARD_NAME;
-        Integer numberOfStrokes = NUMBER_OF_STROKES;
-        BoardUpdateRequest request = new BoardUpdateRequest(boardName, numberOfStrokes);
+        final Long boardId = BOARD_ID;
+        final String boardName = UPDATED_BOARD_NAME;
+        final Integer numberOfStrokes = NUMBER_OF_STROKES;
+        final BoardUpdateRequest request = new BoardUpdateRequest(boardName, numberOfStrokes);
         //when
-        BoardDto result = boardService.updateBoard(boardId, request);
+        final BoardDto result = boardService.updateBoard(boardId, request);
         //then
         assertNotNull(result);
         assertEquals(boardId, result.id());

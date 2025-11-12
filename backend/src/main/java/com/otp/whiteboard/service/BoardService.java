@@ -22,16 +22,23 @@ import java.util.Optional;
 
 @Service
 public class BoardService {
-    private  static final Logger logger  = LoggerFactory.getLogger(BoardService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BoardService.class);
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final UserBoardRepository userBoardRepository;
-    public BoardService(BoardRepository boardRepository, UserRepository userRepository, UserBoardRepository userBoardRepository) {
+
+    private final UserService userService;
+    private final LocalizationService localizationService;
+
+    public BoardService(BoardRepository boardRepository, UserRepository userRepository, UserBoardRepository userBoardRepository, UserService userService, LocalizationService localizationService) {
         this.boardRepository = boardRepository;
         this.userRepository = userRepository;
         this.userBoardRepository = userBoardRepository;
+        this.localizationService = localizationService;
+        this.userService = userService;
     }
+
     /**
      * Creates a new board based on the provided request.
      *
@@ -41,9 +48,9 @@ public class BoardService {
     @Nonnull
     public BoardDto createBoard(@Nonnull BoardCreatingRequest request) {
         logger.debug("Creating Board with name: {}", request.boardName());
-        try{
+        try {
             final Optional<Board> exitingBoard = boardRepository.findBoardsByName(request.boardName());
-            if(exitingBoard.isPresent()){
+            if (exitingBoard.isPresent()) {
                 logger.warn("Attempt to create board with existing name: {}", request.boardName());
                 throw new IllegalArgumentException("Board already exists with name: " + request.boardName());
             }
@@ -63,7 +70,7 @@ public class BoardService {
 
             logger.info("Board created successfully with ID: {} and name: {}", newBoard.getId(), newBoard.getName());
             return new BoardDto(newBoard);
-        } catch (Exception error){
+        } catch (Exception error) {
             logger.error("Error during board creation: {}");
             throw error;
         }
@@ -75,9 +82,18 @@ public class BoardService {
      * @return a list of all boards as BoardDto objects.
      */
     @Nonnull
-    public List<BoardDto> getAllBoards() {
-            List<Board> boards = boardRepository.findAll();
-            return boards.stream().map(BoardDto::new).toList();
+    public List<BoardDto> getAllBoards(User user) {
+        logger.debug("Fetching all boards");
+        try {
+            final String userLocale = userService.getLocale(user);
+            final String welcomeMessage = localizationService.getMessage("welcome", userLocale);
+            final List<Board> boards = boardRepository.findAll();
+            final List<BoardDto> response = boards.stream().map(board -> new BoardDto(board).withMessage(welcomeMessage)).toList();
+            return response;
+        } catch (Exception error) {
+            logger.error("Error during fetching all boards: {}", error.getMessage());
+            throw error;
+        }
     }
 
     /**
@@ -89,14 +105,14 @@ public class BoardService {
      */
     @Nonnull
     public BoardDto getBoardById(@NotNull Long boardId) {
-        try{
+        try {
             Optional<Board> optionalBoard = boardRepository.findById(boardId);
             if (optionalBoard.isEmpty()) {
                 throw new IllegalArgumentException("Board not found with ID: " + boardId);
             }
             Board board = optionalBoard.get();
             return new BoardDto(board);
-        } catch (Exception error){
+        } catch (Exception error) {
             logger.error("Error during fetching board by id: {}", error.getMessage());
             throw error;
         }
@@ -112,7 +128,7 @@ public class BoardService {
      */
     @Nonnull
     public BoardDto addUserToBoard(@NotNull Long boardId, @NotNull Long userId) {
-        try{
+        try {
             Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
 
@@ -131,7 +147,7 @@ public class BoardService {
             boardRepository.save(board);
 
             return new BoardDto(board);
-        } catch (Exception error){
+        } catch (Exception error) {
             logger.error("Error during adding user to board", error);
             throw error;
         }
@@ -147,24 +163,24 @@ public class BoardService {
      */
     @Nonnull
     public BoardDto removeUserFromBoard(@NotNull Long boardId, @NotNull Long userId) {
-        try{
-            User user = userRepository.findById(userId).orElseThrow(
+        try {
+            final User user = userRepository.findById(userId).orElseThrow(
                     () -> new IllegalArgumentException("User not found with ID: " + userId)
             );
 
-            UserBoard userBoard = userBoardRepository.findUserBoardByBoardIdAndUserId(boardId,userId);
+            final UserBoard userBoard = userBoardRepository.findUserBoardByBoardIdAndUserId(boardId, userId);
             if (userBoard == null) {
                 throw new IllegalArgumentException("User with ID: " + userId + " is not associated with any board");
             }
 
-            Board board = userBoard.getBoard();
+            final Board board = userBoard.getBoard();
             board.removeUser(user);
             boardRepository.save(board);
 
             userBoardRepository.delete(userBoard);
 
             return new BoardDto(board);
-        } catch (Exception error){
+        } catch (Exception error) {
             logger.error("Error during removing user from board", error);
             throw error;
         }
@@ -193,11 +209,11 @@ public class BoardService {
     }
 
 
-    private void updateBoardFields(Board board, BoardUpdateRequest request){
-        if(request.boardName() != null){
+    private void updateBoardFields(Board board, BoardUpdateRequest request) {
+        if (request.boardName() != null) {
             board.setName(request.boardName());
         }
-        if(request.numberOfStrokes() != null){
+        if (request.numberOfStrokes() != null) {
             board.setNumberOfStrokes(request.numberOfStrokes());
         }
     }
