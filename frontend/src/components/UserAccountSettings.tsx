@@ -1,5 +1,7 @@
-import { useState } from "react";
+import {useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 import {
     Dialog,
@@ -16,30 +18,105 @@ import { LanguageSelector } from "./LanguageSelector";
 interface UserAccountSettingsProps {
     open: boolean
     onOpenChange: (open: boolean) => void
-    user: {
-        name: string
-        email: string
-        avatar: string
-    }
-    avatars?: string[]
 }
 
 export function UserAccountSettings({
     open,
     onOpenChange,
-    user,
 }: UserAccountSettingsProps) {
     const { t } = useTranslation();
-    const [name, setName] = useState(user.name);
-    const [email, setEmail] = useState(user.email);
+    const { updateUser, user } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const handleSave = () => {
-        // Implement save logic here
-        console.log("Saving settings:", { name, email, currentPassword, newPassword });
-        onOpenChange(false);
+    // Reset form fields when dialog opens or user changes
+    useEffect(() => {
+        if (user && open) {
+            setName(user.displayName);
+            setEmail(user.email);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+        }
+    }, [user, open]);
+
+    if (!user) {
+        return null;
+    }
+
+    const handleSave = async () => {
+        if (!user?.id) {
+            toast.error("User ID not found");
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // Validate password fields only if user is trying to change password
+            if (newPassword || confirmPassword) {
+                if (!currentPassword) {
+                    toast.error(t("settings.current_password_required"));
+                    setIsLoading(false);
+                    return;
+                }
+                if (newPassword !== confirmPassword) {
+                    toast.error(t('settings.passwords_dont_match'));
+                    setIsLoading(false);
+                    return;
+                }
+                if (newPassword.length < 5) {
+                    toast.error(t('settings.password_too_short'));
+                    setIsLoading(false);
+                    return;
+                }
+            }
+
+            // Build update data object (only include changed fields)
+            const updateData: {
+                displayName?: string;
+                email?: string;
+                currentPassword?: string;
+                newPassword?: string;
+            } = {};
+
+            if (name !== user.displayName) {
+                updateData.displayName = name;
+            }
+
+            if (email !== user.email) {
+                updateData.email = email;
+            }
+
+            if (currentPassword && newPassword && confirmPassword) {
+                updateData.currentPassword = currentPassword;
+                updateData.newPassword = newPassword;
+            }
+
+            // Only make request if there are changes
+            if (Object.keys(updateData).length === 0) {
+                toast.info(t("settings.no_changes"));
+                setIsLoading(false);
+                return;
+            }
+
+            await updateUser(user.id, updateData);
+
+            // Clear password fields on success
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+
+            onOpenChange(false);
+        } catch (error) {
+            console.error("Failed to update user:", error);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -121,10 +198,19 @@ export function UserAccountSettings({
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4">
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                        disabled={isLoading}
+                    >
                         {t('settings.cancel')}
                     </Button>
-                    <Button onClick={handleSave}>{t('settings.save_changes')}</Button>
+                    <Button
+                        onClick={handleSave}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? t('settings.saving') : t('settings.save_changes')}
+                    </Button>
                 </div>
             </DialogContent>
         </Dialog>

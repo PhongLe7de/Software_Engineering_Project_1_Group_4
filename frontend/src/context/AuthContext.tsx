@@ -7,6 +7,7 @@ export const AuthContext = createContext<{
     sidebarVisible: boolean;
     login: (userData: loginData) => Promise<User>;
     register: (userData: registerData) => Promise<User>;
+    updateUser: (userId: number, userData: updateUserData) => Promise<User>;
     logout: () => void;
 } | null>(null);
 
@@ -17,14 +18,20 @@ type AuthResponse = {
 }
 type registerData = {
     email: string;
-    password: string
-    displayName: string
-    photoUrl: string
-    locale: string
+    password: string;
+    displayName: string;
+    photoUrl: string;
+    locale: string;
 }
 type loginData = {
     email: string;
     password: string;
+}
+type updateUserData = {
+    displayName?: string;
+    email?: string;
+    currentPassword?: string;
+    newPassword?: string;
 }
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
@@ -53,53 +60,80 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     }, []);
 
     const register = async (userData: registerData) => {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}api/auth/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
+        const res = await fetch(`${import.meta.env.VITE_API_URL}api/auth/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
 
-            if (!res.ok) {
-                const errorData = await res.json();
-                if (errorData.status === 500) toast.error(errorData.message);
-                else toast.error(errorData.message);
-                throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
-            }
+        if (!res.ok) {
+            const errorData = await res.json();
+            if (errorData.status === 500) toast.error(errorData.message);
+            else toast.error(errorData.message);
+            throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+        }
 
-           const data: AuthResponse = await res.json();
+        const data: AuthResponse = await res.json();
 
-           setUser(data.user);
-           localStorage.setItem('token', data.token);
-           localStorage.setItem('user', JSON.stringify(data.user));
-           setSidebarVisible(true);
-           return data.user;
+        setUser(data.user);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        setSidebarVisible(true);
+        return data.user;
     };
 
     const login = async (userData: loginData) => {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}api/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
+        const res = await fetch(`${import.meta.env.VITE_API_URL}api/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
 
-            if (!res.ok) {
-                const errorData = await res.json();
-                if (errorData.status === 403) toast.error('Invalid email or password');
-                throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
-            }
+        if (!res.ok) {
+            const errorData = await res.json();
+            if (errorData.status === 403) toast.error('Invalid email or password');
+            throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+        }
 
-            const data: AuthResponse = await res.json();
-            console.log(data)
-            setUser(data.user);
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            setSidebarVisible(true);
-            return data.user;
+        const data: AuthResponse = await res.json();
+        console.log(data)
+        setUser(data.user);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        setSidebarVisible(true);
+        return data.user;
     };
+
+    const updateUser = async (userId: number, userData: updateUserData) => {
+        const token = localStorage.getItem('token');
+
+        const res = await fetch(`${import.meta.env.VITE_API_URL}api/user/update/${userId}`, {
+            method: 'PUT',
+            headers: {
+                "Content-Type": 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(userData),
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            toast.error(errorData.message || "Failed to update user");
+            throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+        }
+
+        const data: User = await res.json();
+
+        setUser(data);
+        localStorage.setItem('user', JSON.stringify(data));
+        toast.success("Settings updated successfully!");
+
+        return data;
+    }
 
     const logout = () => {
         setUser(null);
@@ -109,7 +143,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     };
 
     return (
-        <AuthContext.Provider value={{user, sidebarVisible, login, register, logout}}>
+        <AuthContext.Provider value={{user, sidebarVisible, login, register, updateUser, logout}}>
             {children}
         </AuthContext.Provider>
     );

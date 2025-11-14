@@ -28,6 +28,7 @@ export function NavUser({
   user,
 }: {
   user: {
+    id: number
     name: string
     email: string
     avatar: string
@@ -36,7 +37,7 @@ export function NavUser({
   const { isMobile } = useSidebar()
   const { logout } = useAuth();
   const { t } = useTranslation();
-  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <>
@@ -99,7 +100,6 @@ export function NavUser({
       <UserAccountSettings
         open={settingsOpen}
         onOpenChange={setSettingsOpen}
-        user={user}
       />
     </>
   )
