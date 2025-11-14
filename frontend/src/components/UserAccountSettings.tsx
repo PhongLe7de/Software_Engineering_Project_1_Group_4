@@ -50,7 +50,7 @@ export function UserAccountSettings({
 
     const handleSave = async () => {
         if (!user?.id) {
-            toast.error("User ID not found");
+            console.error("User ID not found");
             return;
         }
 
