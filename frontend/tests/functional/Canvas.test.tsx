@@ -1,8 +1,8 @@
-import Canvas from "../components/canvas/Canvas.tsx";
+import Canvas from "../../src/components/canvas/Canvas.tsx";
 import { vi } from "vitest";
 import { render } from "@testing-library/react";
 import { describe, it, expect, beforeEach } from "vitest";
-import AuthProvider from "@/context/AuthContext.tsx";
+import AuthProvider from "frontend/src/context/AuthContext.tsx";
 
 const mockContext = {
     lineCap: '',

@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import UserRegisterModal from '../components/frontpage/UserRegisterModal.tsx';
-import  { AuthContext } from "@/context/AuthContext.tsx";
+import UserRegisterModal from '../../src/components/frontpage/UserRegisterModal.tsx';
+import  { AuthContext } from "frontend/src/context/AuthContext.tsx";
 
 vi.mock('@faker-js/faker', () => ({
     faker: {
