@@ -78,6 +78,7 @@ export default function UserRegisterModal() {
                 password: data.password,
                 displayName: data.displayName,
                 photoUrl: avatars[selectProfilePic],
+                locale: localStorage.getItem('i18nextLng') || 'en',
             };
             await register(userData);
             toast.success(`Welcome ${data.displayName}!`);
@@ -125,7 +126,7 @@ export default function UserRegisterModal() {
     }, [api])
 
     return (
-        <Card className="fixed top-30 left-1/2 transform -translate-x-1/2 flex flex-col w-full max-w-sm z-50">
+        <Card className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col w-full max-w-md max-h-[90vh] overflow-x-hidden overflow-y-auto z-50">
             <div
                 className={"bg-white/30 backdrop-blur-xs absolute top-0 left-0 w-full h-full z-50 flex items-center justify-center" + (isLoading ? " " : " invisible")}>
                 <PuffLoader size={80} loading={isLoading} />
@@ -138,8 +139,8 @@ export default function UserRegisterModal() {
                         <CardTitle>{t('auth.register')}</CardTitle>
                         <LanguageSelector />
                     </CardHeader>
-                    <CardContent>
-                        <Carousel className="max-w-xs" setApi={setApi}>
+                    <CardContent className="overflow-visible">
+                        <Carousel className="w-full max-w-[280px] mx-auto" setApi={setApi}>
                             <CarouselContent>
                                 {avatars.map((avatar, index) => (
                                     <CarouselItem key={index}

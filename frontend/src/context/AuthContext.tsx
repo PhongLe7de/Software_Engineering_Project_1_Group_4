@@ -20,6 +20,7 @@ type registerData = {
     password: string
     displayName: string
     photoUrl: string
+    locale: string
 }
 type loginData = {
     email: string;
