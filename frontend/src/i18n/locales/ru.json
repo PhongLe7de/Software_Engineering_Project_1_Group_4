@@ -36,7 +36,8 @@
     "login_with_google": "Войти через Google",
     "dont_have_account": "Нет аккаунта?",
     "already_have_account": "Уже есть аккаунт?",
-    "welvome_back": "С возвращением!"
+    "welcome_back": "С возвращением",
+    "invalid_email_or_password": "Неверный email или пароль"
   },
   "ui": {
     "previous_slide": "Предыдущий слайд",
@@ -114,6 +115,13 @@
     "confirm_password": "Подтвердите пароль",
     "confirm_password_placeholder": "Подтвердите новый пароль",
     "cancel": "Отмена",
-    "save_changes": "Сохранить изменения"
+    "save_changes": "Сохранить изменения",
+    "saving": "Сохранение...",
+    "current_password_required": "Пожалуйста, введите текущий пароль!",
+    "passwords_dont_match": "Пароли не совпадают!",
+    "password_too_short": "Пароль слишком короткий!",
+    "no_changes": "Изменений не внесено.",
+    "update_successful": "Настройки успешно обновлены!",
+    "update_failed": "Не удалось обновить пользователя."
   }
 }

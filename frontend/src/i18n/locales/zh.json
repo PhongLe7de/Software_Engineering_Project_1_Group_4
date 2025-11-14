@@ -36,7 +36,8 @@
     "login_with_google": "使用Google登录",
     "dont_have_account": "还没有账户？",
     "already_have_account": "已有账户？",
-    "welcome_back": "欢迎回来！"
+    "welcome_back": "欢迎回来",
+    "invalid_email_or_password": "邮箱或密码无效"
   },
   "ui": {
     "previous_slide": "上一页",
@@ -114,6 +115,13 @@
     "confirm_password": "确认密码",
     "confirm_password_placeholder": "确认新密码",
     "cancel": "取消",
-    "save_changes": "保存更改"
+    "save_changes": "保存更改",
+    "saving": "保存中...",
+    "current_password_required": "请输入当前密码！",
+    "passwords_dont_match": "两次输入的密码不一致！",
+    "password_too_short": "密码太短！",
+    "no_changes": "没有进行任何更改。",
+    "update_successful": "设置已成功更新！",
+    "update_failed": "更新用户失败。"
   }
 }
