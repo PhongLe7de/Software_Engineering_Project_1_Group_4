@@ -4,7 +4,6 @@ import com.otp.whiteboard.dto.board.BoardCreatingRequest;
 import com.otp.whiteboard.dto.board.BoardDto;
 import com.otp.whiteboard.dto.board.BoardUpdateRequest;
 import com.otp.whiteboard.enums.Role;
-import com.otp.whiteboard.enums.Status;
 import com.otp.whiteboard.model.Board;
 import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.model.UserBoard;
@@ -167,7 +166,7 @@ class BoardServiceTest {
         try{
             boardService.createBoard(request);
         } catch (Exception e ){
-            assertEquals(e.getMessage(), "Board name is already exists");
+            assertEquals("Board name is already exists", e.getMessage());
         }
     }
 
@@ -259,11 +258,14 @@ class BoardServiceTest {
         //given
         final Long boardId = BOARD_ID;
         final Long userId = USER_ID;
-        //When & Then
+        //When &
+        when(mockUserRepository.findById(USER_ID))
+                .thenReturn(Optional.ofNullable(testUser));
+        // Then
         try {
             boardService.addUserToBoard(boardId, userId);
         } catch (IllegalArgumentException e) {
-            assertEquals("User with ID: " + userId + " is already in board with ID: " + boardId, e.getMessage());
+            assertEquals("User with ID: " + userId + " already exists in the board", e.getMessage());
             return;
         }
         fail("Should have failed but didn't");
@@ -274,7 +276,7 @@ class BoardServiceTest {
     void addUserToBoardShouldSucceed() {
         //given
         final Long boardId = BOARD_ID;
-        final Long userId = 4L;
+        final Long userId = 10L;
         final User newUser = new User();
         newUser.setId(userId);
         when(mockUserRepository.findById(userId))
@@ -317,7 +319,10 @@ class BoardServiceTest {
         try {
             boardService.removeUserFromBoard(notFoundId, userId);
         } catch (IllegalArgumentException e) {
-            assertEquals("User with ID: " + userId + " is not associated with any board", e.getMessage());
+            assertEquals(String.format(
+                    "User with ID: %d is not associated with board ID: %d",
+                    userId, notFoundId
+            ), e.getMessage());
             return;
         }
         fail("Should have failed but didn't");

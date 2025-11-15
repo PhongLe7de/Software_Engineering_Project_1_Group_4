@@ -8,6 +8,7 @@ import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.security.JwtUtil;
 import com.otp.whiteboard.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.otp.whiteboard.api.Endpoint.AUTH_INTERNAL_API;
 
 @RestController
+@Tag(name = "Authentication", description = "APIs for user authentication and registration")
 @RequestMapping(AUTH_INTERNAL_API)
 public class AuthController {
     private final UserService userService;
@@ -80,7 +82,7 @@ public class AuthController {
         final String token = jwtUtil.generateToken(request.email());
         final User user = userService.getUserByEmail(request.email());
         userService.storeLocale(user, request.locale());
-        AuthResponse authResponse = new AuthResponse(new UserDto(user), token);
+        final AuthResponse authResponse = new AuthResponse(new UserDto(user), token);
         return ResponseEntity.ok(authResponse);
     }
 

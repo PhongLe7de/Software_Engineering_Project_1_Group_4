@@ -5,9 +5,6 @@ import jakarta.annotation.Nullable;
 
 public record UserUpdateRequest(
         @Nullable
-        String email,
-
-        @Nullable
         Status status,
 
         @Nullable
