@@ -12,6 +12,7 @@ public record UserDto(
         String displayName,
         String photoUrl,
         @NotBlank Status status,
+        String locale,
         LocalDateTime createdAt
 ) {
     public UserDto(final User user) {
@@ -21,6 +22,7 @@ public record UserDto(
             user.getDisplayName(),
             user.getPhotoUrl(),
             user.getStatus(),
+            user.getLocale(),
             user.getCreatedAt()
         );
     }

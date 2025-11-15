@@ -4,13 +4,17 @@ import com.otp.whiteboard.dto.user.UserByDisplayNameRequest;
 import com.otp.whiteboard.dto.user.UserUpdateRequest;
 import com.otp.whiteboard.dto.user.UserDto;
 
+import com.otp.whiteboard.model.User;
+import com.otp.whiteboard.security.CustomUserDetails;
 import com.otp.whiteboard.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +22,7 @@ import java.util.List;
 import static com.otp.whiteboard.api.Endpoint.USER_INTERNAL_API;
 
 @RestController
+@Tag(name = "User Management", description = "APIs for managing user profiles and information")
 @RequestMapping(USER_INTERNAL_API)
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserController {
@@ -38,7 +43,7 @@ public class UserController {
     @GetMapping("/all")
     @ResponseBody
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<UserDto> users = userService.getAllUsers();
+        final List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
@@ -56,24 +61,30 @@ public class UserController {
             @RequestBody
             @NotNull(message = "request must not be null")
             @Valid final UserByDisplayNameRequest request) {
-        UserDto userDto = userService.getUserProfileByDisplayName(request);
+        final UserDto userDto = userService.getUserProfileByDisplayName(request);
         return ResponseEntity.ok(userDto);
     }
 
-    /**
-     * Endpoint to update user details.
-     *
-     * @param id      The ID of the user to update.
-     * @param request The user update request containing new details.
-     */
-    @PutMapping("/update/{id}")
+    @Operation(
+            summary = "Update user profile",
+            description = """
+                    This endpoint allows an authenticated user to update their profile information.
+                    It accepts a JSON payload containing the fields to be updated, such as display name and profile picture URL.
+                    Upon successful update, it returns the updated user details.
+                    If the user is not authenticated, a 401 Unauthorized response is returned.
+                    """
+    )
+    @PutMapping()
     @ResponseBody
-    public ResponseEntity<UserDto> updateUser(
-            @PathVariable
-            @NotNull(message = "Id must not be null")
-            @Positive(message = "Id must be positive") final Long id,
-            @RequestBody @NotNull(message = "request must not be null") @Valid final UserUpdateRequest request) {
-        UserDto updatedUser = userService.updateUser(id, request);
-        return ResponseEntity.ok(updatedUser);
+    public ResponseEntity<UserDto> updateUserProfile(
+            @RequestBody @NotNull(message = "request must not be null") @Valid final UserUpdateRequest request,
+            @AuthenticationPrincipal @Valid final CustomUserDetails currentUserDetails
+    ) {
+        final User currentUser = currentUserDetails != null ? currentUserDetails.user() : null;
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+        final UserDto updatedUserProfile = userService.updateUser(currentUser.getId(), request);
+        return ResponseEntity.ok(updatedUserProfile);
     }
 }

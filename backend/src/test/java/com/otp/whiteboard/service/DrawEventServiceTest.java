@@ -147,8 +147,6 @@ class DrawEventServiceTest {
     void setupTestTarget(){
         drawEventService = new DrawEventService(
                 mockRedisTemplate,
-                drawTopic,
-                cursorTopic,
                 mockStrokeRepository,
                 mockUserRepository,
                 mockBoardRepository
