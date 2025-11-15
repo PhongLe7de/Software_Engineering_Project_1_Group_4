@@ -12,8 +12,10 @@ import com.otp.whiteboard.service.LocalizationService;
 import com.otp.whiteboard.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jdk.jfr.Name;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ import java.util.List;
 import static com.otp.whiteboard.api.Endpoint.BOARD_INTERNAL_API;
 
 @RestController
+@Tag(name = "Board Management", description = "APIs for managing boards")
 @RequestMapping(BOARD_INTERNAL_API)
 @SecurityRequirement(name = "Bearer Authentication")
 public class BoardController {

@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -31,12 +32,12 @@ public class BoardService {
     private final UserService userService;
     private final LocalizationService localizationService;
 
-    public BoardService(BoardRepository boardRepository, UserRepository userRepository, UserBoardRepository userBoardRepository, UserService userService, LocalizationService localizationService) {
-        this.boardRepository = boardRepository;
-        this.userRepository = userRepository;
-        this.userBoardRepository = userBoardRepository;
-        this.localizationService = localizationService;
-        this.userService = userService;
+    public BoardService(final BoardRepository boardRepository,final UserRepository userRepository,final UserBoardRepository userBoardRepository,final UserService userService,final LocalizationService localizationService) {
+        this.boardRepository = Objects.requireNonNull(boardRepository, "boardRepository must not be null");
+        this.userRepository = Objects.requireNonNull(userRepository, "userRepository must not be null");
+        this.userBoardRepository = Objects.requireNonNull(userBoardRepository, "userBoardRepository must not be null");
+        this.localizationService = Objects.requireNonNull(localizationService, "localizationService must not be null");
+        this.userService = Objects.requireNonNull(userService, "userService must not be null");
     }
 
     /**
@@ -46,7 +47,7 @@ public class BoardService {
      * @return the created board's details as a BoardDto.
      */
     @Nonnull
-    public BoardDto createBoard(@Nonnull BoardCreatingRequest request) {
+    public BoardDto createBoard(@NotNull @Valid final BoardCreatingRequest request) {
         logger.debug("Creating Board with name: {}", request.boardName());
         try {
             final Optional<Board> exitingBoard = boardRepository.findBoardsByName(request.boardName());
@@ -71,7 +72,7 @@ public class BoardService {
             logger.info("Board created successfully with ID: {} and name: {}", newBoard.getId(), newBoard.getName());
             return new BoardDto(newBoard);
         } catch (Exception error) {
-            logger.error("Error during board creation: {}");
+            logger.error("Error during board creation: {}", error.getMessage());
             throw error;
         }
     }
@@ -82,14 +83,13 @@ public class BoardService {
      * @return a list of all boards as BoardDto objects.
      */
     @Nonnull
-    public List<BoardDto> getAllBoards(User user) {
+    public List<BoardDto> getAllBoards(@NotNull @Valid final User user) {
         logger.debug("Fetching all boards");
         try {
             final String userLocale = userService.getLocale(user);
             final String welcomeMessage = localizationService.getMessage("welcome", userLocale);
             final List<Board> boards = boardRepository.findAll();
-            final List<BoardDto> response = boards.stream().map(board -> new BoardDto(board).withMessage(welcomeMessage)).toList();
-            return response;
+            return boards.stream().map(board -> new BoardDto(board).withMessage(welcomeMessage)).toList();
         } catch (Exception error) {
             logger.error("Error during fetching all boards: {}", error.getMessage());
             throw error;
@@ -104,13 +104,13 @@ public class BoardService {
      * @throws IllegalArgumentException if the board is not found.
      */
     @Nonnull
-    public BoardDto getBoardById(@NotNull Long boardId) {
+    public BoardDto getBoardById(@NotNull final Long boardId) {
         try {
-            Optional<Board> optionalBoard = boardRepository.findById(boardId);
+            final Optional<Board> optionalBoard = boardRepository.findById(boardId);
             if (optionalBoard.isEmpty()) {
                 throw new IllegalArgumentException("Board not found with ID: " + boardId);
             }
-            Board board = optionalBoard.get();
+            final Board board = optionalBoard.get();
             return new BoardDto(board);
         } catch (Exception error) {
             logger.error("Error during fetching board by id: {}", error.getMessage());
@@ -127,22 +127,20 @@ public class BoardService {
      * @throws IllegalArgumentException if the board or user is not found, or if the user is already in the board.
      */
     @Nonnull
-    public BoardDto addUserToBoard(@NotNull Long boardId, @NotNull Long userId) {
+    public BoardDto addUserToBoard(@NotNull final Long boardId, @NotNull final Long userId) {
         try {
-            Board board = boardRepository.findById(boardId)
+            final Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
 
-            User user = userRepository.findById(userId).orElseThrow(
+            final User user = userRepository.findById(userId).orElseThrow(
                     () -> new IllegalArgumentException("User not found with ID: " + userId)
             );
 
-            UserBoard isUserExitsInBoard = userBoardRepository.findUserBoardByBoardIdAndUserId(boardId, userId);
+            final UserBoard isUserExitsInBoard = userBoardRepository.findUserBoardByBoardIdAndUserId(boardId, userId);
             if (isUserExitsInBoard != null) {
-                throw new IllegalArgumentException("User with ID: " + userId + " is already in board with ID: " + boardId);
+                throw new IllegalArgumentException("User with ID: " + userId + " already exists in the board");
             }
 
-            // Saving board will cascade save the UserBoard (cascade = CascadeType.ALL)
-            // No need to manually save UserBoard: prevents duplicate insertion
             board.addUser(user);
             boardRepository.save(board);
 
@@ -162,7 +160,7 @@ public class BoardService {
      * @throws IllegalArgumentException if the board or user is not found, or if the user is not associated with the board.
      */
     @Nonnull
-    public BoardDto removeUserFromBoard(@NotNull Long boardId, @NotNull Long userId) {
+    public BoardDto removeUserFromBoard(@NotNull final Long boardId, @NotNull final Long userId) {
         try {
             final User user = userRepository.findById(userId).orElseThrow(
                     () -> new IllegalArgumentException("User not found with ID: " + userId)
@@ -170,10 +168,14 @@ public class BoardService {
 
             final UserBoard userBoard = userBoardRepository.findUserBoardByBoardIdAndUserId(boardId, userId);
             if (userBoard == null) {
-                throw new IllegalArgumentException("User with ID: " + userId + " is not associated with any board");
+                throw new IllegalArgumentException("User with ID: " + userId + " is not associated with board ID: " + boardId);
+            }
+            final Board board = userBoard.getBoard();
+
+            if (board == null) {
+                throw new IllegalArgumentException("Board not found with ID: " + boardId);
             }
 
-            final Board board = userBoard.getBoard();
             board.removeUser(user);
             boardRepository.save(board);
 
@@ -198,7 +200,11 @@ public class BoardService {
         try {
             final Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
-            updateBoardFields(board, request);
+            final boolean isUpdated = updateBoardFields(board, request);
+            if (!isUpdated) {
+                logger.info("No fields to update for board with ID: {}", boardId);
+                return new BoardDto(board);
+            }
             boardRepository.save(board);
             logger.info("Board updated successfully with ID: {}", board.getId());
             return new BoardDto(board);
@@ -208,13 +214,22 @@ public class BoardService {
         }
     }
 
-
-    private void updateBoardFields(Board board, BoardUpdateRequest request) {
+    /**
+     * Updates the fields of a board based on the provided update request.
+     *
+     * @param board   the board to be updated.
+     * @param request the board update request containing new details.
+     */
+    private boolean updateBoardFields(@NotNull final Board board, @NotNull final BoardUpdateRequest request) {
+        boolean result = false;
         if (request.boardName() != null) {
             board.setName(request.boardName());
+            result = true;
         }
         if (request.numberOfStrokes() != null) {
             board.setNumberOfStrokes(request.numberOfStrokes());
+            result = true;
         }
+        return result;
     }
 }

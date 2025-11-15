@@ -8,14 +8,18 @@ import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.repository.BoardRepository;
 import com.otp.whiteboard.repository.StrokeRepository;
 import com.otp.whiteboard.repository.UserRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
+import reactor.util.annotation.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DrawEventService {
@@ -28,52 +32,48 @@ public class DrawEventService {
     private static final String DRAWING_EVENTS_PREFIX  = "drawing-events-board-";
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final ChannelTopic drawTopic;
-    private final ChannelTopic cursorTopic;
     private final StrokeRepository strokeRepository;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
 
-    public DrawEventService(RedisTemplate<String, Object> redisTemplate,
-                            ChannelTopic drawTopic,
-                            ChannelTopic cursorTopic,
-                            StrokeRepository strokeRepository,
-                            UserRepository userRepository,
-                            BoardRepository boardRepository) {
-        this.redisTemplate = redisTemplate;
-        this.drawTopic = drawTopic;
-        this.cursorTopic = cursorTopic;
-        this.strokeRepository = strokeRepository;
-        this.boardRepository = boardRepository;
-        this.userRepository = userRepository;
+    public DrawEventService(final RedisTemplate<String, Object> redisTemplate,
+                            final StrokeRepository strokeRepository,
+                            final UserRepository userRepository,
+                            final BoardRepository boardRepository) {
+        this.redisTemplate = Objects.requireNonNull(redisTemplate, "redisTemplate must not be null");
+        this.strokeRepository = Objects.requireNonNull(strokeRepository, "strokeRepository must not be null");
+        this.boardRepository = Objects.requireNonNull(boardRepository, "boardRepository must not be null");
+        this.userRepository = Objects.requireNonNull(userRepository, "userRepository must not be null");
     }
 
-    /** Broadcast + cache always; persist only if Board and User exist. */
-    public void publishDrawEvent(DrawDto event) {
-        // Realtime publish + cache in Redis
-        String redisChannel = DRAWING_CHANNEL_PREFIX + event.getBoardId();
+    /**
+     * Publish a drawing event to Redis and save it to the database.
+     */
+    public void publishDrawEvent(@NotNull @Valid final DrawDto event) {
+        final String redisChannel = DRAWING_CHANNEL_PREFIX + event.getBoardId();
+
         redisTemplate.convertAndSend(redisChannel, event);
         redisTemplate.opsForList().rightPush(DRAWING_EVENTS_PREFIX + event.getBoardId(), event);
         redisTemplate.expire(DRAWING_EVENTS_PREFIX + event.getBoardId(), java.time.Duration.ofHours(1));
+
         try {
-            var boardOpt = boardRepository.findById(event.getBoardId());
-            if (boardOpt.isEmpty()) {
-                log.warn("publishDrawEvent: board {} not found – skipping DB save (event id={})",
-                        event.getBoardId(), event.getId());
-                throw new IllegalArgumentException("Board not found: " + event.getBoardId());
-            }
+            final Board board = boardRepository.findById(event.getBoardId()).orElseThrow(
+                    () -> {
+                        log.warn("publishDrawEvent: board {} not found – skipping DB save (event id={})",
+                                event.getBoardId(), event.getId());
+                        return new IllegalArgumentException("Board not found: " + event.getBoardId());
+                    }
+            );
 
-            var userOpt = userRepository.findUserByDisplayName(event.getDisplayName());
-            if (userOpt.isEmpty()) {
-                log.warn("publishDrawEvent: user '{}' not found – skipping DB save (event id={})",
-                        event.getDisplayName(), event.getId());
-                throw new IllegalArgumentException("User not found: " + event.getDisplayName());
-            }
+            final User user = userRepository.findUserByDisplayName(event.getDisplayName()).orElseThrow(
+                    () -> {
+                        log.warn("publishDrawEvent: user {} not found – skipping DB save (event id={})",
+                                event.getDisplayName(), event.getId());
+                        return new IllegalArgumentException("User not found: " + event.getDisplayName());
+                    }
+            );
 
-            Board board = boardOpt.get();
-            User user = userOpt.get();
-
-            Stroke stroke = new Stroke(
+            final Stroke stroke = new Stroke(
                     board,
                     user,
                     event.getBrushColor(),
@@ -87,7 +87,6 @@ public class DrawEventService {
 
             strokeRepository.save(stroke);
 
-            // Optional: keep a counter on the board
             board.incrementStrokes();
             boardRepository.save(board);
         } catch (Exception e) {
@@ -97,20 +96,27 @@ public class DrawEventService {
 
     }
 
-    public void publishCursorEvent(CursorDto event) {
-        String cursorChannel = CURSOR_CHANNEL_PREFIX + event.getDisplayName();
+    /**
+     * Publish a cursor event to Redis.
+     */
+    public void publishCursorEvent(@NotNull @Valid final CursorDto event) {
+        final String cursorChannel = CURSOR_CHANNEL_PREFIX + event.getDisplayName();
+
         redisTemplate.convertAndSend(cursorChannel, event);
         redisTemplate.opsForList().rightPush(CURSOR_EVENTS_PREFIX + event.getDisplayName(), event);
         redisTemplate.expire(CURSOR_EVENTS_PREFIX + event.getDisplayName(), java.time.Duration.ofHours(1));
     }
 
-    /** History: prefer Redis; fall back to JPA if cache empty/expired. */
-    public List<DrawDto> getBoardStrokes(Long boardId) {
-        String redisKey = DRAWING_EVENTS_PREFIX + boardId;
-        List<Object> cached = redisTemplate.opsForList().range(redisKey, 0, -1);
+    /**
+     * Retrieve all drawing strokes for a given board.
+     */
+    @NonNull
+    public List<DrawDto> getBoardStrokes(@NotNull final Long boardId) {
+        final String redisKey = DRAWING_EVENTS_PREFIX + boardId;
+        final List<Object> cached = redisTemplate.opsForList().range(redisKey, 0, -1);
 
         if (cached == null || cached.isEmpty()) {
-            List<Stroke> strokes = strokeRepository.findAllByBoardId(boardId);
+            final List<Stroke> strokes = strokeRepository.findAllByBoardId(boardId);
             return strokes.stream().map(stroke -> new DrawDto(
                     stroke.getId().toString(),
                     stroke.getBoard().getId(),

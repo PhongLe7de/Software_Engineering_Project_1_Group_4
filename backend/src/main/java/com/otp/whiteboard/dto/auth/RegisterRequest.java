@@ -1,5 +1,6 @@
 package com.otp.whiteboard.dto.auth;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -17,6 +18,6 @@ public record RegisterRequest (
         @NotBlank
         String displayName,
 
-        @NotBlank
+        @Nullable
         String locale
 ){}
