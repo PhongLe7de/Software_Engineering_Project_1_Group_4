@@ -15,8 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.util.annotation.NonNull;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -25,11 +27,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    public UserService(@NonNull @Valid UserRepository userRepository, @NotNull @Valid PasswordEncoder passwordEncoder) {
+        this.userRepository = Objects.requireNonNull(userRepository, "userRepository must not be null");
+        this.passwordEncoder = Objects.requireNonNull(passwordEncoder, "passwordEncoder must not be null");
     }
-
     /**
      * Creates a new user in the system.
      *
@@ -37,7 +38,7 @@ public class UserService {
      * @return The created user's details as a UserDto.
      */
     @Nonnull
-    public User createUser(@Valid final RegisterRequest request) {
+    public User createUser(@NotNull @Valid final RegisterRequest request) {
         logger.debug("Creating user with email: {}", request.email());
         try {
             final Optional<User> existingUser = userRepository.findByEmail(request.email());
@@ -46,7 +47,7 @@ public class UserService {
                 throw new IllegalArgumentException("User already exists with email: " + request.email());
             }
 
-            User user = new User();
+            final User user = new User();
             user.setEmail(request.email());
             user.setPhotoUrl(request.photoUrl());
             user.setPassword(passwordEncoder.encode(request.password()));
@@ -69,13 +70,17 @@ public class UserService {
      * @param request The user update request containing new details.
      */
     @Nonnull
-    public UserDto updateUser(@NotNull @Positive final Long id, @Valid final UserUpdateRequest request) {
+    public UserDto updateUser(@NotNull @Positive final Long id, @NotNull @Valid final UserUpdateRequest request) {
         logger.debug("Updating user with ID: {}", id);
         try {
             final User user = userRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
 
-            updateUserFields(user, request);
+            boolean isUpdated = updateUserFields(user, request);
+            if (!isUpdated) {
+                logger.info("No fields to update for user with ID: {}", id);
+                return new UserDto(user);
+            }
             final User updatedUser = userRepository.save(user);
             logger.info("User updated successfully with ID: {}", updatedUser.getId());
             return new UserDto(updatedUser);
@@ -122,28 +127,41 @@ public class UserService {
      * @param email The email address of the user to retrieve.
      * @return The user's details as a UserDto.
      */
-    @NotNull
-    public  User getUserByEmail(@NotNull String email) {
+    @NonNull
+    public User getUserByEmail(@NotNull final String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
     }
 
-    private void updateUserFields(User user, UserUpdateRequest request) {
+    /**
+     * Updates the fields of a user based on the provided update request.
+     *
+     * @param user    The user to update.
+     * @param request The user update request containing new details.
+     * @return true if any field was updated, false otherwise.
+     */
+    private boolean updateUserFields(@NotNull @Valid final User user,@NotNull @Valid final UserUpdateRequest request) {
+        boolean isUpdated = false;
         if (request.displayName() != null) {
             user.setDisplayName(request.displayName());
-        }
-        if (request.email() != null) {
-            user.setEmail(request.email());
+            isUpdated = true;
         }
         if (request.status() != null) {
             user.setStatus(request.status());
+            isUpdated = true;
         }
         if (request.photoUrl() != null) {
             user.setPhotoUrl(request.photoUrl());
+            isUpdated = true;
         }
         if (request.locale() != null) {
-            user.setLocale(request.locale());
+            String userLocale = user.getLocale();
+            if(userLocale == null || !userLocale.equals(request.locale())) {
+                user.setLocale(request.locale());
+                isUpdated = true;
+            }
         }
+        return isUpdated;
     }
 
     @NotNull
