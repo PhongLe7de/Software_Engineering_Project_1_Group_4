@@ -2,7 +2,7 @@ import {createRootRoute, Outlet} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import {SidebarProvider} from "@/components/ui/sidebar";
 import {Toaster} from "sonner";
-import AuthProvider from "@/context/AuthContext.tsx";
+import AuthProvider from "@/context/AuthProvider";
 
 const RootComponent = () => (
     <SidebarProvider

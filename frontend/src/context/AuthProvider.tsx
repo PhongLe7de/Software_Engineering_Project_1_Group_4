@@ -1,31 +1,7 @@
-import {createContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import type {User} from "../types";
 import {toast} from "sonner";
-
-export const AuthContext = createContext<{
-    user: User | null;
-    sidebarVisible: boolean;
-    login: (userData: loginData) => Promise<User>;
-    register: (userData: registerData) => Promise<User>;
-    logout: () => void;
-} | null>(null);
-
-
-type AuthResponse = {
-    user: User;
-    token: string;
-}
-type registerData = {
-    email: string;
-    password: string
-    displayName: string
-    photoUrl: string
-    locale: string
-}
-type loginData = {
-    email: string;
-    password: string;
-}
+import {AuthContext, type AuthResponse, type registerData, type loginData} from "./AuthContext";
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [user, setUser] = useState<User | null>(null);
