@@ -36,7 +36,8 @@
     "login_with_google": "Googleでログイン",
     "dont_have_account": "アカウントをお持ちではありませんか？",
     "already_have_account": "すでにアカウントをお持ちですか?",
-    "welcome_back": "おかえり！"
+    "welcome_back": "おかえり",
+    "invalid_email_or_password": "メールアドレスまたはパスワードが正しくありません"
   },
   "ui": {
     "previous_slide": "前のスライド",
@@ -114,6 +115,13 @@
     "confirm_password": "パスワードを確認",
     "confirm_password_placeholder": "新しいパスワードを確認",
     "cancel": "キャンセル",
-    "save_changes": "変更を保存"
+    "save_changes": "変更を保存",
+    "saving": "保存中...",
+    "current_password_required": "現在のパスワードを入力してください！",
+    "passwords_dont_match": "パスワードが一致しません！",
+    "password_too_short": "パスワードが短すぎます！",
+    "no_changes": "変更はありません。",
+    "update_successful": "設定が正常に更新されました！",
+    "update_failed": "ユーザーの更新に失敗しました。"
   }
 }
