@@ -3,6 +3,9 @@ package com.otp.whiteboard.model;
 import com.otp.whiteboard.enums.DrawEventType;
 import com.otp.whiteboard.enums.DrawingTool;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -36,35 +39,38 @@ public class Stroke implements Serializable {
     private DrawingTool tool;
 
     @Column(name = "x_cord", nullable = false)
-    private Double x_cord;
+    private Double xCord;
 
     @Column(name = "y_cord", nullable = false)
-    private Double y_cord;
+    private Double yCord;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    public Stroke() {
+    public Stroke() {}
 
-    }
-
-    public Stroke(Board board, User user, String color, Long thickness, DrawEventType type, DrawingTool tool, Double x_cord, Double y_cord, LocalDateTime createdAt) {
+    public Stroke(@NotNull @Valid final Board board,
+                  @NotNull @Valid final User user,
+                  @NotBlank final String color,
+                  @NotNull final Long thickness,
+                  @NotNull @Valid final DrawEventType type,
+                  @NotNull @Valid final DrawingTool tool,
+                  @NotNull final Double xCord,
+                  @NotNull final Double yCord,
+                  @NotNull @Valid final LocalDateTime createdAt) {
         this.board = board;
         this.user = user;
         this.color = color;
         this.thickness = thickness;
         this.type = type;
         this.tool = tool;
-        this.x_cord = x_cord;
-        this.y_cord = y_cord;
+        this.xCord = xCord;
+        this.yCord = yCord;
         this.createdAt = createdAt;
     }
 
     // Getters and Setters
-    public Long getId() {
-        return id;
-
-    }
+    public Long getId() {return id;}
 
     public void setId(Long id) {
         this.id = id;
@@ -118,40 +124,42 @@ public class Stroke implements Serializable {
         this.tool = tool;
     }
 
-    public Double getX_cord() {
-        return x_cord;
+    public Double getXCord() {
+        return xCord;
     }
 
-    public void setX_cord(Double x_cord) {
-        this.x_cord = x_cord;
+    public void setXCord(Double xCord) {
+        this.xCord = xCord;
     }
 
-    public Double getY_cord() {
-        return y_cord;
+    public Double getYCord() {
+        return yCord;
     }
 
-    public void setY_cord(Double y_cord) {
-        this.y_cord = y_cord;
+    public void setYCord(Double yCord) {
+        this.yCord = yCord;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime now) {
+        this.createdAt = now;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Stroke stroke = (Stroke) o;
-        return Objects.equals(id, stroke.id) && Objects.equals(board, stroke.board) && Objects.equals(user, stroke.user) && Objects.equals(color, stroke.color) && Objects.equals(thickness, stroke.thickness) && Objects.equals(type, stroke.type) && Objects.equals(tool, stroke.tool) && Objects.equals(x_cord, stroke.x_cord) && Objects.equals(y_cord, stroke.y_cord) && Objects.equals(createdAt, stroke.createdAt);
+        return Objects.equals(id, stroke.id) && Objects.equals(board, stroke.board) && Objects.equals(user, stroke.user) && Objects.equals(color, stroke.color) && Objects.equals(thickness, stroke.thickness) && Objects.equals(type, stroke.type) && Objects.equals(tool, stroke.tool) && Objects.equals(xCord, stroke.xCord) && Objects.equals(yCord, stroke.yCord) && Objects.equals(createdAt, stroke.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, board, user, color, thickness, type, tool, x_cord, y_cord, createdAt);
+        return Objects.hash(id, board, user, color, thickness, type, tool, xCord, yCord, createdAt);
     }
 
-    public void setCreatedAt(LocalDateTime now) {
-        this.createdAt = now;
-    }
 }
