@@ -32,16 +32,16 @@ import static org.mockito.Mockito.*;
 class BoardServiceTest {
     private BoardService boardService;
 
-    private final static String BOARD_NAME = "Test Board";
-    private final static String EXIT_BOARD_NAME = "Exit Board";
-    private final static String UPDATED_BOARD_NAME = "Updated Board Name";
-    private final static Long NONEXIT_USER = 99L;
-    private final static Long OWNER_ID = 1L;
-    private final static Long BOARD_ID = 2L;
-    private final static Long NONEXIT_BOARD_ID = 99L;
-    private final static Long EXIT_BOARD_ID = 10L;
-    private final static Long USER_ID = 3L;
-    private final static Integer NUMBER_OF_STROKES = 5;
+    private static final String BOARD_NAME = "Test Board";
+    private static final String EXIT_BOARD_NAME = "Exit Board";
+    private static final String UPDATED_BOARD_NAME = "Updated Board Name";
+    private static final Long NONEXIT_USER = 99L;
+    private static final Long OWNER_ID = 1L;
+    private static final Long BOARD_ID = 2L;
+    private static final Long NONEXIT_BOARD_ID = 99L;
+    private static final Long EXIT_BOARD_ID = 10L;
+    private static final Long USER_ID = 3L;
+    private static final Integer NUMBER_OF_STROKES = 5;
 
     @Mock
     private UserService mockUserService;
