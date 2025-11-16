@@ -13,7 +13,6 @@ import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import reactor.util.annotation.NonNull;
 
@@ -35,6 +34,7 @@ public class DrawEventService {
     private final StrokeRepository strokeRepository;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private Stroke stroke;
 
     public DrawEventService(final RedisTemplate<String, Object> redisTemplate,
                             final StrokeRepository strokeRepository,
@@ -73,17 +73,16 @@ public class DrawEventService {
                     }
             );
 
-            final Stroke stroke = new Stroke(
-                    board,
-                    user,
-                    event.getBrushColor(),
-                    event.getBrushSize(),
-                    event.getType(),
-                    event.getTool(),
-                    event.getX(),
-                    event.getY(),
-                    LocalDateTime.now()
-            );
+            final Stroke stroke = new Stroke();
+            stroke.setBoard(board);
+            stroke.setUser(user);
+            stroke.setColor(event.getBrushColor());
+            stroke.setThickness(event.getBrushSize());
+            stroke.setType(event.getType());
+            stroke.setTool(event.getTool());
+            stroke.setXCord(event.getX());
+            stroke.setYCord(event.getY());
+            stroke.setCreatedAt(LocalDateTime.now());
 
             strokeRepository.save(stroke);
 
@@ -124,8 +123,8 @@ public class DrawEventService {
                     stroke.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli(),
                     stroke.getType(),
                     stroke.getTool(),
-                    stroke.getX_cord(),
-                    stroke.getY_cord(),
+                    stroke.getXCord(),
+                    stroke.getYCord(),
                     stroke.getThickness(),
                     stroke.getColor(),
                     stroke.getId().toString()

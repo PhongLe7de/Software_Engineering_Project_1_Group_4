@@ -26,8 +26,7 @@ public class DrawSubscriber implements MessageListener {
             String msg = message.toString();
             // Deserialize JSON into DrawingEvent
             Stroke event = objectMapper.readValue(msg, Stroke.class);
-
-            // Push to WebSocket clients subscribed to /topic/drawing-session-{sessionId}
+            // Send the event to WebSocket subscribers
             messagingTemplate.convertAndSend("/topic/drawing-session-" + event.getId(), event);
 
         } catch (Exception e) {

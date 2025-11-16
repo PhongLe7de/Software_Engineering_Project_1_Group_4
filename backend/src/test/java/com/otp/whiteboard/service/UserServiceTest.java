@@ -40,6 +40,8 @@ class UserServiceTest {
 
     private static final String TEST_USER_CREDENTIAL = "Test123!";
 
+    private static final String FAIL_MESSAGE = "Should have failed but didn't";
+
     @Mock
     private UserRepository userRepository;
 
@@ -122,7 +124,7 @@ class UserServiceTest {
             assertEquals("User already exists with email: " + request.email(),e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As a user, I want to update my profile information so that my account details are current")
@@ -154,7 +156,7 @@ class UserServiceTest {
             assertEquals("User not found with ID: " + notFoundId, e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As a user, I want to search for a user profile by display name so that I can view their details")
@@ -180,7 +182,7 @@ class UserServiceTest {
             assertEquals("User not found with display name: " + UNEXIST_DISPLAY_NAME, e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As a user, I want to retrieve all users so that I can see a list of all registered users")

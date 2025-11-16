@@ -1,11 +1,13 @@
 package com.otp.whiteboard.dto.board;
 
 import com.otp.whiteboard.model.Board;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
 
+@SuppressFBWarnings("EI_EXPOSE_REP")
 public record BoardDto(
         @NotNull
         Long id,
