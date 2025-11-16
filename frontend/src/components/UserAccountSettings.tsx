@@ -1,4 +1,4 @@
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { LanguageSelector } from "./LanguageSelector";
 
 interface UserAccountSettingsProps {
@@ -29,6 +30,7 @@ export function UserAccountSettings({
     const [isLoading, setIsLoading] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [locale, setLocale] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -38,6 +40,7 @@ export function UserAccountSettings({
         if (user && open) {
             setName(user.displayName);
             setEmail(user.email);
+            setLocale(user.locale);
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
@@ -80,6 +83,7 @@ export function UserAccountSettings({
             const updateData: {
                 displayName?: string;
                 email?: string;
+                locale?: string;
                 currentPassword?: string;
                 newPassword?: string;
             } = {};
@@ -90,6 +94,10 @@ export function UserAccountSettings({
 
             if (email !== user.email) {
                 updateData.email = email;
+            }
+
+            if (locale !== user.locale) {
+                updateData.locale = locale;
             }
 
             if (currentPassword && newPassword && confirmPassword) {
@@ -156,6 +164,21 @@ export function UserAccountSettings({
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder={t('settings.email_placeholder')}
                             />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="locale">{t('settings.locale')}</Label>
+                            <Select value={locale} onValueChange={setLocale}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="en">English</SelectItem>
+                                    <SelectItem value="jp">日本語</SelectItem>
+                                    <SelectItem value="ru">Русский</SelectItem>
+                                    <SelectItem value="zh">中文</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
 

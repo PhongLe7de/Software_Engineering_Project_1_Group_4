@@ -22,6 +22,7 @@ export type loginData = {
 export type updateUserData = {
     displayName?: string;
     email?: string;
+    locale?: string;
     currentPassword?: string;
     newPassword?: string;
 }
