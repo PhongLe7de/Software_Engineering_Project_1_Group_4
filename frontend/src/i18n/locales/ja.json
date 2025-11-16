@@ -108,6 +108,7 @@
     "email": "メールアドレスを変更",
     "email_placeholder": "新しいメールアドレスを入力",
     "language": "言語を変更",
+    "locale": "ロケールを変更",
     "current_password": "現在のパスワード（必須）",
     "current_password_placeholder": "現在のパスワードを入力",
     "new_password": "新しいパスワード",

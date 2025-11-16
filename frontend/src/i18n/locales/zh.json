@@ -108,6 +108,7 @@
     "email": "修改邮箱",
     "email_placeholder": "输入新邮箱",
     "language": "更改语言",
+    "locale": "更改语言环境",
     "current_password": "当前密码（必填）",
     "current_password_placeholder": "输入当前密码",
     "new_password": "新密码",

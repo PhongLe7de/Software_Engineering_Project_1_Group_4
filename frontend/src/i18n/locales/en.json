@@ -108,6 +108,7 @@
     "email": "Change Email",
     "email_placeholder": "Enter new email",
     "language": "Change Language",
+    "locale": "Change Locale",
     "current_password": "Current Password (Required)",
     "current_password_placeholder": "Enter current password",
     "new_password": "New Password",
