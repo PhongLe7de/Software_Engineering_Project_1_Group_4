@@ -7,7 +7,6 @@ import com.otp.whiteboard.dto.user.UserDto;
 import com.otp.whiteboard.enums.Status;
 import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.repository.UserRepository;
-import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,15 +30,15 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     private UserService userService;
 
-    private final static Long ID = 2L;
+    private static final Long ID = 2L;
 
-    private final static String EMAIL = "test@email.com";
-    private final static String EXIST_EMAIL = "exist@email.com";
-    private final static String PHOTO_URL = "http://photo.url/image.jpg";
-    private final static String DISPLAY_NAME = "Test User";
-    private final static String UNEXIST_DISPLAY_NAME = "Not Found User";
+    private static final String EMAIL = "test@email.com";
+    private static final String EXIST_EMAIL = "exist@email.com";
+    private static final String PHOTO_URL = "http://photo.url/image.jpg";
+    private static final String DISPLAY_NAME = "Test User";
+    private static final String UNEXIST_DISPLAY_NAME = "Not Found User";
 
-    private final static String PASSWORD = "Test123!";
+    private static final String TEST_USER_CREDENTIAL = "Test123!";
 
     @Mock
     private UserRepository userRepository;
@@ -61,7 +60,7 @@ class UserServiceTest {
         testUser.setId(ID);
         testUser.setEmail(EMAIL);
         testUser.setDisplayName(DISPLAY_NAME);
-        testUser.setPassword(PASSWORD);
+        testUser.setPassword(TEST_USER_CREDENTIAL);
         testUser.setStatus(Status.ACTIVE);
     }
 
@@ -72,7 +71,7 @@ class UserServiceTest {
                     user.setId(1L);
                     return user;
                 });
-        when(passwordEncoder.encode(PASSWORD)).thenReturn("encodedPassword");
+        when(passwordEncoder.encode(TEST_USER_CREDENTIAL)).thenReturn("encodedPassword");
         when(userRepository.findByEmail(EMAIL))
                 .thenReturn(java.util.Optional.empty());
         when(userRepository.findByEmail(EXIST_EMAIL))
@@ -95,7 +94,7 @@ class UserServiceTest {
     @Test
     void testCreateUserWithValidData(){
         //given
-        final RegisterRequest request = new RegisterRequest(EMAIL, PASSWORD, PHOTO_URL,DISPLAY_NAME,"vi" );
+        final RegisterRequest request = new RegisterRequest(EMAIL, TEST_USER_CREDENTIAL, PHOTO_URL,DISPLAY_NAME,"vi" );
         //when
         final UserDto result = new UserDto( userService.createUser(request));
         //then
@@ -104,14 +103,14 @@ class UserServiceTest {
         assertEquals(EMAIL, result.email());
         assertEquals(DISPLAY_NAME, result.displayName());
         assertEquals(Status.ACTIVE, result.status());
-        verify(passwordEncoder).encode(PASSWORD);
+        verify(passwordEncoder).encode(TEST_USER_CREDENTIAL);
     }
 
     @DisplayName("As a user, I want to register with an existing email so that I receive an error message")
     @Test
     void testCreateUserWithExistingEmail(){
         //given
-        final RegisterRequest request = new RegisterRequest(EXIST_EMAIL, PASSWORD, PHOTO_URL, DISPLAY_NAME,"vi" );
+        final RegisterRequest request = new RegisterRequest(EXIST_EMAIL, TEST_USER_CREDENTIAL, PHOTO_URL, DISPLAY_NAME,"vi" );
         final User existingUser = new User();
         existingUser.setEmail(EXIST_EMAIL);
         when(userRepository.findByEmail(EXIST_EMAIL))
