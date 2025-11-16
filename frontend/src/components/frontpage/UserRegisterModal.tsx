@@ -20,6 +20,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@
 import {Input} from "@/components/ui/input.tsx"
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "../LanguageSelector";
+import i18n from "i18next";
 
 const RegisterSchema = z.object({
     email: z.email({
@@ -49,7 +50,6 @@ export default function UserRegisterModal() {
     const [selectProfilePic, setSelectProfilePic] = useState(0)
     const [toggleBetweenRegisterLogin, setToggleBetweenRegisterLogin] = useState(true)
     const {login, register} = useAuth();
-
     const {t} = useTranslation();
 
     // TODO: Emojis are placeholder. Final ver.: File uploads and default profile pics
@@ -69,7 +69,6 @@ export default function UserRegisterModal() {
             password: ""
         },
     })
-
     const handleRegister = async (data: z.infer<typeof RegisterSchema>) => {
         setIsLoading(true)
         try {
@@ -78,8 +77,9 @@ export default function UserRegisterModal() {
                 password: data.password,
                 displayName: data.displayName,
                 photoUrl: avatars[selectProfilePic],
-                locale: localStorage.getItem('i18nextLng') || 'en',
+                locale: i18n.language || 'en',
             };
+            console.log('Registering with locale:', i18n.language);
             await register(userData);
             toast.success(`Welcome ${data.displayName}!`);
             setIsLoading(false)
