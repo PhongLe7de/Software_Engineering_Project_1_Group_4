@@ -44,13 +44,14 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
+        final String SECURITY_SCHEME_NAME = "Bearer Authentication";
         return new OpenAPI()
             .addSecurityItem(new SecurityRequirement()
-                .addList("Bearer Authentication"))
+                .addList(SECURITY_SCHEME_NAME))
             .components(new Components()
-                .addSecuritySchemes("Bearer Authentication",
+                .addSecuritySchemes(SECURITY_SCHEME_NAME,
                     new io.swagger.v3.oas.models.security.SecurityScheme()
-                        .name("Bearer Authentication")
+                        .name(SECURITY_SCHEME_NAME)
                         .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
                         .scheme("bearer")
                         .bearerFormat("JWT")

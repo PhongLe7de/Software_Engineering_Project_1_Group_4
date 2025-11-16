@@ -1,6 +1,9 @@
 package com.otp.whiteboard.api;
 
 public class Endpoint {
+    private Endpoint() {
+        // Prevent instantiation
+    }
     public static final String API = "/api";
 
     private static final String USER = "/user";

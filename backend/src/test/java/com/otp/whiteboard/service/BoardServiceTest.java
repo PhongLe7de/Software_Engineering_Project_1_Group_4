@@ -35,13 +35,15 @@ class BoardServiceTest {
     private static final String BOARD_NAME = "Test Board";
     private static final String EXIT_BOARD_NAME = "Exit Board";
     private static final String UPDATED_BOARD_NAME = "Updated Board Name";
-    private static final Long NONEXIT_USER = 99L;
+    private static final Long NON_EXIST_USER = 99L;
     private static final Long OWNER_ID = 1L;
     private static final Long BOARD_ID = 2L;
-    private static final Long NONEXIT_BOARD_ID = 99L;
-    private static final Long EXIT_BOARD_ID = 10L;
+    private static final Long NON_EXIST_BOARD_ID = 99L;
     private static final Long USER_ID = 3L;
     private static final Integer NUMBER_OF_STROKES = 5;
+
+    private static final String FAIL_MESSAGE = "Should have failed but didn't";
+    private static final String BOARD_NOT_FOUND_MESSAGE = "Board not found with ID: ";
 
     @Mock
     private UserService mockUserService;
@@ -103,7 +105,7 @@ class BoardServiceTest {
                 .thenReturn(Optional.ofNullable(testBoard));
         when(mockBoardRepository.findBoardsByName(EXIT_BOARD_NAME))
                 .thenReturn(java.util.Optional.of(new Board()));
-        when(mockUserRepository.findById(NONEXIT_USER))
+        when(mockUserRepository.findById(NON_EXIST_USER))
                 .thenReturn(Optional.empty());
         when(mockBoardRepository.findBoardsByName(BOARD_NAME))
                 .thenReturn(Optional.empty());
@@ -123,7 +125,7 @@ class BoardServiceTest {
                 .thenReturn(testUserBoard);
         when(mockUserBoardRepository.findUserBoardByBoardIdAndUserId(BOARD_ID, USER_ID))
                 .thenReturn(testUserBoard);
-        when(mockUserBoardRepository.findUserBoardByBoardIdAndUserId(NONEXIT_BOARD_ID, USER_ID))
+        when(mockUserBoardRepository.findUserBoardByBoardIdAndUserId(NON_EXIST_BOARD_ID, USER_ID))
                 .thenReturn(null);
     }
     void setupTestTarget(){
@@ -136,9 +138,7 @@ class BoardServiceTest {
         //given
         final BoardCreatingRequest request = new BoardCreatingRequest(EXIT_BOARD_NAME, OWNER_ID);
         //when & then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            boardService.createBoard(request);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> boardService.createBoard(request));
         assertEquals("Board already exists with name: " + EXIT_BOARD_NAME, exception.getMessage());
     }
 
@@ -146,7 +146,7 @@ class BoardServiceTest {
     @Test
     void createBoardWithNonExistingOwnerShouldThrowException() {
         //given
-        final BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, NONEXIT_USER);
+        final BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, NON_EXIST_USER);
         //when & then
         try{
             boardService.createBoard(request);
@@ -154,7 +154,7 @@ class BoardServiceTest {
             assertEquals("Owner not found", e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As user, I want to create a board with valid data, so that I can start collaborating.")
@@ -202,10 +202,10 @@ class BoardServiceTest {
         try {
             boardService.getBoardById(notFoundId);
         } catch (IllegalArgumentException e) {
-            assertEquals("Board not found with ID: " + notFoundId, e.getMessage());
+            assertEquals(BOARD_NOT_FOUND_MESSAGE + notFoundId, e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As user, I want to retrieve a board by its ID, so that I can view or edit it.")
@@ -230,10 +230,10 @@ class BoardServiceTest {
         try {
             boardService.addUserToBoard(notFoundId, userId);
         } catch (IllegalArgumentException e) {
-            assertEquals("Board not found with ID: " + notFoundId, e.getMessage());
+            assertEquals(BOARD_NOT_FOUND_MESSAGE + notFoundId, e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As an admin, I want to get error when adding a user to a board with non-existing user ID")
@@ -241,7 +241,7 @@ class BoardServiceTest {
     void addUserToBoardWithNotExistingUserIdShouldThrowException() {
         //given
         final Long boardId = BOARD_ID;
-        final Long notFoundId = NONEXIT_USER;
+        final Long notFoundId = NON_EXIST_USER;
         //When & Then
         try {
             boardService.addUserToBoard(boardId, notFoundId);
@@ -249,7 +249,7 @@ class BoardServiceTest {
             assertEquals("User not found with ID: " + notFoundId, e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As an admin, I want to get error when adding a user to a board if the user is already in the board")
@@ -268,7 +268,7 @@ class BoardServiceTest {
             assertEquals("User with ID: " + userId + " already exists in the board", e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As an admin, I want to add a user to a board")
@@ -298,7 +298,7 @@ class BoardServiceTest {
     void removeUserFromBoardWithNotExistingUserIdShouldThrowException() {
         //given
         final Long boardId = BOARD_ID;
-        final Long userId = NONEXIT_USER;
+        final Long userId = NON_EXIST_USER;
         //When & Then
         try {
             boardService.removeUserFromBoard(boardId, userId);
@@ -306,14 +306,14 @@ class BoardServiceTest {
             assertEquals("User not found with ID: " + userId, e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As an admin, I want to get error when removing a user from a board with non-existing board ID")
     @Test
     void removeUserFromBoardWithNotExistingBoardIdShouldThrowException() {
         //given
-        final Long notFoundId = NONEXIT_BOARD_ID;
+        final Long notFoundId = NON_EXIST_BOARD_ID;
         final Long userId = USER_ID;
         //When & Then
         try {
@@ -325,7 +325,7 @@ class BoardServiceTest {
             ), e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As an admin, I want to remove a user from a board")
@@ -354,10 +354,10 @@ class BoardServiceTest {
         try {
             boardService.updateBoard(notFoundId, request);
         } catch (IllegalArgumentException e) {
-            assertEquals("Board not found with ID: " + notFoundId, e.getMessage());
+            assertEquals(BOARD_NOT_FOUND_MESSAGE + notFoundId, e.getMessage());
             return;
         }
-        fail("Should have failed but didn't");
+        fail(FAIL_MESSAGE);
     }
 
     @DisplayName("As a user, I want to update a board with valid data")
