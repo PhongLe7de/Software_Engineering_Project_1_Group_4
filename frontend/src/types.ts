@@ -3,6 +3,7 @@ export type User = {
     displayName: string;
     photoUrl: string;
     email: string;
+    locale: string;
 } | null;
 
 export type CanvasProps = {

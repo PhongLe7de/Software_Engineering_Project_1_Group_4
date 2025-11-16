@@ -53,6 +53,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(request.password()));
             user.setDisplayName(request.displayName());
             user.setStatus(Status.ACTIVE);
+            user.setLocale(request.locale() != null ? request.locale() : "en");
 
             final User savedUser = userRepository.save(user);
             logger.info("User created successfully with ID: {} and email: {}", savedUser.getId(), savedUser.getEmail());
