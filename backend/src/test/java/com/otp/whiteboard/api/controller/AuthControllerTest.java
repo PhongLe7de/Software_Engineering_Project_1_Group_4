@@ -84,7 +84,7 @@ class AuthControllerTest {
 
     @DisplayName("As a user, I want to register so that I can access the application")
     @Test
-    void createUser_ReturnsAuthResponse() {
+    void createUserReturnsAuthResponse() {
         RegisterRequest request = new RegisterRequest(
                 DISPLAY_NAME,
                 EMAIL,
@@ -101,7 +101,7 @@ class AuthControllerTest {
 
     @DisplayName("As a user, I want to log in so that I can access my account")
     @Test
-    void login_ReturnsAuthResponse() {
+    void loginReturnsAuthResponse() {
         LoginRequest request = new LoginRequest(
                 EMAIL,
                 PASSWORD,

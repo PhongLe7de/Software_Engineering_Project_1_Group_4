@@ -94,8 +94,8 @@ class DrawEventServiceTest {
         testStroke.setThickness(STROKE_THICKNESS);
         testStroke.setTool(DrawingTool.PEN);
         testStroke.setType(DrawEventType.DRAW);
-        testStroke.setX_cord(X_COORD);
-        testStroke.setY_cord(Y_COORD);
+        testStroke.setXCord(X_COORD);
+        testStroke.setYCord(Y_COORD);
 
         testUser = new User();
         testUser.setId(USER_ID);
@@ -176,7 +176,7 @@ class DrawEventServiceTest {
 
     @DisplayName("As user draws on board, but board not found, event is published to Redis but NOT saved to DB")
     @Test
-    void publishDrawEvent_noBoard() {
+    void publishDrawEventNoBoard() {
         // given
         DrawDto testEvent2 = new DrawDto(
                 "event2",
@@ -213,7 +213,7 @@ class DrawEventServiceTest {
 
     @DisplayName("As user draws on board, but user not found, event is published to Redis but NOT saved to DB")
     @Test
-    void publishDrawEvent_noUser() {
+    void publishDrawEventNoUser() {
         // given
         String nonExistentUser = "NonExistentUser";
         DrawDto testEvent2 = new DrawDto(

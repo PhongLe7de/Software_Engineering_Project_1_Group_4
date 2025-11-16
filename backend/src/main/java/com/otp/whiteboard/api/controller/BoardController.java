@@ -67,7 +67,6 @@ public class BoardController {
             @NotNull
             @Valid final ModifyBoardUserRequest request
     ) {
-        System.out.println(request.toString());
         final BoardDto response = boardService.addUserToBoard(boardId, request.userId());
         return ResponseEntity.ok(response);
     }
