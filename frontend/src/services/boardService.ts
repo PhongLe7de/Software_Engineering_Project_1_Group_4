@@ -78,3 +78,16 @@ export const updateBoard = async (boardId: number, boardName: string): Promise<B
 
     return response.json();
 };
+
+export const getBoardById = async (boardId: number): Promise<BoardDto> => {
+    const response = await fetch(`${API_URL}api/board/${boardId}`, {
+        method: 'GET',
+        headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch board: ${response.statusText}`);
+    }
+
+    return response.json();
+};

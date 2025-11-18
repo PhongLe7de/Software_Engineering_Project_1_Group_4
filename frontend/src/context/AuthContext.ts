@@ -23,6 +23,7 @@ export type loginData = {
 export type updateUserData = {
     displayName?: string;
     password?: string;
+    locale?: string;
 }
 
 export const AuthContext = createContext<{

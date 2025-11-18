@@ -7,6 +7,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Globe } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const languages = [
     { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -17,9 +18,18 @@ const languages = [
 
 export function LanguageSelector() {
     const { i18n } = useTranslation();
+    const { updateUser } = useAuth();
 
-    const changeLanguage = (langCode: string) => {
+    const changeLanguage = async (langCode: string) => {
+        // Update frontend i18n
         i18n.changeLanguage(langCode);
+
+        // Update user locale to backend
+        try {
+            await updateUser({ locale: langCode });
+        } catch (error) {
+            console.error('Failed to update locale:', error);
+        }
     };
 
     return (

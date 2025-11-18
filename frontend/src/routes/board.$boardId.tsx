@@ -1,22 +1,54 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Canvas from "@/components/canvas/Canvas.tsx";
 import UserRegisterModal from "@/components/frontpage/UserRegisterModal.tsx";
 import { AppSidebar } from "@/components/canvas/AppSidebar.tsx";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import type { DrawingEvent } from "@/types.ts";
+import type { DrawingEvent, BoardDto } from "@/types.ts";
 import useWebSocket from "@/hooks/useWebSocket.tsx";
 import Cursors from "@/components/canvas/Cursor.tsx";
 import {useAuth} from "@/hooks/useAuth.tsx";
+import { getBoardById } from "@/services/boardService.ts";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 
 function BoardCanvas() {
     const { boardId } = Route.useParams();
     const [tool, setTool] = useState("pen");
     const [brushSize, setBrushSize] = useState(5);
     const [brushColor, setBrushColor] = useState("#000000");
+    const [boardInfo, setBoardInfo] = useState<BoardDto | null>(null);
+    const [showMotdModal, setShowMotdModal] = useState(false);
     const { user, sidebarVisible } = useAuth();
 
     const boardIdNumber = parseInt(boardId, 10); // convert the param id to int
+    // TODO: BOARD SETTINGS TO UPDATE THE MESSAGE
+    // Fetch board info when component mounts
+    useEffect(() => {
+        const fetchBoardInfo = async () => {
+            try {
+                const info = await getBoardById(boardIdNumber);
+                setBoardInfo(info);
+                console.log('Board info:', info);
+
+                // Show MOTD as a modal
+                if (info.motdLabel && info.customMessage) {
+                    setShowMotdModal(true);
+                }
+            } catch (error) {
+                console.error('Failed to fetch board info:', error);
+            }
+        };
+
+        if (sidebarVisible && boardIdNumber) {
+            fetchBoardInfo();
+        }
+    }, [boardIdNumber, sidebarVisible]);
 
     const {
         isConnected,
@@ -38,14 +70,27 @@ function BoardCanvas() {
 
     return (
         <>
-            <div>
+            <div className="fixed top-4 right-6 z-50">
                 <span
-                    className={`fixed right-6 transform backdrop-blur-[4px] z-50 text-m
+                    className={`transform backdrop-blur-[4px] text-m
                     ${isConnected ? 'text-green-600' : 'text-red-600'}`}
                 >
                     {isConnected ? '● Connected' : '● Disconnected'}
                 </span>
             </div>
+
+            {/* MOTD Modal */}
+            <Dialog open={showMotdModal} onOpenChange={setShowMotdModal}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{boardInfo?.motdLabel}</DialogTitle>
+                        <DialogDescription>
+                            {boardInfo?.customMessage}
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+
             {!sidebarVisible && (<UserRegisterModal
             />)}
             {sidebarVisible && <AppSidebar

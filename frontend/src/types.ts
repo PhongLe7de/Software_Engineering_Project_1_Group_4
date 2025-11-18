@@ -39,9 +39,12 @@ export type BoardDto = {
     userIds: number[];
     amountOfUsers: number;
     numberOfStrokes: number;
+    motdLabel?: string;
+    customMessage?: string;
 };
 
 export type CreateBoardRequest = {
     boardName: string;
     ownerId: number;
+    customMessage?: string;
 };

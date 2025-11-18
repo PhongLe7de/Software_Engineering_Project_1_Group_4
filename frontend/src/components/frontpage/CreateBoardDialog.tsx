@@ -29,7 +29,7 @@ interface CreateBoardDialogProps {
     ownerId: number;
     onBoardCreated: () => void;
 }
-
+//TODO: ADD MESSAGE OF THE DAY FIELD
 export function CreateBoardDialog({ ownerId, onBoardCreated }: CreateBoardDialogProps) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
