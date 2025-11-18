@@ -14,6 +14,9 @@ public record UserUpdateRequest(
         String displayName,
 
         @Nullable
-        String locale
+        String locale,
+
+        @Nullable
+        String password
 ) {
 }

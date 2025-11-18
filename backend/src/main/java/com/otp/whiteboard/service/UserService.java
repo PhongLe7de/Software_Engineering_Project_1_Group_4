@@ -162,6 +162,10 @@ public class UserService {
                 isUpdated = true;
             }
         }
+        if (request.password() != null) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+            isUpdated = true;
+        }
         return isUpdated;
     }
 

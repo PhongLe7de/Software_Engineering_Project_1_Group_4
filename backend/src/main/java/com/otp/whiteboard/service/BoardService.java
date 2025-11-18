@@ -130,12 +130,14 @@ public class BoardService {
      * @throws IllegalArgumentException if the board or user is not found, or if the user is already in the board.
      */
     @Nonnull
-    public BoardDto addUserToBoard(@NotNull final Long boardId, @NotNull final Long userId) {
+    public BoardDto addUserToBoard(@NotNull final Long boardId, @NotNull final Long userId, @NotNull @Valid final User user) {
         try {
+            final String userLocale = userService.getLocale(user);
+            final String welcomeBoardMessage = localizationService.getMessage("welcomeBoard", userLocale);
             final Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
 
-            final User user = userRepository.findById(userId).orElseThrow(
+            final User userAdded = userRepository.findById(userId).orElseThrow(
                     () -> new IllegalArgumentException("User not found with ID: " + userId)
             );
 
@@ -144,10 +146,10 @@ public class BoardService {
                 throw new IllegalArgumentException("User with ID: " + userId + " already exists in the board");
             }
 
-            board.addUser(user);
+            board.addUser(userAdded);
             boardRepository.save(board);
 
-            return new BoardDto(board);
+            return new BoardDto(board).withMessage(welcomeBoardMessage);
         } catch (Exception error) {
             logger.error("Error during adding user to board", error);
             throw error;

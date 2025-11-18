@@ -10,6 +10,7 @@ import com.otp.whiteboard.model.UserBoard;
 import com.otp.whiteboard.repository.BoardRepository;
 import com.otp.whiteboard.repository.UserBoardRepository;
 import com.otp.whiteboard.repository.UserRepository;
+import com.otp.whiteboard.security.CustomUserDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,7 @@ class BoardServiceTest {
     private Board testBoard;
     private User testUser;
     private UserBoard testUserBoard;
+    private
 
     @BeforeEach
     void init(){
@@ -89,6 +91,7 @@ class BoardServiceTest {
         testUserBoard.setBoard(testBoard);
         testUserBoard.setUser(testUser);
         testUserBoard.setRole(Role.EDITOR);
+
     }
 
     void setupMocks(){
@@ -257,7 +260,7 @@ class BoardServiceTest {
         final Long userId = USER_ID;
         //When & Then
         try {
-            boardService.addUserToBoard(notFoundId, userId);
+            boardService.addUserToBoard(notFoundId, userId,testUser );
         } catch (IllegalArgumentException e) {
             assertEquals(BOARD_NOT_FOUND_MESSAGE + notFoundId, e.getMessage());
             return;
@@ -273,7 +276,7 @@ class BoardServiceTest {
         final Long notFoundId = NON_EXIST_USER;
         //When & Then
         try {
-            boardService.addUserToBoard(boardId, notFoundId);
+            boardService.addUserToBoard(boardId, notFoundId, testUser);
         } catch (IllegalArgumentException e) {
             assertEquals("User not found with ID: " + notFoundId, e.getMessage());
             return;
@@ -292,7 +295,7 @@ class BoardServiceTest {
                 .thenReturn(Optional.ofNullable(testUser));
         // Then
         try {
-            boardService.addUserToBoard(boardId, userId);
+            boardService.addUserToBoard(boardId, userId, testUser);
         } catch (IllegalArgumentException e) {
             assertEquals("User with ID: " + userId + " already exists in the board", e.getMessage());
             return;
@@ -312,7 +315,7 @@ class BoardServiceTest {
         when(mockUserBoardRepository.findUserBoardByBoardIdAndUserId(BOARD_ID, newUserId))
                 .thenReturn(null);
         //then
-        final BoardDto dto = boardService.addUserToBoard(BOARD_ID, newUserId);
+        final BoardDto dto = boardService.addUserToBoard(BOARD_ID, newUserId, testUser);
         assertNotNull(dto);
         verify(mockBoardRepository, times(1)).save(any(Board.class));
     }
@@ -332,7 +335,7 @@ class BoardServiceTest {
                 .thenReturn(null);
         //when & then
         try{
-            boardService.addUserToBoard(boardId, userId);
+            boardService.addUserToBoard(boardId, userId, testUser);
             verify(mockBoardRepository, times(1)).save(any(Board.class));
         } catch (Exception e ){
             fail("Should have succeeded but didn't");

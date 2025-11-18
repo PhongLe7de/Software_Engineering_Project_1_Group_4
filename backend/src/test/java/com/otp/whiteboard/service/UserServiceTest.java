@@ -168,7 +168,7 @@ class UserServiceTest {
     @Test
     void updateUserThrowsExceptionRethrown() {
         // given
-        final UserUpdateRequest req = new UserUpdateRequest(Status.ACTIVE, null, null, null);
+        final UserUpdateRequest req = new UserUpdateRequest(Status.ACTIVE, null, null, null, null);
         // when
         when(userRepository.save(any(User.class)))
                 .thenThrow(new RuntimeException("update failed"));
@@ -183,7 +183,7 @@ class UserServiceTest {
     @Test
     void updateUserWithNoFieldsUpdated() {
         // given
-        final UserUpdateRequest req = new UserUpdateRequest(null, null, null, null);
+        final UserUpdateRequest req = new UserUpdateRequest(null, null, null, null, null);
 
         // when & then
         final UserDto result = userService.updateUser(ID, req);
@@ -199,7 +199,7 @@ class UserServiceTest {
         final ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         //given
         final User updatedUser = testUser;
-        final UserUpdateRequest request = new UserUpdateRequest(Status.ACTIVE, "https://photo.com", "testUser", "en");
+        final UserUpdateRequest request = new UserUpdateRequest(Status.ACTIVE, "https://photo.com", "testUser", "en", null);
         //when
         userService.updateUser(updatedUser.getId(), request);
         //then
@@ -214,7 +214,7 @@ class UserServiceTest {
     void testUpdateProfileWithNotFoundUser() {
         //given
         final Long notFoundId = 3L;
-        final UserUpdateRequest request = new UserUpdateRequest(null, null, null, null);
+        final UserUpdateRequest request = new UserUpdateRequest(null, null, null, null, null);
         //When & Then
         try {
             userService.updateUser(notFoundId, request);
@@ -232,7 +232,7 @@ class UserServiceTest {
         final User user = new User();
         user.setLocale(null);
         final UserUpdateRequest request = new UserUpdateRequest(
-                null, null, null, "fi"
+                null, null, null, "fi", null
         );
         //when & then
         final boolean updated = userService.updateUserFields(user, request);
@@ -249,7 +249,7 @@ class UserServiceTest {
         user.setLocale("en");
 
         final UserUpdateRequest req = new UserUpdateRequest(
-                null, null, null, "fi"
+                null, null, null, "fi", null
         );
         //when & then
         boolean updated = userService.updateUserFields(user, req);
@@ -263,7 +263,7 @@ class UserServiceTest {
         final User user = new User();
         user.setLocale("en");
         final UserUpdateRequest request = new UserUpdateRequest(
-                null, null, null, "en"
+                null, null, null, "en", null
         );
         //when & then
         boolean updated = userService.updateUserFields(user, request);

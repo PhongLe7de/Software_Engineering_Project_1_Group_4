@@ -106,6 +106,7 @@ class UserControllerTest {
                 null,
                 NEW_PHOTO_URL,
                 NEW_DISPLAY_NAME,
+                null,
                 null
         );
 
@@ -126,7 +127,7 @@ class UserControllerTest {
                 null,
                 NEW_PHOTO_URL,
                 NEW_DISPLAY_NAME,
-                null
+                null, null
         );
 
         final ResponseEntity<UserDto> response = userController.updateUserProfile(updateRequest, customUser);

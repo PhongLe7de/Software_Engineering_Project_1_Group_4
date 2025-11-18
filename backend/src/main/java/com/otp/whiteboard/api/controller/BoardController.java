@@ -61,9 +61,16 @@ public class BoardController {
             @PathVariable("boardId") final Long boardId,
             @RequestBody
             @NotNull
-            @Valid final ModifyBoardUserRequest request
+            @Valid final ModifyBoardUserRequest request,
+            @AuthenticationPrincipal @Valid final CustomUserDetails currentUserDetails
+
+
     ) {
-        final BoardDto response = boardService.addUserToBoard(boardId, request.userId());
+        final User currentUser = currentUserDetails != null ? currentUserDetails.user() : null;
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build();
+        }
+        final BoardDto response = boardService.addUserToBoard(boardId, request.userId(), currentUser);
         return ResponseEntity.ok(response);
     }
 

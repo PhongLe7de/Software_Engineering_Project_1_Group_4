@@ -66,7 +66,7 @@ class BoardControllerTest {
             );
         });
 
-        when(boardService.addUserToBoard(any(Long.class), any(Long.class))).thenAnswer(invocation -> {
+        when(boardService.addUserToBoard(any(Long.class), any(Long.class), any(User.class))).thenAnswer(invocation -> {
             final Long boardId = invocation.getArgument(0);
             final Long userId = invocation.getArgument(1);
             return new BoardDto(
@@ -167,9 +167,13 @@ class BoardControllerTest {
         // Given
         final Long NEW_USER_ID = 9L;
         final ModifyBoardUserRequest request = new ModifyBoardUserRequest(NEW_USER_ID);
+        final User testUser = new User();
+        testUser.setId(99L);
+        final CustomUserDetails tesUserCustomDetail = new CustomUserDetails(testUser);
+
         // When & Then
         try {
-            final ResponseEntity<BoardDto> response = boardController.addUserToBoard(BOARD_ID, request);
+            final ResponseEntity<BoardDto> response = boardController.addUserToBoard(BOARD_ID, request, tesUserCustomDetail);
             assertNotNull(response);
             assertNotNull(response.getBody());
             assertEquals(BOARD_ID, response.getBody().id());
