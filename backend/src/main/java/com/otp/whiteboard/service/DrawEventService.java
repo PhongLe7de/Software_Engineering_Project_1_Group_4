@@ -34,7 +34,6 @@ public class DrawEventService {
     private final StrokeRepository strokeRepository;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
-    private Stroke stroke;
 
     public DrawEventService(final RedisTemplate<String, Object> redisTemplate,
                             final StrokeRepository strokeRepository,
@@ -73,18 +72,18 @@ public class DrawEventService {
                     }
             );
 
-            final Stroke stroke = new Stroke();
-            stroke.setBoard(board);
-            stroke.setUser(user);
-            stroke.setColor(event.getBrushColor());
-            stroke.setThickness(event.getBrushSize());
-            stroke.setType(event.getType());
-            stroke.setTool(event.getTool());
-            stroke.setXCord(event.getX());
-            stroke.setYCord(event.getY());
-            stroke.setCreatedAt(LocalDateTime.now());
+            final Stroke newStroke = new Stroke();
+            newStroke.setBoard(board);
+            newStroke.setUser(user);
+            newStroke.setColor(event.getBrushColor());
+            newStroke.setThickness(event.getBrushSize());
+            newStroke.setType(event.getType());
+            newStroke.setTool(event.getTool());
+            newStroke.setXCord(event.getX());
+            newStroke.setYCord(event.getY());
+            newStroke.setCreatedAt(LocalDateTime.now());
 
-            strokeRepository.save(stroke);
+            strokeRepository.save(newStroke);
 
             board.incrementStrokes();
             boardRepository.save(board);
@@ -116,18 +115,18 @@ public class DrawEventService {
 
         if (cached == null || cached.isEmpty()) {
             final List<Stroke> strokes = strokeRepository.findAllByBoardId(boardId);
-            return strokes.stream().map(stroke -> new DrawDto(
-                    stroke.getId().toString(),
-                    stroke.getBoard().getId(),
-                    stroke.getUser().getDisplayName(),
-                    stroke.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli(),
-                    stroke.getType(),
-                    stroke.getTool(),
-                    stroke.getXCord(),
-                    stroke.getYCord(),
-                    stroke.getThickness(),
-                    stroke.getColor(),
-                    stroke.getId().toString()
+            return strokes.stream().map(st -> new DrawDto(
+                    st.getId().toString(),
+                    st.getBoard().getId(),
+                    st.getUser().getDisplayName(),
+                    st.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                    st.getType(),
+                    st.getTool(),
+                    st.getXCord(),
+                    st.getYCord(),
+                    st.getThickness(),
+                    st.getColor(),
+                    st.getId().toString()
             )).toList();
         }
         return cached.stream().map(e -> (DrawDto) e).toList();
