@@ -229,7 +229,7 @@ class BoardServiceTest {
         final Long notFoundId = 3L;
         //When & Then
         try {
-            boardService.getBoardById(notFoundId);
+            boardService.getBoardById(notFoundId, testUser);
         } catch (IllegalArgumentException e) {
             assertEquals(BOARD_NOT_FOUND_MESSAGE + notFoundId, e.getMessage());
             return;
@@ -243,7 +243,7 @@ class BoardServiceTest {
         //given
         final Long boardId = BOARD_ID;
         //when
-        final BoardDto result = boardService.getBoardById(boardId);
+        final BoardDto result = boardService.getBoardById(boardId, testUser);
         //then
         assertNotNull(result);
         assertEquals(boardId, result.id());
