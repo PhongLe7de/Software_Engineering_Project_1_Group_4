@@ -1,6 +1,5 @@
 package com.otp.whiteboard.api.controller;
 
-
 import com.otp.whiteboard.dto.board.BoardCreatingRequest;
 import com.otp.whiteboard.dto.board.BoardDto;
 import com.otp.whiteboard.dto.board.BoardUpdateRequest;
@@ -8,14 +7,11 @@ import com.otp.whiteboard.dto.board.ModifyBoardUserRequest;
 import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.security.CustomUserDetails;
 import com.otp.whiteboard.service.BoardService;
-import com.otp.whiteboard.service.LocalizationService;
-import com.otp.whiteboard.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jdk.jfr.Name;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -115,8 +111,12 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardDto> getBoardById(
             @PathVariable("boardId") final Long boardId,
-            @AuthenticationPrincipal @Valid final User currentUser
+            @AuthenticationPrincipal @Valid final CustomUserDetails currentUserDetails
     ) {
+        final User currentUser = currentUserDetails != null ? currentUserDetails.user() : null;
+        if (currentUser == null) {
+            return ResponseEntity.status(401).build();
+        }
         final BoardDto response = boardService.getBoardById(boardId);
         return ResponseEntity.ok(response);
     }

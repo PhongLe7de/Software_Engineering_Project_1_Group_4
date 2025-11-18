@@ -55,8 +55,8 @@ public class DrawController {
             log.info("History request: session={}, user={}, boardId={}, limit={}",
                     sessionId, principal != null ? principal.getName() : "anon", req.boardId(), req.limit());
             return drawEventService.getBoardStrokes(req.boardId());
-        } catch (Exception e) {
-            log.error("History retrieval failed", e);
+        } catch (RuntimeException e) {
+            log.error("History retrieval failed");
             return Collections.emptyList();
         }
     }

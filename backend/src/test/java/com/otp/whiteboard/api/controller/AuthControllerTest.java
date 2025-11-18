@@ -1,6 +1,5 @@
 package com.otp.whiteboard.api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.otp.whiteboard.dto.auth.AuthResponse;
 import com.otp.whiteboard.dto.auth.LoginRequest;
 import com.otp.whiteboard.dto.auth.RegisterRequest;
@@ -18,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,12 +36,6 @@ class AuthControllerTest {
     private static final String LOCALE = "en-US";
 
     private User testUser;
-
-    @Mock
-    private MockMvc mockMvc;
-
-    @Mock
-    private ObjectMapper objectMapper;
 
     @Mock
     private UserService userService;
