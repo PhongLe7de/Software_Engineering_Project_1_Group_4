@@ -24,13 +24,13 @@ import org.springframework.data.redis.listener.ChannelTopic;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -49,10 +49,10 @@ class DrawEventServiceTest {
     private static final double Y_COORD = 150.0;
 
     private static final String DRAWING_CHANNEL_PREFIX = "drawing-session-";
-    private static final String CURSOR_CHANNEL_PREFIX  = "cursor-session-";
+    private static final String CURSOR_CHANNEL_PREFIX = "cursor-session-";
 
-    private static final String CURSOR_EVENTS_PREFIX   = "cursor-events";
-    private static final String DRAWING_EVENTS_PREFIX  = "drawing-events-board-";
+    private static final String CURSOR_EVENTS_PREFIX = "cursor-events";
+    private static final String DRAWING_EVENTS_PREFIX = "drawing-events-board-";
     @Mock
     RedisTemplate<String, Object> mockRedisTemplate;
 
@@ -81,13 +81,13 @@ class DrawEventServiceTest {
     private CursorDto testCursor;
 
     @BeforeEach
-    void init(){
+    void init() {
         setupMockData();
         setupMocks();
         setupTestTarget();
     }
 
-    void setupMockData(){
+    void setupMockData() {
         testStroke = new Stroke();
         testStroke.setId(1L);
         testStroke.setColor(STROKE_COLOR);
@@ -130,7 +130,7 @@ class DrawEventServiceTest {
         );
     }
 
-    void setupMocks(){
+    void setupMocks() {
 
         when(mockBoardRepository.findById(BOARD_ID)).thenReturn(Optional.of(testBoard));
         when(mockUserRepository.findUserByDisplayName(USER_NAME)).thenReturn(Optional.of(testUser));
@@ -144,7 +144,7 @@ class DrawEventServiceTest {
         when(mockBoardRepository.findById(NON_EXISTENT_BOARD_ID)).thenReturn(Optional.empty());
     }
 
-    void setupTestTarget(){
+    void setupTestTarget() {
         drawEventService = new DrawEventService(
                 mockRedisTemplate,
                 mockStrokeRepository,
@@ -194,17 +194,17 @@ class DrawEventServiceTest {
         when(mockListOperations.rightPush(eq(DRAWING_EVENTS_PREFIX + NON_EXISTENT_BOARD_ID), eq(testEvent2)))
                 .thenReturn(1L);
         // when & then
-        try{
+        try {
             drawEventService.publishDrawEvent(testEvent2);
-        } catch (Exception e){
+        } catch (Exception e) {
             verify(mockRedisTemplate).convertAndSend(
                     eq(DRAWING_CHANNEL_PREFIX + NON_EXISTENT_BOARD_ID), eq(testEvent2));
             verify(mockRedisTemplate.opsForList()).rightPush(
                     eq(DRAWING_EVENTS_PREFIX + NON_EXISTENT_BOARD_ID), eq(testEvent2));
             verify(mockRedisTemplate).expire(
                     eq(DRAWING_EVENTS_PREFIX + NON_EXISTENT_BOARD_ID), any(Duration.class));
-            verify(mockStrokeRepository,  org.mockito.Mockito.never()).save(any(Stroke.class));
-            verify(mockBoardRepository, org.mockito.Mockito.never()).save(any(Board.class));
+            verify(mockStrokeRepository, never()).save(any(Stroke.class));
+            verify(mockBoardRepository, never()).save(any(Board.class));
             assertEquals("Board not found: " + testEvent2.getBoardId(), e.getMessage());
             return;
         }
@@ -233,17 +233,17 @@ class DrawEventServiceTest {
         when(mockListOperations.rightPush(eq(DRAWING_EVENTS_PREFIX + BOARD_ID), eq(testEvent2)))
                 .thenReturn(1L);
         // when & then
-        try{
+        try {
             drawEventService.publishDrawEvent(testEvent2);
-        } catch (Exception e){
+        } catch (Exception e) {
             verify(mockRedisTemplate).convertAndSend(
                     eq(DRAWING_CHANNEL_PREFIX + BOARD_ID), eq(testEvent2));
             verify(mockRedisTemplate.opsForList()).rightPush(
                     eq(DRAWING_EVENTS_PREFIX + BOARD_ID), eq(testEvent2));
             verify(mockRedisTemplate).expire(
                     eq(DRAWING_EVENTS_PREFIX + BOARD_ID), any(Duration.class));
-            verify(mockStrokeRepository,  org.mockito.Mockito.never()).save(any(Stroke.class));
-            verify(mockBoardRepository, org.mockito.Mockito.never()).save(any(Board.class));
+            verify(mockStrokeRepository, never()).save(any(Stroke.class));
+            verify(mockBoardRepository, never()).save(any(Board.class));
             assertEquals("User not found: " + testEvent2.getDisplayName(), e.getMessage());
             return;
         }
@@ -265,6 +265,55 @@ class DrawEventServiceTest {
         verify(mockRedisTemplate).expire(
                 eq(CURSOR_EVENTS_PREFIX + USER_NAME), any(Duration.class));
     }
+
+    @DisplayName("Get board strokes from Redis cache")
+    @Test
+    void getBoardStrokesFromCache() {
+        // given
+        final DrawDto cachedDto = new DrawDto(
+                testEvent.getId(),
+                testEvent.getBoardId(),
+                testEvent.getDisplayName(),
+                testEvent.getTimestamp(),
+                testEvent.getType(),
+                testEvent.getTool(),
+                testEvent.getX(),
+                testEvent.getY(),
+                testEvent.getBrushSize(),
+                testEvent.getBrushColor(),
+                testEvent.getId()
+        );
+
+        // when
+        when(mockRedisTemplate.opsForList().range(DRAWING_EVENTS_PREFIX + BOARD_ID, 0, -1))
+                .thenReturn(List.of(cachedDto));
+        // then
+        final List<DrawDto> strokes = drawEventService.getBoardStrokes(BOARD_ID);
+        assertNotNull(strokes);
+        assertEquals(1, strokes.size());
+        assertEquals(cachedDto, strokes.get(0));
+
+        verify(mockStrokeRepository, never()).findAllByBoardId(any());
+    }
+
+    @DisplayName("Get strokes from DB when cache is empty")
+    @Test
+    void getBoardStrokesFromDb() {
+        // When
+        when(mockRedisTemplate.opsForList()).thenReturn(mockListOperations);
+        when(mockListOperations.range(DRAWING_EVENTS_PREFIX + BOARD_ID, 0, -1))
+                .thenReturn(null);
+        when(mockStrokeRepository.findAllByBoardId(BOARD_ID))
+                .thenReturn(List.of(testStroke));
+
+        //Then
+        final List<DrawDto> strokes = drawEventService.getBoardStrokes(BOARD_ID);
+        assertNotNull(strokes);
+        assertEquals(1, strokes.size());
+
+        verify(mockStrokeRepository).findAllByBoardId(BOARD_ID);
+    }
+
 
     @DisplayName("Get all strokes for a board from DB")
     @Test

@@ -220,7 +220,7 @@ public class BoardService {
      * @param board   the board to be updated.
      * @param request the board update request containing new details.
      */
-    private boolean updateBoardFields(@NotNull final Board board, @NotNull final BoardUpdateRequest request) {
+    public boolean updateBoardFields(@NotNull final Board board, @NotNull final BoardUpdateRequest request) {
         boolean result = false;
         if (request.boardName() != null) {
             board.setName(request.boardName());

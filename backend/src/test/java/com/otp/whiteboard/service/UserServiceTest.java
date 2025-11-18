@@ -92,14 +92,51 @@ class UserServiceTest {
         userService = new UserService(userRepository, passwordEncoder);
     }
 
+    @DisplayName("As a user, I want to create a new user but saving fails so that an exception is rethrown")
+    @Test
+    void createUserThrowsExceptionRethrown() {
+        // given
+        final RegisterRequest request = new RegisterRequest(EMAIL, TEST_USER_CREDENTIAL, PHOTO_URL, DISPLAY_NAME, "en");
+        //when
+        when(userRepository.save(any(User.class)))
+                .thenThrow(new RuntimeException("save failed"));
+
+        // then
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> userService.createUser(request));
+
+        assertEquals("save failed", ex.getMessage());
+    }
+
+    @DisplayName("createUser should set provided locale when not null")
+    @Test
+    void testCreateUserWithValidDataButMissingLocale() {
+        RegisterRequest request = new RegisterRequest(
+                EMAIL,
+                TEST_USER_CREDENTIAL,
+                PHOTO_URL,
+                DISPLAY_NAME,
+                null
+        );
+        //when & then
+        final UserDto result = new UserDto( userService.createUser(request));
+
+        assertNotNull(result);
+        assertEquals(1L, result.id());
+        assertEquals(EMAIL, result.email());
+        assertEquals(DISPLAY_NAME, result.displayName());
+        assertEquals(Status.ACTIVE, result.status());
+        verify(passwordEncoder).encode(TEST_USER_CREDENTIAL);
+    }
+
     @DisplayName("Test user creation with valid data")
     @Test
     void testCreateUserWithValidData(){
         //given
         final RegisterRequest request = new RegisterRequest(EMAIL, TEST_USER_CREDENTIAL, PHOTO_URL,DISPLAY_NAME,"vi" );
-        //when
+        //when & then
         final UserDto result = new UserDto( userService.createUser(request));
-        //then
+
         assertNotNull(result);
         assertEquals(1L, result.id());
         assertEquals(EMAIL, result.email());
@@ -126,6 +163,35 @@ class UserServiceTest {
         }
         fail(FAIL_MESSAGE);
     }
+
+    @DisplayName("updateUser should catch and rethrow exceptions from repository.save")
+    @Test
+    void updateUserThrowsExceptionRethrown() {
+        // given
+        final UserUpdateRequest req = new UserUpdateRequest(Status.ACTIVE, null, null, null);
+        // when
+        when(userRepository.save(any(User.class)))
+                .thenThrow(new RuntimeException("update failed"));
+        // then
+        RuntimeException e = assertThrows(RuntimeException.class,
+                () -> userService.updateUser(ID, req));
+
+        assertEquals("update failed", e.getMessage());
+    }
+
+    @DisplayName("As a user, I want to update my profile information with no fields updated so that no changes are made")
+    @Test
+    void updateUserWithNoFieldsUpdated() {
+        // given
+        final UserUpdateRequest req = new UserUpdateRequest(null, null, null, null);
+
+        // when & then
+        final UserDto result = userService.updateUser(ID, req);
+
+        assertNotNull(result);
+        verify(userRepository, times(0)).save(any());
+    }
+
 
     @DisplayName("As a user, I want to update my profile information so that my account details are current")
     @Test
@@ -159,6 +225,70 @@ class UserServiceTest {
         fail(FAIL_MESSAGE);
     }
 
+    @DisplayName("As a user, I want to update my profile information when my current locale is null so that my locale preference is set")
+    @Test
+    void testUpdateUserFieldsWhenUserLocaleIsNull() {
+        //given
+        final User user = new User();
+        user.setLocale(null);
+        final UserUpdateRequest request = new UserUpdateRequest(
+                null, null, null, "fi"
+        );
+        //when & then
+        final boolean updated = userService.updateUserFields(user, request);
+
+        assertTrue(updated);
+        assertEquals("fi", user.getLocale());
+    }
+
+    @DisplayName("As a user, I want to update my profile information when my current locale is different so that my locale preference is updated")
+    @Test
+    void testUpdateUserFieldsWithDifferentLocale(){
+        //given
+        final User user = new User();
+        user.setLocale("en");
+
+        final UserUpdateRequest req = new UserUpdateRequest(
+                null, null, null, "fi"
+        );
+        //when & then
+        boolean updated = userService.updateUserFields(user, req);
+
+        assertTrue(updated);
+        assertEquals("fi", user.getLocale());
+    }
+    @Test
+    void testUpdateUserFieldsWithSameLocale() {
+        //given
+        final User user = new User();
+        user.setLocale("en");
+        final UserUpdateRequest request = new UserUpdateRequest(
+                null, null, null, "en"
+        );
+        //when & then
+        boolean updated = userService.updateUserFields(user, request);
+
+        assertFalse(updated);
+        assertEquals("en", user.getLocale());
+    }
+
+
+    @DisplayName("As a user, I want to search for a user profile by display name but repository throws an exception so that the exception is rethrown")
+    @Test
+    void getUserProfileByDisplayNameThrowException() {
+        // given
+        final UserByDisplayNameRequest req = new UserByDisplayNameRequest(DISPLAY_NAME);
+        //when
+        when(userRepository.findUserByDisplayName(DISPLAY_NAME))
+                .thenThrow(new RuntimeException("db failure"));
+        // then
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> userService.getUserProfileByDisplayName(req));
+
+        assertEquals("db failure", ex.getMessage());
+    }
+
+
     @DisplayName("As a user, I want to search for a user profile by display name so that I can view their details")
     @Test
     void getUserProfileByDisplayName() {
@@ -170,6 +300,7 @@ class UserServiceTest {
         assertNotNull(result);
         assertEquals(request.displayName(), result.displayName());
     }
+
     @DisplayName("As a user, I want to search for a user profile by a non-existing display name so that I receive an error message")
     @Test
     void getUserProfileByNotExistingDisplayName() {

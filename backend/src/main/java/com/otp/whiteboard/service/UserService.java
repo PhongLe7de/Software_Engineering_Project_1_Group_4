@@ -141,7 +141,7 @@ public class UserService {
      * @param request The user update request containing new details.
      * @return true if any field was updated, false otherwise.
      */
-    private boolean updateUserFields(@NotNull @Valid final User user,@NotNull @Valid final UserUpdateRequest request) {
+    public boolean updateUserFields(@NotNull @Valid final User user,@NotNull @Valid final UserUpdateRequest request) {
         boolean isUpdated = false;
         if (request.displayName() != null) {
             user.setDisplayName(request.displayName());
