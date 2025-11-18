@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useTranslation } from "react-i18next";
 import type {User} from "../types";
 import {toast} from "sonner";
@@ -21,12 +21,6 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
                 console.error("Failed to parse user from localStorage", e);
                 localStorage.removeItem('user');
             }
-        }
-        return ()=> {  // Clean up function for testing login/register
-            // setUser(null);
-            // setSidebarVisible(false);
-            // localStorage.removeItem('user');
-            // localStorage.removeItem('token');
         }
     }, [t]);
 
@@ -79,10 +73,10 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
             return data.user;
     };
 
-    const updateUser = async (userId: number, userData: updateUserData) => {
+    const updateUser = async (userData: updateUserData) => {
         const token = localStorage.getItem('token');
 
-        const res = await fetch(`${import.meta.env.VITE_API_URL}api/user/update/${userId}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}api/user`, {
             method: 'PUT',
             headers: {
                 "Content-Type": 'application/json',

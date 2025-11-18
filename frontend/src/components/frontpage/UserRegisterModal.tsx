@@ -94,9 +94,10 @@ export default function UserRegisterModal() {
     const handleLogin = async (data: z.infer<typeof LoginSchema>) => {
         setIsLoading(true)
         try {
-            const userData: { email: string; password: string } = {
+            const userData: { email: string; password: string, locale: string } = {
                 email: data.email,
                 password: data.password,
+                locale: i18n.language || 'en',
             }
             const response = await login(userData);
             if (response) {
@@ -131,6 +132,7 @@ export default function UserRegisterModal() {
                 className={"bg-white/30 backdrop-blur-xs absolute top-0 left-0 w-full h-full z-50 flex items-center justify-center" + (isLoading ? " " : " invisible")}>
                 <PuffLoader size={80} loading={isLoading} />
             </div>
+
             {/* ------ REGISTER MODAL ------ */}
 
             {toggleBetweenRegisterLogin && (

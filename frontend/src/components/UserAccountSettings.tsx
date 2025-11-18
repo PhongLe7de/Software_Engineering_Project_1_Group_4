@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-
 import {
     Dialog,
     DialogContent,
@@ -13,7 +12,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { LanguageSelector } from "./LanguageSelector";
 
 interface UserAccountSettingsProps {
@@ -29,8 +27,6 @@ export function UserAccountSettings({
     const { updateUser, user } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [locale, setLocale] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -39,8 +35,6 @@ export function UserAccountSettings({
     useEffect(() => {
         if (user && open) {
             setName(user.displayName);
-            setEmail(user.email);
-            setLocale(user.locale);
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
@@ -52,11 +46,6 @@ export function UserAccountSettings({
     }
 
     const handleSave = async () => {
-        if (!user?.id) {
-            console.error("User ID not found");
-            return;
-        }
-
         setIsLoading(true);
 
         try {
@@ -82,27 +71,15 @@ export function UserAccountSettings({
             // Build update data object (only include changed fields)
             const updateData: {
                 displayName?: string;
-                email?: string;
-                locale?: string;
-                currentPassword?: string;
-                newPassword?: string;
+                password?: string;
             } = {};
 
             if (name !== user.displayName) {
                 updateData.displayName = name;
             }
 
-            if (email !== user.email) {
-                updateData.email = email;
-            }
-
-            if (locale !== user.locale) {
-                updateData.locale = locale;
-            }
-
             if (currentPassword && newPassword && confirmPassword) {
-                updateData.currentPassword = currentPassword;
-                updateData.newPassword = newPassword;
+                updateData.password = newPassword;
             }
 
             // Only make request if there are changes
@@ -112,7 +89,9 @@ export function UserAccountSettings({
                 return;
             }
 
-            await updateUser(user.id, updateData);
+            console.log(updateData);
+
+            await updateUser(updateData);
 
             // Clear password fields on success
             setCurrentPassword("");
@@ -153,32 +132,6 @@ export function UserAccountSettings({
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder={t('settings.name_placeholder')}
                             />
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="email">{t('settings.email')}</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder={t('settings.email_placeholder')}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="locale">{t('settings.locale')}</Label>
-                            <Select value={locale} onValueChange={setLocale}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="en">English</SelectItem>
-                                    <SelectItem value="jp">日本語</SelectItem>
-                                    <SelectItem value="ru">Русский</SelectItem>
-                                    <SelectItem value="zh">中文</SelectItem>
-                                </SelectContent>
-                            </Select>
                         </div>
                     </div>
 

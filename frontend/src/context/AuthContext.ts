@@ -17,14 +17,12 @@ export type registerData = {
 export type loginData = {
     email: string;
     password: string;
+    locale: string;
 }
 
 export type updateUserData = {
     displayName?: string;
-    email?: string;
-    locale?: string;
-    currentPassword?: string;
-    newPassword?: string;
+    password?: string;
 }
 
 export const AuthContext = createContext<{
@@ -32,6 +30,6 @@ export const AuthContext = createContext<{
     sidebarVisible: boolean;
     login: (userData: loginData) => Promise<User>;
     register: (userData: registerData) => Promise<User>;
-    updateUser: (userId: number, userData: updateUserData) => Promise<User>;
+    updateUser: (userData: updateUserData) => Promise<User>;
     logout: () => void;
 } | null>(null);
