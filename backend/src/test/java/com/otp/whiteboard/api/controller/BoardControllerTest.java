@@ -61,8 +61,8 @@ class BoardControllerTest {
                     List.of(request.ownerId()),
                     AMOUNT_OF_USERS,
                     NUMBER_OF_STROKES,
+                    "Message of the day:",
                     SUCCESS_MESSAGE
-
             );
         });
 
@@ -76,6 +76,7 @@ class BoardControllerTest {
                     List.of(OWNER_ID, userId),
                     AMOUNT_OF_USERS,
                     NUMBER_OF_STROKES,
+                    "Message of the day:",
                     SUCCESS_ADD_USER_MESSAGE
             );
         });
@@ -89,6 +90,7 @@ class BoardControllerTest {
                     List.of(OWNER_ID),
                     AMOUNT_OF_USERS,
                     NUMBER_OF_STROKES,
+                    "Message of the day:",
                     SUCCESS_REMOVE_USER_MESSAGE
             );
         });
@@ -103,6 +105,7 @@ class BoardControllerTest {
                     List.of(OWNER_ID),
                     AMOUNT_OF_USERS,
                     NUMBER_OF_STROKES,
+                    "Message of the day:",
                     SUCCESS_UPDATE_BOARD_MESSAGE
             );
         });
@@ -116,6 +119,7 @@ class BoardControllerTest {
                     List.of(OWNER_ID),
                     AMOUNT_OF_USERS,
                     NUMBER_OF_STROKES,
+                    "Message of the day:",
                     SUCCESS_MESSAGE
             );
         });
@@ -128,6 +132,7 @@ class BoardControllerTest {
                         List.of(OWNER_ID),
                         AMOUNT_OF_USERS,
                         NUMBER_OF_STROKES,
+                        "Message of the day:",
                         SUCCESS_MESSAGE
                 )
         ));
@@ -143,7 +148,7 @@ class BoardControllerTest {
     @Test
     void createBoardReturnBoardDto() {
         // Given
-        final BoardCreatingRequest request = new BoardCreatingRequest(SAMPLE_BOARD_NAME, OWNER_ID);
+        final BoardCreatingRequest request = new BoardCreatingRequest(SAMPLE_BOARD_NAME, OWNER_ID, null);
         // When & Then
         try {
             ResponseEntity<BoardDto> boardDto = boardController.createBoard(request);
@@ -155,7 +160,7 @@ class BoardControllerTest {
             assertEquals(OWNER_ID, boardDto.getBody().ownerId());
             assertEquals(AMOUNT_OF_USERS, boardDto.getBody().amountOfUsers());
             assertEquals(NUMBER_OF_STROKES, boardDto.getBody().numberOfStrokes());
-            assertEquals("Board created successfully", boardDto.getBody().message());
+            assertEquals("Board created successfully", boardDto.getBody().customMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -181,7 +186,7 @@ class BoardControllerTest {
             assertEquals(OWNER_ID, response.getBody().ownerId());
             assertEquals(AMOUNT_OF_USERS, response.getBody().amountOfUsers());
             assertEquals(NUMBER_OF_STROKES, response.getBody().numberOfStrokes());
-            assertEquals("User added successfully", response.getBody().message());
+            assertEquals("User added successfully", response.getBody().customMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -202,7 +207,7 @@ class BoardControllerTest {
             assertEquals(OWNER_ID, response.getBody().ownerId());
             assertEquals(AMOUNT_OF_USERS, response.getBody().amountOfUsers());
             assertEquals(NUMBER_OF_STROKES, response.getBody().numberOfStrokes());
-            assertEquals("User removed successfully", response.getBody().message());
+            assertEquals("User removed successfully", response.getBody().customMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -213,7 +218,8 @@ class BoardControllerTest {
     void updateBoard() {
         final BoardUpdateRequest request = new BoardUpdateRequest(
                 UPDATE_BOARD_NAME,
-                NUMBER_OF_STROKES
+                NUMBER_OF_STROKES,
+                null
         );
         try {
             final ResponseEntity<BoardDto> response = boardController.updateBoard(BOARD_ID, request);
@@ -225,7 +231,7 @@ class BoardControllerTest {
             assertEquals(OWNER_ID, response.getBody().ownerId());
             assertEquals(AMOUNT_OF_USERS, response.getBody().amountOfUsers());
             assertEquals(NUMBER_OF_STROKES, response.getBody().numberOfStrokes());
-            assertEquals("Board updated successfully", response.getBody().message());
+            assertEquals("Board updated successfully", response.getBody().customMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

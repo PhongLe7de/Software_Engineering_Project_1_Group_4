@@ -139,7 +139,7 @@ class BoardServiceTest {
     @Test
     void createBoardWithExistingNameShouldThrowException() {
         //given
-        final BoardCreatingRequest request = new BoardCreatingRequest(EXIT_BOARD_NAME, OWNER_ID);
+        final BoardCreatingRequest request = new BoardCreatingRequest(EXIT_BOARD_NAME, OWNER_ID, null);
         //when & then
         Exception exception = assertThrows(IllegalArgumentException.class, () -> boardService.createBoard(request));
         assertEquals("Board already exists with name: " + EXIT_BOARD_NAME, exception.getMessage());
@@ -149,7 +149,7 @@ class BoardServiceTest {
     @Test
     void createBoardWithNonExistingOwnerShouldThrowException() {
         //given
-        final BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, NON_EXIST_USER);
+        final BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, NON_EXIST_USER, null);
         //when & then
         try{
             boardService.createBoard(request);
@@ -162,7 +162,7 @@ class BoardServiceTest {
     @Test
     void createBoardWithUserBoardExitNull() {
         //given
-        final BoardCreatingRequest request = new BoardCreatingRequest("New Board", OWNER_ID);
+        final BoardCreatingRequest request = new BoardCreatingRequest("New Board", OWNER_ID, null);
 
         //when
         when(mockBoardRepository.findBoardsByName("New Board")).thenReturn(Optional.empty());
@@ -179,7 +179,7 @@ class BoardServiceTest {
     @Test
     void createBoard() {
         //given
-        final BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, OWNER_ID);
+        final BoardCreatingRequest request = new BoardCreatingRequest(BOARD_NAME, OWNER_ID, null);
         //when & then
         try{
             boardService.createBoard(request);
@@ -207,13 +207,15 @@ class BoardServiceTest {
     void getAllBoardsWithLocalizationMessage() {
         //when
         when(mockUserService.getLocale(testUser)).thenReturn("en");
+        when(mockLocalizationService2.getMessage("messageOfTheDay", "en")).thenReturn("Message of the day:");
         when(mockLocalizationService2.getMessage("welcome", "en")).thenReturn("Welcome!");
         //then
         final List<BoardDto> boards = boardService.getAllBoards(testUser);
 
         assertNotNull(boards);
         assertEquals(1, boards.size());
-        assertEquals("Welcome!", boards.get(0).message());
+        assertEquals("Message of the day:", boards.get(0).motdLabel());
+        assertEquals("Welcome!", boards.get(0).customMessage());
     }
 
     @DisplayName("As user, I want to retrieve a board by its ID, so that I can view or edit it.")
@@ -416,7 +418,7 @@ class BoardServiceTest {
         final Long notFoundId = 3L;
         final String boardName = UPDATED_BOARD_NAME;
         final Integer numberOfStrokes = NUMBER_OF_STROKES;
-        final BoardUpdateRequest request = new BoardUpdateRequest(boardName, numberOfStrokes);
+        final BoardUpdateRequest request = new BoardUpdateRequest(boardName, numberOfStrokes, null);
         //When & Then
         try {
             boardService.updateBoard(notFoundId, request);
@@ -431,7 +433,7 @@ class BoardServiceTest {
     @Test
     void updateBoardFieldsOnlyBoardName() {
         //given
-        final BoardUpdateRequest request = new BoardUpdateRequest("NameOnly", null);
+        final BoardUpdateRequest request = new BoardUpdateRequest("NameOnly", null, null);
         //when & then
         boolean updated = boardService.updateBoardFields(testBoard, request);
         assertTrue(updated);
@@ -443,7 +445,7 @@ class BoardServiceTest {
     @Test
     void updateBoardFieldsOnlyNumberOfStrokes() {
         //given
-        final BoardUpdateRequest request = new BoardUpdateRequest(null, 10);
+        final BoardUpdateRequest request = new BoardUpdateRequest(null, 10, null);
         //when & then
         boolean updated = boardService.updateBoardFields(testBoard, request);
         assertTrue(updated);
@@ -455,7 +457,7 @@ class BoardServiceTest {
     @Test
     void updateBoardFieldsNoChanges() {
         //given
-        final BoardUpdateRequest request = new BoardUpdateRequest(null, null);
+        final BoardUpdateRequest request = new BoardUpdateRequest(null, null, null);
         //when & then
         boolean updated = boardService.updateBoardFields(testBoard, request);
         assertFalse(updated);
@@ -467,7 +469,7 @@ class BoardServiceTest {
     void updateBoardWithNoFields() {
         // given
         final Long boardId = BOARD_ID;
-        final BoardUpdateRequest request = new BoardUpdateRequest(null, null);
+        final BoardUpdateRequest request = new BoardUpdateRequest(null, null, null);
 
         // when
         final BoardDto result = boardService.updateBoard(boardId, request);
@@ -486,7 +488,7 @@ class BoardServiceTest {
         final Long boardId = BOARD_ID;
         final String boardName = UPDATED_BOARD_NAME;
         final Integer numberOfStrokes = NUMBER_OF_STROKES;
-        final BoardUpdateRequest request = new BoardUpdateRequest(boardName, numberOfStrokes);
+        final BoardUpdateRequest request = new BoardUpdateRequest(boardName, numberOfStrokes, null);
         //when
         final BoardDto result = boardService.updateBoard(boardId, request);
         //then

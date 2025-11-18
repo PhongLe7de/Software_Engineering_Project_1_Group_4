@@ -35,6 +35,9 @@ public class Board {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "custom_message", length = 500)
+    private String customMessage;
+
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserBoard> users = new HashSet<>();
 
@@ -44,6 +47,14 @@ public class Board {
     public Board(String name, Long ownerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.name = name;
         this.ownerId = ownerId;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Board(String name, Long ownerId, String customMessage, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.name = name;
+        this.ownerId = ownerId;
+        this.customMessage = customMessage;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -71,6 +82,14 @@ public class Board {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getCustomMessage() {
+        return customMessage;
+    }
+
+    public void setCustomMessage(String customMessage) {
+        this.customMessage = customMessage;
     }
 
     public List<Long> getUserIds() {
@@ -154,12 +173,13 @@ public class Board {
                 Objects.equals(updatedAt, board.updatedAt) &&
                 Objects.equals(userIds, board.userIds) &&
                 Objects.equals(numberOfStrokes, board.numberOfStrokes) &&
-                Objects.equals(amountOfUsers, board.amountOfUsers);
+                Objects.equals(amountOfUsers, board.amountOfUsers) &&
+                Objects.equals(customMessage, board.customMessage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, ownerId, createdAt, updatedAt, userIds, amountOfUsers, numberOfStrokes);
+        return Objects.hash(id, name, ownerId, createdAt, updatedAt, userIds, amountOfUsers, numberOfStrokes, customMessage);
     }
 }
 

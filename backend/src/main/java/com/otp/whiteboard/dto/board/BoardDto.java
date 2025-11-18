@@ -30,7 +30,10 @@ public record BoardDto(
         Integer numberOfStrokes,
 
         @Nullable
-        String message
+        String motdLabel,
+
+        @Nullable
+        String customMessage
 ) {
     public BoardDto(Board board) {
         this(
@@ -40,11 +43,12 @@ public record BoardDto(
                 board.getUserIds(),
                 board.getUserIds().size(),
                 board.getNumberOfStrokes(),
-                null
+                null,  // motdLabel will be set by service layer
+                board.getCustomMessage()
         );
     }
 
-    public BoardDto withMessage(String message) {
-        return new BoardDto(id, boardName, ownerId, userIds, amountOfUsers, numberOfStrokes, message);
+    public BoardDto withMotd(String motdLabel, String customMessage) {
+        return new BoardDto(id, boardName, ownerId, userIds, amountOfUsers, numberOfStrokes, motdLabel, customMessage);
     }
 }

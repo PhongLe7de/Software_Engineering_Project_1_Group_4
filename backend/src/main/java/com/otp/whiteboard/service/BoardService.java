@@ -58,6 +58,7 @@ public class BoardService {
             final Board newBoard = new Board();
             newBoard.setName(request.boardName());
             newBoard.setOwnerId(request.ownerId());
+            newBoard.setCustomMessage(request.customMessage());
 
             final User owner = userRepository.findById(request.ownerId()).orElseThrow(
                     () -> new IllegalArgumentException("Owner not found")
@@ -87,9 +88,13 @@ public class BoardService {
         logger.debug("Fetching all boards");
         try {
             final String userLocale = userService.getLocale(user);
-            final String welcomeMessage = localizationService.getMessage("welcome", userLocale);
+            final String motdLabel = localizationService.getMessage("messageOfTheDay", userLocale);
+            final String defaultWelcome = localizationService.getMessage("welcome", userLocale);
             final List<Board> boards = boardRepository.findAll();
-            return boards.stream().map(board -> new BoardDto(board).withMessage(welcomeMessage)).toList();
+            return boards.stream().map(board -> {
+                String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
+                return new BoardDto(board).withMotd(motdLabel, message);
+            }).toList();
         } catch (Exception error) {
             logger.error("Error during fetching all boards: {}", error.getMessage());
             throw error;
@@ -107,14 +112,16 @@ public class BoardService {
     public BoardDto getBoardById(@NotNull final Long boardId, @NotNull @Valid final User user) {
         try {
             final String userLocale = userService.getLocale(user);
-            final String welcomeMessage = localizationService.getMessage("welcome", userLocale);
+            final String motdLabel = localizationService.getMessage("messageOfTheDay", userLocale);
+            final String defaultWelcome = localizationService.getMessage("welcome", userLocale);
             final Optional<Board> optionalBoard = boardRepository.findById(boardId);
             if (optionalBoard.isEmpty()) {
                 throw new IllegalArgumentException("Board not found with ID: " + boardId);
             }
             final Board board = optionalBoard.get();
+            String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
 
-            return new BoardDto(board).withMessage(welcomeMessage);
+            return new BoardDto(board).withMotd(motdLabel, message);
         } catch (Exception error) {
             logger.error("Error during fetching board by id: {}", error.getMessage());
             throw error;
@@ -133,7 +140,8 @@ public class BoardService {
     public BoardDto addUserToBoard(@NotNull final Long boardId, @NotNull final Long userId, @NotNull @Valid final User user) {
         try {
             final String userLocale = userService.getLocale(user);
-            final String welcomeBoardMessage = localizationService.getMessage("welcomeBoard", userLocale);
+            final String motdLabel = localizationService.getMessage("messageOfTheDay", userLocale);
+            final String defaultWelcome = localizationService.getMessage("welcome", userLocale);
             final Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
 
@@ -149,7 +157,8 @@ public class BoardService {
             board.addUser(userAdded);
             boardRepository.save(board);
 
-            return new BoardDto(board).withMessage(welcomeBoardMessage);
+            String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
+            return new BoardDto(board).withMotd(motdLabel, message);
         } catch (Exception error) {
             logger.error("Error during adding user to board", error);
             throw error;
@@ -233,6 +242,10 @@ public class BoardService {
         }
         if (request.numberOfStrokes() != null) {
             board.setNumberOfStrokes(request.numberOfStrokes());
+            result = true;
+        }
+        if (request.customMessage() != null) {
+            board.setCustomMessage(request.customMessage());
             result = true;
         }
         return result;
