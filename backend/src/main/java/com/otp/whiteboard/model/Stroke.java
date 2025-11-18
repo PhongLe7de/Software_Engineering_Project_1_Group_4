@@ -47,26 +47,8 @@ public class Stroke implements Serializable {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    public Stroke() {}
-
-    public Stroke(@NotNull @Valid final Board board,
-                  @NotNull @Valid final User user,
-                  @NotBlank final String color,
-                  @NotNull final Long thickness,
-                  @NotNull @Valid final DrawEventType type,
-                  @NotNull @Valid final DrawingTool tool,
-                  @NotNull final Double xCord,
-                  @NotNull final Double yCord,
-                  @NotNull @Valid final LocalDateTime createdAt) {
-        this.board = board;
-        this.user = user;
-        this.color = color;
-        this.thickness = thickness;
-        this.type = type;
-        this.tool = tool;
-        this.xCord = xCord;
-        this.yCord = yCord;
-        this.createdAt = createdAt;
+    public Stroke() {
+        // Default constructor for JPA
     }
 
     // Getters and Setters
