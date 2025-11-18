@@ -60,13 +60,10 @@ class DrawControllerTest {
 
     @BeforeEach
     void init() {
-        setupMocks();
         setupTestTarget();
         setupMockData();
     }
 
-    void setupMocks() {
-    }
     void setupMockData() {
         drawDto = new DrawDto(
                 DRAW_ID,

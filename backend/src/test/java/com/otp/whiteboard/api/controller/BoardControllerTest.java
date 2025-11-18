@@ -48,11 +48,7 @@ class BoardControllerTest {
     @BeforeEach
     void init() {
         setupMockData();
-        setupMocks();
         setupTestTarget();
-    }
-
-    private void setupMocks() {
     }
 
     private void setupMockData() {
@@ -111,7 +107,7 @@ class BoardControllerTest {
             );
         });
 
-        when(boardService.getBoardById(any(Long.class))).thenAnswer(invocation -> {
+        when(boardService.getBoardById(any(Long.class), any(User.class))).thenAnswer(invocation -> {
             final Long boardId = invocation.getArgument(0);
             return new BoardDto(
                     boardId,

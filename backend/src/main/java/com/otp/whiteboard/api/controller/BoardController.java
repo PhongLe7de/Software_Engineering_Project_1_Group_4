@@ -117,7 +117,7 @@ public class BoardController {
         if (currentUser == null) {
             return ResponseEntity.status(401).build();
         }
-        final BoardDto response = boardService.getBoardById(boardId);
+        final BoardDto response = boardService.getBoardById(boardId, currentUser);
         return ResponseEntity.ok(response);
     }
 

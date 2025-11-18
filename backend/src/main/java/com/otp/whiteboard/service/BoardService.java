@@ -104,14 +104,17 @@ public class BoardService {
      * @throws IllegalArgumentException if the board is not found.
      */
     @Nonnull
-    public BoardDto getBoardById(@NotNull final Long boardId) {
+    public BoardDto getBoardById(@NotNull final Long boardId, @NotNull @Valid final User user) {
         try {
+            final String userLocale = userService.getLocale(user);
+            final String welcomeMessage = localizationService.getMessage("welcome", userLocale);
             final Optional<Board> optionalBoard = boardRepository.findById(boardId);
             if (optionalBoard.isEmpty()) {
                 throw new IllegalArgumentException("Board not found with ID: " + boardId);
             }
             final Board board = optionalBoard.get();
-            return new BoardDto(board);
+
+            return new BoardDto(board).withMessage(welcomeMessage);
         } catch (Exception error) {
             logger.error("Error during fetching board by id: {}", error.getMessage());
             throw error;
