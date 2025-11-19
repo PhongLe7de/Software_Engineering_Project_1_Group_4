@@ -103,9 +103,68 @@ open target/site/jacoco/index.html  #MacOs
 cd backend
 start target\site\jacoco\index.html #Window
 ```
+
+## Code Quality & Static Analysis
+
+### PMD Static Analysis
+PMD is configured to detect code smells, potential bugs, and style violations.
+
+```bash
+cd backend
+mvn pmd:pmd
+# Report generated at: target/site/pmd.html
+```
+
+See [PMD Report Screenshot](docs/pmd_report_screenshot.png) for latest results.
+
+### SonarQube Analysis
+SonarQube provides comprehensive code quality metrics including:
+- Code coverage
+- Code smells and technical debt
+- Security vulnerabilities
+- Duplications and complexity
+
+See [SonarQube Report Screenshot](docs/sonarqube_report_screenshot.png) for latest analysis.
 ## 🌍 Internationalization (i18n) and Localization
 
-### Overview
+### Backend Localization (Server-Side Messages)
+
+The backend uses Java ResourceBundles to deliver localized server messages, such as the "Message of the Day" displayed when users join boards.
+
+#### User Locale Storage
+Each user has a `locale` field in the database (e.g., "en", "ru", "zh", "ja", "vi") that determines which language they see for server-generated messages.
+
+#### Message Bundles
+Localized messages are stored in `backend/src/main/resources/MessageBundle_*.properties`:
+- `MessageBundle_en_US.properties` - English
+- `MessageBundle_ru_RU.properties` - Russian (Русский)
+- `MessageBundle_zh_CN.properties` - Chinese (中文)
+- `MessageBundle_ja_JP.properties` - Japanese (日本語)
+- `MessageBundle.properties` - Default fallback
+
+Example content:
+```properties
+welcome=welcome to our whiteboard!
+messageOfTheDay=Message of the day:
+```
+
+#### LocalizationService
+The `LocalizationService` class handles message retrieval:
+```java
+String message = localizationService.getMessage("welcome", userLocale);
+// Returns localized "welcome to our whiteboard!" in user's language
+```
+
+#### Integration with Boards
+When users view or join boards, the backend:
+1. Retrieves the user's locale from the `users` table
+2. Fetches localized messages via `LocalizationService`
+3. Returns the board data with localized "Message of the Day" label and custom message
+
+This ensures board greetings and notifications appear in each user's preferred language.
+
+### Frontend Localization (Client-Side UI)
+
 All user-facing text (buttons, labels, tooltips, etc.) is stored in translation files for easy updates and language switching.
 
 ### Folder Structure
@@ -117,7 +176,8 @@ frontend/
 │   │   ├── index.ts
 │   │   ├── locales/
 │   │   │   ├── en.json
-│   │   │   ├── fi.json
+│   │   │   ├── ja.json
+│   │   │   ├── ru.json
 │   │   │   └── vi.json
 │   └── components/
 │       └── ...
@@ -140,7 +200,7 @@ frontend/
    i18n.init({
      resources: {
        en: { translation: en },
-       fi: { translation: fi },
+       ru: { translation: ru },
        vi: { translation: vi },
        fr: { translation: fr },
      },
