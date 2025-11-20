@@ -12,8 +12,8 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 public class RedisListenerConfig {
     @Bean
     public RedisMessageListenerContainer redisContainer(
-            RedisConnectionFactory connectionFactory, DrawSubscriber drawSubscriber, ChannelTopic cursorTopic, ChannelTopic drawTopic) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+            final RedisConnectionFactory connectionFactory,final  DrawSubscriber drawSubscriber, final ChannelTopic cursorTopic, final ChannelTopic drawTopic) {
+        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(drawSubscriber, drawTopic);
         container.addMessageListener(drawSubscriber, cursorTopic);

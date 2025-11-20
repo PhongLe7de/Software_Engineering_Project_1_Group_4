@@ -27,7 +27,7 @@ public class UserBoard {
     public UserBoard() {
     }
 
-    public UserBoard(User user, Board board) {
+    public UserBoard(final User user,final  Board board) {
         this.user = user;
         this.board = board;
     }
@@ -37,7 +37,7 @@ public class UserBoard {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -45,7 +45,7 @@ public class UserBoard {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
 
@@ -53,7 +53,7 @@ public class UserBoard {
         return board;
     }
 
-    public void setBoard(Board board) {
+    public void setBoard(final Board board) {
         this.board = board;
     }
 
@@ -61,15 +61,15 @@ public class UserBoard {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(final Role role) {
         this.role = role;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if( o == null || getClass() != o.getClass()) return false;
-        UserBoard userBoard = (UserBoard) o;
+        final UserBoard userBoard = (UserBoard) o;
         return Objects.equals(id, userBoard.id) && Objects.equals(user, userBoard.user) && Objects.equals(board, userBoard.board);
     }
 

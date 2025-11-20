@@ -41,10 +41,10 @@ import org.springframework.context.annotation.Configuration;
     description = "Firebase ID Token authentication. Get your token from Firebase Auth and use it as 'Bearer {token}'"
 )
 public class OpenApiConfig {
+    private static final String SECURITY_SCHEME_NAME = "Bearer Authentication";
 
     @Bean
     public OpenAPI customOpenAPI() {
-        final String SECURITY_SCHEME_NAME = "Bearer Authentication";
         return new OpenAPI()
             .addSecurityItem(new SecurityRequirement()
                 .addList(SECURITY_SCHEME_NAME))

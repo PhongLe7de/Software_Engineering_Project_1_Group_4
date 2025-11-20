@@ -23,11 +23,11 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(@NonNull @Valid UserRepository userRepository, @NotNull @Valid PasswordEncoder passwordEncoder) {
+    public UserService(@NonNull @Valid final  UserRepository userRepository, @NotNull @Valid final PasswordEncoder passwordEncoder) {
         this.userRepository = Objects.requireNonNull(userRepository, "userRepository must not be null");
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder, "passwordEncoder must not be null");
     }
@@ -39,11 +39,11 @@ public class UserService {
      */
     @Nonnull
     public User createUser(@NotNull @Valid final RegisterRequest request) {
-        logger.debug("Creating user with email: {}", request.email());
+        LOGGER.debug("Creating user with email: {}", request.email());
         try {
             final Optional<User> existingUser = userRepository.findByEmail(request.email());
             if (existingUser.isPresent()) {
-                logger.warn("Attempt to create user with existing email: {}", request.email());
+                LOGGER.warn("Attempt to create user with existing email: {}", request.email());
                 throw new IllegalArgumentException("User already exists with email: " + request.email());
             }
 
@@ -56,10 +56,10 @@ public class UserService {
             user.setLocale(request.locale() != null ? request.locale() : "en");
 
             final User savedUser = userRepository.save(user);
-            logger.info("User created successfully with ID: {} and email: {}", savedUser.getId(), savedUser.getEmail());
+            LOGGER.info("User created successfully with ID: {} and email: {}", savedUser.getId(), savedUser.getEmail());
             return savedUser;
-        } catch (Exception error) {
-            logger.error("Error during user creation: {}", error.getMessage());
+        } catch (final Exception error) {
+            LOGGER.error("Error during user creation: {}", error.getMessage());
             throw error;
         }
     }
@@ -72,21 +72,21 @@ public class UserService {
      */
     @Nonnull
     public UserDto updateUser(@NotNull @Positive final Long id, @NotNull @Valid final UserUpdateRequest request) {
-        logger.debug("Updating user with ID: {}", id);
+        LOGGER.debug("Updating user with ID: {}", id);
         try {
             final User user = userRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
 
-            boolean isUpdated = updateUserFields(user, request);
+            final boolean isUpdated = updateUserFields(user, request);
             if (!isUpdated) {
-                logger.info("No fields to update for user with ID: {}", id);
+                LOGGER.info("No fields to update for user with ID: {}", id);
                 return new UserDto(user);
             }
             final User updatedUser = userRepository.save(user);
-            logger.info("User updated successfully with ID: {}", updatedUser.getId());
+            LOGGER.info("User updated successfully with ID: {}", updatedUser.getId());
             return new UserDto(updatedUser);
         } catch (Exception error) {
-            logger.error("Error during user update: {}", error.getMessage());
+            LOGGER.error("Error during user update: {}", error.getMessage());
             throw error;
         }
     }
@@ -98,13 +98,13 @@ public class UserService {
      */
     @Nonnull
     public UserDto getUserProfileByDisplayName(@NotNull @Valid final UserByDisplayNameRequest request) {
-        logger.debug("Search user with display name: {}", request.displayName());
+        LOGGER.debug("Search user with display name: {}", request.displayName());
         try {
             final User user = userRepository.findUserByDisplayName(request.displayName())
                     .orElseThrow(() -> new IllegalArgumentException("User not found with display name: " + request.displayName()));
             return new UserDto(user);
         } catch (Exception error) {
-            logger.error("Error during user search: {}", error.getMessage());
+            LOGGER.error("Error during user search: {}", error.getMessage());
             throw error;
         }
 
@@ -156,7 +156,7 @@ public class UserService {
             isUpdated = true;
         }
         if (request.locale() != null) {
-            String userLocale = user.getLocale();
+            final String userLocale = user.getLocale();
             if(userLocale == null || !userLocale.equals(request.locale())) {
                 user.setLocale(request.locale());
                 isUpdated = true;
@@ -170,13 +170,13 @@ public class UserService {
     }
 
     @NotNull
-    public void storeLocale(@NotNull User user, @NotNull String locale) {
+    public void storeLocale(@NotNull final User user, @NotNull final String locale) {
         user.setLocale(locale);
         userRepository.save(user);
     }
 
     @NotNull
-    public String getLocale(@NotNull User user) {
+    public String getLocale(@NotNull final User user) {
         final String localeCode = user.getLocale();
         if (localeCode == null) {
             final String defaultLocale = "en";

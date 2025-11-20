@@ -22,7 +22,7 @@ import java.util.Objects;
 
 @Service
 public class DrawEventService {
-    private static final Logger log = LoggerFactory.getLogger(DrawEventService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DrawEventService.class);
 
     private static final String DRAWING_CHANNEL_PREFIX = "drawing-session-";
     private static final String CURSOR_CHANNEL_PREFIX  = "cursor-session-";
@@ -58,7 +58,7 @@ public class DrawEventService {
         try {
             final Board board = boardRepository.findById(event.getBoardId()).orElseThrow(
                     () -> {
-                        log.warn("publishDrawEvent: board {} not found – skipping DB save (event id={})",
+                        LOGGER.warn("publishDrawEvent: board {} not found – skipping DB save (event id={})",
                                 event.getBoardId(), event.getId());
                         return new IllegalArgumentException("Board not found: " + event.getBoardId());
                     }
@@ -66,7 +66,7 @@ public class DrawEventService {
 
             final User user = userRepository.findUserByDisplayName(event.getDisplayName()).orElseThrow(
                     () -> {
-                        log.warn("publishDrawEvent: user {} not found – skipping DB save (event id={})",
+                        LOGGER.warn("publishDrawEvent: user {} not found – skipping DB save (event id={})",
                                 event.getDisplayName(), event.getId());
                         return new IllegalArgumentException("User not found: " + event.getDisplayName());
                     }
@@ -88,7 +88,7 @@ public class DrawEventService {
             board.incrementStrokes();
             boardRepository.save(board);
         } catch (Exception e) {
-            log.error("Error during removing user from board", e);
+            LOGGER.error("Error during removing user from board", e);
             throw e;
         }
 

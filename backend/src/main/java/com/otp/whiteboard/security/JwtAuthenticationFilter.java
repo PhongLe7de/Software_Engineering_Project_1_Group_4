@@ -21,19 +21,19 @@ import java.util.Optional;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(final JwtUtil jwtUtil, final UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
 
     @Override
-    protected void doFilterInternal(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain) throws ServletException, IOException {
-        logger.debug("Processing authentication filter for request URI: {}", request.getRequestURI());
+    protected void doFilterInternal(@Nonnull final HttpServletRequest request, @Nonnull final  HttpServletResponse response, @Nonnull final FilterChain filterChain) throws ServletException, IOException {
+        LOGGER.debug("Processing authentication filter for request URI: {}", request.getRequestURI());
 
         if (request.getRequestURI().startsWith("/ws")) {
             filterChain.doFilter(request, response);
@@ -41,33 +41,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            Optional<String> token = extractTokenFromHeader(request);
+            final Optional<String> token = extractTokenFromHeader(request);
             if (token.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {
-                String email = jwtUtil.extractUsername(token.get());
+                final String email = jwtUtil.extractUsername(token.get());
                 if (email != null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                    final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                     if (jwtUtil.validateToken(token.get(), email)) {
-                        UsernamePasswordAuthenticationToken authentication =
+                        final UsernamePasswordAuthenticationToken authentication =
                                 new UsernamePasswordAuthenticationToken(
                                         userDetails, null, userDetails.getAuthorities());
 
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);
-                        logger.info("Successfully authenticated user: {}", email);
+                        LOGGER.info("Successfully authenticated user: {}", email);
                     }
                 }
             }
-        } catch (Exception e) {
-            logger.warn("JWT authentication failed: {}", e.getMessage());
+        } catch (final Exception e) {
+            LOGGER.warn("JWT authentication failed: {}", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
 
-    private Optional<String> extractTokenFromHeader(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
+    private Optional<String> extractTokenFromHeader(final HttpServletRequest request) {
+        final String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7).trim();
-            logger.debug("Extracted Bearer token from header successfully.");
+            final String token = header.substring(7).trim();
+            LOGGER.debug("Extracted Bearer token from header successfully.");
             return Optional.of(token);
         }
         return Optional.empty();

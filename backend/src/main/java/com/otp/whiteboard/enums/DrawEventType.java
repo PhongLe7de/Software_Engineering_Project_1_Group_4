@@ -10,7 +10,7 @@ public enum DrawEventType {
 
     private final String value;
 
-    DrawEventType(String value) {
+    DrawEventType(final String value) {
         this.value = value;
     }
 
@@ -20,9 +20,9 @@ public enum DrawEventType {
     }
 
     @JsonCreator
-    public static DrawEventType fromValue(String value) {
+    public static DrawEventType fromValue(final String value) {
         if (value == null) return null;
-        for (DrawEventType type : DrawEventType.values()) {
+        for (final DrawEventType type : DrawEventType.values()) {
             if (type.value.equalsIgnoreCase(value)) {
                 return type;
             }

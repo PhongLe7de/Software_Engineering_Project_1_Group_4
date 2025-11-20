@@ -44,14 +44,14 @@ public class Board {
     public Board() {
     }
 
-    public Board(String name, Long ownerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Board(final String name, final Long ownerId, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         this.name = name;
         this.ownerId = ownerId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public Board(String name, Long ownerId, String customMessage, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Board(final String name, final Long ownerId,final  String customMessage, final LocalDateTime createdAt,final  LocalDateTime updatedAt) {
         this.name = name;
         this.ownerId = ownerId;
         this.customMessage = customMessage;
@@ -72,7 +72,7 @@ public class Board {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -80,7 +80,7 @@ public class Board {
         return ownerId;
     }
 
-    public void setOwnerId(Long ownerId) {
+    public void setOwnerId(final Long ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -88,27 +88,27 @@ public class Board {
         return customMessage;
     }
 
-    public void setCustomMessage(String customMessage) {
+    public void setCustomMessage(final String customMessage) {
         this.customMessage = customMessage;
     }
 
     public List<Long> getUserIds() {
         return userIds;
     }
-    public void setUserIds(List<Long> userIds) {
+    public void setUserIds(final List<Long> userIds) {
         this.userIds = userIds;
     }
     public Set<UserBoard> getUsers() {
         return users;
     }
-    public void setUsers(Set<UserBoard> users) {
+    public void setUsers(final Set<UserBoard> users) {
         this.users = users;
     }
 
     public Integer getNumberOfStrokes() {
         return numberOfStrokes;
     }
-    public void setNumberOfStrokes(Integer numberOfStrokes) {
+    public void setNumberOfStrokes(final Integer numberOfStrokes) {
         this.numberOfStrokes = numberOfStrokes;
     }
 
@@ -120,7 +120,7 @@ public class Board {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(final LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -128,13 +128,13 @@ public class Board {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(final LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now();
         createdAt = now;
         updatedAt = now;
     }
@@ -144,15 +144,15 @@ public class Board {
         updatedAt = LocalDateTime.now();
     }
 
-    public void addUser(User user) {
+    public void addUser(final User user) {
         if(!userIds.contains(user.getId())) {
             userIds.add(user.getId());
-            UserBoard ub = new UserBoard(user, this);
+            final UserBoard ub = new UserBoard(user, this);
             users.add(ub);
         }
     }
 
-    public void removeUser(User user) {
+    public void removeUser(final User user) {
         userIds.remove(user.getId());
         users.removeIf(ub -> ub.getUser().equals(user));
     }
@@ -162,10 +162,10 @@ public class Board {
     public void decrementStrokes() { if(numberOfStrokes > 0) numberOfStrokes--; }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Board board = (Board) o;
+        final Board board = (Board) o;
         return Objects.equals(id, board.id) &&
                 Objects.equals(name, board.name) &&
                 Objects.equals(ownerId, board.ownerId) &&

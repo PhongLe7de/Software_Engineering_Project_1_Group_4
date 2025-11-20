@@ -16,15 +16,15 @@ public class WhiteboardApplication {
 	private final Logger logger = LoggerFactory.getLogger(WhiteboardApplication.class);
 
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		SpringApplication.run(WhiteboardApplication.class, args);
 	}
 
 	@Bean
-	public CommandLineRunner testDb(JdbcTemplate jdbcTemplate) {
+	public CommandLineRunner testDb(final JdbcTemplate jdbcTemplate) {
 
 		return args -> {
-			Integer result = jdbcTemplate.queryForObject("SELECT 1", Integer.class);
+			final Integer result = jdbcTemplate.queryForObject("SELECT 1", Integer.class);
 			logger.info("DB Connection Test Result: " + result);
 		};
 	}

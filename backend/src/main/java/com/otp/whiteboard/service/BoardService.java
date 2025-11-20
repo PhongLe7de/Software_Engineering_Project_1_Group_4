@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Service
 public class BoardService {
-    private static final Logger logger = LoggerFactory.getLogger(BoardService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BoardService.class);
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
@@ -48,11 +48,11 @@ public class BoardService {
      */
     @Nonnull
     public BoardDto createBoard(@NotNull @Valid final BoardCreatingRequest request) {
-        logger.debug("Creating Board with name: {}", request.boardName());
+        LOGGER.debug("Creating Board with name: {}", request.boardName());
         try {
             final Optional<Board> exitingBoard = boardRepository.findBoardsByName(request.boardName());
             if (exitingBoard.isPresent()) {
-                logger.warn("Attempt to create board with existing name: {}", request.boardName());
+                LOGGER.warn("Attempt to create board with existing name: {}", request.boardName());
                 throw new IllegalArgumentException("Board already exists with name: " + request.boardName());
             }
             final Board newBoard = new Board();
@@ -70,10 +70,10 @@ public class BoardService {
             userBoardExit.setRole(Role.ADMIN);
             userBoardRepository.save(userBoardExit);
 
-            logger.info("Board created successfully with ID: {} and name: {}", newBoard.getId(), newBoard.getName());
+            LOGGER.info("Board created successfully with ID: {} and name: {}", newBoard.getId(), newBoard.getName());
             return new BoardDto(newBoard);
         } catch (Exception error) {
-            logger.error("Error during board creation: {}", error.getMessage());
+            LOGGER.error("Error during board creation: {}", error.getMessage());
             throw error;
         }
     }
@@ -85,18 +85,18 @@ public class BoardService {
      */
     @Nonnull
     public List<BoardDto> getAllBoards(@NotNull @Valid final User user) {
-        logger.debug("Fetching all boards");
+        LOGGER.debug("Fetching all boards");
         try {
             final String userLocale = userService.getLocale(user);
             final String motdLabel = localizationService.getMessage("messageOfTheDay", userLocale);
             final String defaultWelcome = localizationService.getMessage("welcome", userLocale);
             final List<Board> boards = boardRepository.findAll();
             return boards.stream().map(board -> {
-                String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
+                final String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
                 return new BoardDto(board).withMotd(motdLabel, message);
             }).toList();
         } catch (Exception error) {
-            logger.error("Error during fetching all boards: {}", error.getMessage());
+            LOGGER.error("Error during fetching all boards: {}", error.getMessage());
             throw error;
         }
     }
@@ -119,11 +119,11 @@ public class BoardService {
                 throw new IllegalArgumentException("Board not found with ID: " + boardId);
             }
             final Board board = optionalBoard.get();
-            String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
+            final String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
 
             return new BoardDto(board).withMotd(motdLabel, message);
         } catch (Exception error) {
-            logger.error("Error during fetching board by id: {}", error.getMessage());
+            LOGGER.error("Error during fetching board by id: {}", error.getMessage());
             throw error;
         }
     }
@@ -157,10 +157,10 @@ public class BoardService {
             board.addUser(userAdded);
             boardRepository.save(board);
 
-            String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
+            final String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
             return new BoardDto(board).withMotd(motdLabel, message);
         } catch (Exception error) {
-            logger.error("Error during adding user to board", error);
+            LOGGER.error("Error during adding user to board", error);
             throw error;
         }
     }
@@ -197,7 +197,7 @@ public class BoardService {
 
             return new BoardDto(board);
         } catch (Exception error) {
-            logger.error("Error during removing user from board", error);
+            LOGGER.error("Error during removing user from board", error);
             throw error;
         }
     }
@@ -210,20 +210,20 @@ public class BoardService {
      */
     @Nonnull
     public BoardDto updateBoard(@NotNull final Long boardId, @NotNull @Valid final BoardUpdateRequest request) {
-        logger.debug("Updating Board with ID: {}", boardId);
+        LOGGER.debug("Updating Board with ID: {}", boardId);
         try {
             final Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
             final boolean isUpdated = updateBoardFields(board, request);
             if (!isUpdated) {
-                logger.info("No fields to update for board with ID: {}", boardId);
+                LOGGER.info("No fields to update for board with ID: {}", boardId);
                 return new BoardDto(board);
             }
             boardRepository.save(board);
-            logger.info("Board updated successfully with ID: {}", board.getId());
+            LOGGER.info("Board updated successfully with ID: {}", board.getId());
             return new BoardDto(board);
         } catch (Exception error) {
-            logger.error("Error during board update: {}", error.getMessage());
+            LOGGER.error("Error during board update: {}", error.getMessage());
             throw error;
         }
     }

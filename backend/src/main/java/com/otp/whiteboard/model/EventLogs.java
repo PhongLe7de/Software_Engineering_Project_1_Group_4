@@ -33,43 +33,35 @@ public class EventLogs implements Serializable {
     public EventLogs() {
     }
 
-    public EventLogs(Board board, User user, String type, String payload, LocalDateTime createdAt) {
-        this.board = board;
-        this.user = user;
-        this.type = type;
-        this.payload = payload;
-        this.createdAt = createdAt;
-    }
-
     // Getters and Setters
     public Long getId() {
         return id;
     }
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
     public Board getBoard() {
         return board;
     }
-    public void setBoard(Board board) {
+    public void setBoard(final Board board) {
         this.board = board;
     }
     public User getUser() {
         return user;
     }
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
     public String getType() {
         return type;
     }
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
     public String getPayload() {
         return payload;
     }
-    public void setPayload(String payload) {
+    public void setPayload(final String payload) {
         this.payload = payload;
     }
     public LocalDateTime getCreatedAt() {
@@ -77,10 +69,10 @@ public class EventLogs implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EventLogs event = (EventLogs) o;
+        final EventLogs event = (EventLogs) o;
         return Objects.equals(id, event.id) && Objects.equals(board, event.board) && Objects.equals(user, event.user) && Objects.equals(type, event.type) && Objects.equals(payload, event.payload) && Objects.equals(createdAt, event.createdAt);
     }
 

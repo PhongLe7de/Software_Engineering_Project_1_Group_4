@@ -27,7 +27,7 @@ import static com.otp.whiteboard.api.Endpoint.BOARD_INTERNAL_API;
 public class BoardController {
     private final BoardService boardService;
 
-    public BoardController(BoardService boardService) {
+    public BoardController(final BoardService boardService) {
         this.boardService = boardService;
     }
 
@@ -56,7 +56,7 @@ public class BoardController {
             It accepts the board ID and user ID as request parameters and returns the updated board details.
             """
     )
-    @PostMapping("{boardId}/edit/addUser")
+    @PostMapping("/{boardId}/edit/addUser")
     public ResponseEntity<BoardDto> addUserToBoard(
             @PathVariable("boardId") final Long boardId,
             @RequestBody
@@ -81,6 +81,7 @@ public class BoardController {
             It accepts the board ID and user ID as request parameters and returns the updated board details.
             """
     )
+
     @PostMapping("{boardId}/edit/removeUser")
     public ResponseEntity<BoardDto> removeUserFromBoard(
             @PathVariable("boardId") final Long boardId,
