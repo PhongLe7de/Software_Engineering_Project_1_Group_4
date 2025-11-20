@@ -11,26 +11,26 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DrawSubscriber implements MessageListener {
-    private static final Logger logger = LoggerFactory.getLogger(DrawSubscriber.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DrawSubscriber.class);
     private final SimpMessagingTemplate messagingTemplate;
     private final ObjectMapper objectMapper;
 
-    public DrawSubscriber(SimpMessagingTemplate messagingTemplate) {
+    public DrawSubscriber(final SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
         this.objectMapper = new ObjectMapper();
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(final Message message,final  byte[] pattern) {
         try {
-            String msg = message.toString();
+            final String msg = message.toString();
             // Deserialize JSON into DrawingEvent
-            Stroke event = objectMapper.readValue(msg, Stroke.class);
+            final Stroke event = objectMapper.readValue(msg, Stroke.class);
             // Send the event to WebSocket subscribers
             messagingTemplate.convertAndSend("/topic/drawing-session-" + event.getId(), event);
 
         } catch (Exception e) {
-            logger.error("Error handling Redis message", e);
+            LOGGER.error("Error handling Redis message", e);
         }
     }
 }

@@ -54,7 +54,7 @@ public class Stroke implements Serializable {
     // Getters and Setters
     public Long getId() {return id;}
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -62,7 +62,7 @@ public class Stroke implements Serializable {
         return board;
     }
 
-    public void setBoard(Board board) {
+    public void setBoard(final Board board) {
         this.board = board;
     }
 
@@ -70,7 +70,7 @@ public class Stroke implements Serializable {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
 
@@ -78,7 +78,7 @@ public class Stroke implements Serializable {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(final String color) {
         this.color = color;
     }
 
@@ -86,7 +86,7 @@ public class Stroke implements Serializable {
         return thickness;
     }
 
-    public void setThickness(Long thickness) {
+    public void setThickness(final Long thickness) {
         this.thickness = thickness;
     }
 
@@ -94,7 +94,7 @@ public class Stroke implements Serializable {
         return type;
     }
 
-    public void setType(DrawEventType type) {
+    public void setType(final DrawEventType type) {
         this.type = type;
     }
 
@@ -102,7 +102,7 @@ public class Stroke implements Serializable {
         return tool;
     }
 
-    public void setTool(DrawingTool tool) {
+    public void setTool(final DrawingTool tool) {
         this.tool = tool;
     }
 
@@ -110,7 +110,7 @@ public class Stroke implements Serializable {
         return xCord;
     }
 
-    public void setXCord(Double xCord) {
+    public void setXCord(final Double xCord) {
         this.xCord = xCord;
     }
 
@@ -118,7 +118,7 @@ public class Stroke implements Serializable {
         return yCord;
     }
 
-    public void setYCord(Double yCord) {
+    public void setYCord(final Double yCord) {
         this.yCord = yCord;
     }
 
@@ -126,16 +126,16 @@ public class Stroke implements Serializable {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime now) {
+    public void setCreatedAt(final LocalDateTime now) {
         this.createdAt = now;
     }
 
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Stroke stroke = (Stroke) o;
+        final Stroke stroke = (Stroke) o;
         return Objects.equals(id, stroke.id) && Objects.equals(board, stroke.board) && Objects.equals(user, stroke.user) && Objects.equals(color, stroke.color) && Objects.equals(thickness, stroke.thickness) && Objects.equals(type, stroke.type) && Objects.equals(tool, stroke.tool) && Objects.equals(xCord, stroke.xCord) && Objects.equals(yCord, stroke.yCord) && Objects.equals(createdAt, stroke.createdAt);
     }
 

@@ -15,8 +15,6 @@ public class Endpoint {
     public static final String USER_INTERNAL_API = API + USER;
     public static final String AUTH_INTERNAL_API = API + AUTH;
     public static final String BOARD_INTERNAL_API = API + BOARD;
-    public static final String DRAW_INTERNAL_API = API + DRAW;
-    public static final String CURSOR_INTERNAL_API = API + CURSOR;
 
     public static final String DRAW_WEBSOCKET = DRAW;
     public static final String CURSOR_WEBSOCKET = CURSOR;

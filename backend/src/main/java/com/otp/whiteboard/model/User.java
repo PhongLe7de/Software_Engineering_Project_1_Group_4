@@ -38,12 +38,12 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password) {
+    public User(final String email, final String password) {
         this.email = email;
         this.password = password;
     }
 
-    public User(Long id, String email, String displayName, String password, Status status) {
+    public User(final Long id, final String email,final  String displayName, final String password,final  Status status) {
         this.id = id;
         this.email = email;
         this.displayName = displayName;
@@ -61,7 +61,7 @@ public class User {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -69,7 +69,7 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -77,7 +77,7 @@ public class User {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -85,7 +85,7 @@ public class User {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) {
+    public void setDisplayName(final String displayName) {
         this.displayName = displayName;
     }
 
@@ -93,7 +93,7 @@ public class User {
         return photoUrl;
     }
 
-    public void setPhotoUrl(String photoUrl) {
+    public void setPhotoUrl(final String photoUrl) {
         this.photoUrl = photoUrl;
     }
 
@@ -101,7 +101,7 @@ public class User {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(final Status status) {
         this.status = status;
     }
 
@@ -113,15 +113,15 @@ public class User {
         return locale;
     }
 
-    public void setLocale(String locale) {
+    public void setLocale(final String locale) {
         this.locale = locale;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
+        final User user = (User) o;
         return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(displayName, user.displayName) && Objects.equals(photoUrl, user.photoUrl) && status == user.status && Objects.equals(createdAt, user.createdAt);
     }
 

@@ -25,46 +25,46 @@ import static com.otp.whiteboard.api.Endpoint.HISTORY_WEBSOCKET;
 @Controller
 public class DrawController {
 
-    private static final Logger log = LoggerFactory.getLogger(DrawController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DrawController.class);
     private final DrawEventService drawEventService;
 
-    public DrawController(DrawEventService drawEventService) {
+    public DrawController(final DrawEventService drawEventService) {
         this.drawEventService = drawEventService;
     }
 
     @MessageMapping(DRAW_WEBSOCKET)
     @SendTo("/topic/draw")
-    public DrawDto onDraw(@Payload DrawDto event) {
+    public DrawDto onDraw(@Payload final DrawDto event) {
         drawEventService.publishDrawEvent(event);
         return event;
     }
 
     @MessageMapping(CURSOR_WEBSOCKET)
     @SendTo("/topic/cursor")
-    public CursorDto onCursor(@Payload CursorDto cursor) {
+    public CursorDto onCursor(@Payload final CursorDto cursor) {
         drawEventService.publishCursorEvent(cursor);
         return cursor;
     }
 
     @MessageMapping(HISTORY_WEBSOCKET)
     @SendToUser("/queue/history")
-    public List<DrawDto> history(@Payload HistoryRequest req,
-                                 @Header("simpSessionId") String sessionId,
-                                 Principal principal) {
+    public List<DrawDto> history(@Payload final  HistoryRequest req,
+                                 @Header("simpSessionId") final  String sessionId,
+                                 final Principal principal) {
         try {
-            log.info("History request: session={}, user={}, boardId={}, limit={}",
+            LOGGER.info("History request: session={}, user={}, boardId={}, limit={}",
                     sessionId, principal != null ? principal.getName() : "anon", req.boardId(), req.limit());
             return drawEventService.getBoardStrokes(req.boardId());
         } catch (RuntimeException e) {
-            log.error("History retrieval failed");
+            LOGGER.error("History retrieval failed");
             return Collections.emptyList();
         }
     }
 
     @MessageExceptionHandler
     @SendToUser("/queue/errors")
-    public String handleException(Exception e) {
-        log.error("WebSocket error: ", e);
+    public String handleException(final Exception e) {
+        LOGGER.error("WebSocket error: ", e);
         return e.getMessage();
     }
 }

@@ -10,7 +10,7 @@ public enum DrawingTool {
 
     private final String value;
 
-    DrawingTool(String value) {
+    DrawingTool(final String value) {
         this.value = value;
     }
 
@@ -20,9 +20,9 @@ public enum DrawingTool {
     }
 
     @JsonCreator
-    public static DrawingTool fromValue(String value) {
+    public static DrawingTool fromValue(final String value) {
         if (value == null) return null;
-        for (DrawingTool tool : DrawingTool.values()) {
+        for (final DrawingTool tool : DrawingTool.values()) {
             if (tool.value.equalsIgnoreCase(value)) {
                 return tool;
             }

@@ -35,7 +35,7 @@ public record BoardDto(
         @Nullable
         String customMessage
 ) {
-    public BoardDto(Board board) {
+    public BoardDto(final Board board) {
         this(
                 board.getId(),
                 board.getName(),
@@ -48,7 +48,7 @@ public record BoardDto(
         );
     }
 
-    public BoardDto withMotd(String motdLabel, String customMessage) {
+    public BoardDto withMotd(final String motdLabel, final String customMessage) {
         return new BoardDto(id, boardName, ownerId, userIds, amountOfUsers, numberOfStrokes, motdLabel, customMessage);
     }
 }
