@@ -205,7 +205,7 @@ class DrawEventServiceTest {
                     eq(DRAWING_EVENTS_PREFIX + NON_EXISTENT_BOARD_ID), any(Duration.class));
             verify(mockStrokeRepository, never()).save(any(Stroke.class));
             verify(mockBoardRepository, never()).save(any(Board.class));
-            assertEquals("Board not found: " + testEvent2.getBoardId(), e.getMessage());
+            assertEquals("Board not found: " + testEvent2.boardId(), e.getMessage());
             return;
         }
         fail("Expected exception was not thrown");
@@ -244,7 +244,7 @@ class DrawEventServiceTest {
                     eq(DRAWING_EVENTS_PREFIX + BOARD_ID), any(Duration.class));
             verify(mockStrokeRepository, never()).save(any(Stroke.class));
             verify(mockBoardRepository, never()).save(any(Board.class));
-            assertEquals("User not found: " + testEvent2.getDisplayName(), e.getMessage());
+            assertEquals("User not found: " + testEvent2.displayName(), e.getMessage());
             return;
         }
         fail("Expected exception was not thrown");
@@ -271,17 +271,17 @@ class DrawEventServiceTest {
     void getBoardStrokesFromCache() {
         // given
         final DrawDto cachedDto = new DrawDto(
-                testEvent.getId(),
-                testEvent.getBoardId(),
-                testEvent.getDisplayName(),
-                testEvent.getTimestamp(),
-                testEvent.getType(),
-                testEvent.getTool(),
-                testEvent.getX(),
-                testEvent.getY(),
-                testEvent.getBrushSize(),
-                testEvent.getBrushColor(),
-                testEvent.getId()
+                testEvent.id(),
+                testEvent.boardId(),
+                testEvent.displayName(),
+                testEvent.timestamp(),
+                testEvent.type(),
+                testEvent.tool(),
+                testEvent.x(),
+                testEvent.y(),
+                testEvent.brushSize(),
+                testEvent.brushColor(),
+                testEvent.id()
         );
 
         // when
@@ -330,14 +330,14 @@ class DrawEventServiceTest {
         assertNotNull(strokes);
         assertEquals(1, strokes.size());
         DrawDto strokeDto = strokes.get(0);
-        assertEquals(testEvent.getBoardId(), strokeDto.getBoardId());
-        assertEquals(testEvent.getDisplayName(), strokeDto.getDisplayName());
-        assertEquals(testEvent.getBrushColor(), strokeDto.getBrushColor());
-        assertEquals(testEvent.getBrushSize(), strokeDto.getBrushSize());
-        assertEquals(testEvent.getTool(), strokeDto.getTool());
-        assertEquals(testEvent.getType(), strokeDto.getType());
-        assertEquals(testEvent.getX(), strokeDto.getX());
-        assertEquals(testEvent.getY(), strokeDto.getY());
+        assertEquals(testEvent.boardId(), strokeDto.boardId());
+        assertEquals(testEvent.displayName(), strokeDto.displayName());
+        assertEquals(testEvent.brushColor(), strokeDto.brushColor());
+        assertEquals(testEvent.brushSize(), strokeDto.brushSize());
+        assertEquals(testEvent.tool(), strokeDto.tool());
+        assertEquals(testEvent.type(), strokeDto.type());
+        assertEquals(testEvent.x(), strokeDto.x());
+        assertEquals(testEvent.y(), strokeDto.y());
     }
 
 }

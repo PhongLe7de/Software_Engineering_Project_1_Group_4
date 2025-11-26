@@ -49,38 +49,38 @@ public class DrawEventService {
      * Publish a drawing event to Redis and save it to the database.
      */
     public void publishDrawEvent(@NotNull @Valid final DrawDto event) {
-        final String redisChannel = DRAWING_CHANNEL_PREFIX + event.getBoardId();
+        final String redisChannel = DRAWING_CHANNEL_PREFIX + event.boardId();
 
         redisTemplate.convertAndSend(redisChannel, event);
-        redisTemplate.opsForList().rightPush(DRAWING_EVENTS_PREFIX + event.getBoardId(), event);
-        redisTemplate.expire(DRAWING_EVENTS_PREFIX + event.getBoardId(), java.time.Duration.ofHours(1));
+        redisTemplate.opsForList().rightPush(DRAWING_EVENTS_PREFIX + event.boardId(), event);
+        redisTemplate.expire(DRAWING_EVENTS_PREFIX + event.boardId(), java.time.Duration.ofHours(1));
 
         try {
-            final Board board = boardRepository.findById(event.getBoardId()).orElseThrow(
+            final Board board = boardRepository.findById(event.boardId()).orElseThrow(
                     () -> {
                         LOGGER.warn("publishDrawEvent: board {} not found – skipping DB save (event id={})",
-                                event.getBoardId(), event.getId());
-                        return new IllegalArgumentException("Board not found: " + event.getBoardId());
+                                event.boardId(), event.id());
+                        return new IllegalArgumentException("Board not found: " + event.boardId());
                     }
             );
 
-            final User user = userRepository.findUserByDisplayName(event.getDisplayName()).orElseThrow(
+            final User user = userRepository.findUserByDisplayName(event.displayName()).orElseThrow(
                     () -> {
                         LOGGER.warn("publishDrawEvent: user {} not found – skipping DB save (event id={})",
-                                event.getDisplayName(), event.getId());
-                        return new IllegalArgumentException("User not found: " + event.getDisplayName());
+                                event.displayName(), event.id());
+                        return new IllegalArgumentException("User not found: " + event.displayName());
                     }
             );
 
             final Stroke newStroke = new Stroke();
             newStroke.setBoard(board);
             newStroke.setUser(user);
-            newStroke.setColor(event.getBrushColor());
-            newStroke.setThickness(event.getBrushSize());
-            newStroke.setType(event.getType());
-            newStroke.setTool(event.getTool());
-            newStroke.setXCord(event.getX());
-            newStroke.setYCord(event.getY());
+            newStroke.setColor(event.brushColor());
+            newStroke.setThickness(event.brushSize());
+            newStroke.setType(event.type());
+            newStroke.setTool(event.tool());
+            newStroke.setXCord(event.x());
+            newStroke.setYCord(event.y());
             newStroke.setCreatedAt(LocalDateTime.now());
 
             strokeRepository.save(newStroke);
@@ -98,11 +98,11 @@ public class DrawEventService {
      * Publish a cursor event to Redis.
      */
     public void publishCursorEvent(@NotNull @Valid final CursorDto event) {
-        final String cursorChannel = CURSOR_CHANNEL_PREFIX + event.getDisplayName();
+        final String cursorChannel = CURSOR_CHANNEL_PREFIX + event.displayName();
 
         redisTemplate.convertAndSend(cursorChannel, event);
-        redisTemplate.opsForList().rightPush(CURSOR_EVENTS_PREFIX + event.getDisplayName(), event);
-        redisTemplate.expire(CURSOR_EVENTS_PREFIX + event.getDisplayName(), java.time.Duration.ofHours(1));
+        redisTemplate.opsForList().rightPush(CURSOR_EVENTS_PREFIX + event.displayName(), event);
+        redisTemplate.expire(CURSOR_EVENTS_PREFIX + event.displayName(), java.time.Duration.ofHours(1));
     }
 
     /**

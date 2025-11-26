@@ -3,6 +3,7 @@ package com.otp.whiteboard.dto.user;
 import com.otp.whiteboard.model.User;
 import com.otp.whiteboard.enums.Status;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ public record UserDto(
         @NotBlank String email,
         String displayName,
         String photoUrl,
-        @NotBlank Status status,
+        @NotNull Status status,
         String locale,
         LocalDateTime createdAt
 ) {

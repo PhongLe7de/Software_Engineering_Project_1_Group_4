@@ -5,4 +5,8 @@ package com.otp.whiteboard.dto.drawing;
  * Sent from the client with boardId and optional limit.
  */
 
-public record HistoryRequest(Long boardId, Integer limit) { }
+public record HistoryRequest(
+        Long boardId,
+        Integer limit
+) {
+}
