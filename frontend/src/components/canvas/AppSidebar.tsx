@@ -43,6 +43,7 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
 
     const userData = {
         user: {
+            id: user?.id || 0,
             name: user?.displayName || t('common.undefined_username'),
             email: user?.email || t('common.undefined_email'),
             avatar: user?.photoUrl || t('common.undefined_photo'),
@@ -81,7 +82,7 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
-                            <a href="#">
+                            <a href="/home">
                                 <IconPhotoEdit className="!size-5" />
                                 <span className="text-base font-semibold">{t('dashboard.realtime_whiteboard')}</span>
                             </a>
