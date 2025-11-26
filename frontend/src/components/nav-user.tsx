@@ -1,45 +1,52 @@
-import { useState } from "react"
+import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router"
 import {
-  IconDotsVertical,
-  IconLogout,
-  IconUserCircle,
-} from "@tabler/icons-react"
-import { useTranslation } from "react-i18next"
-import { Avatar } from "@/components/ui/avatar"
+    IconDotsVertical,
+    IconLogout,
+    IconUserCircle,
+} from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
+import { Avatar } from "@/components/ui/avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar"
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
+} from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/useAuth.tsx";
 import { UserAccountSettings } from "./UserAccountSettings";
 
 export function NavUser({
-  user,
+    user,
 }: {
-  user: {
-    id: number
-    name: string
-    email: string
-    avatar: string
-  }
+    user: {
+        id: number
+        name: string
+        email: string
+        avatar: string
+    }
 }) {
-  const { isMobile } = useSidebar()
-  const { logout } = useAuth();
-  const { t } = useTranslation();
-  const [settingsOpen, setSettingsOpen] = useState(false);
+    const { isMobile } = useSidebar();
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+    const { t } = useTranslation();
+    const [settingsOpen, setSettingsOpen] = useState(false);
 
-  return (
+    const handleLogout = () => {
+      logout();
+      navigate({ to: "/home" });
+    }
+
+    return (
     <>
       <SidebarMenu>
         <SidebarMenuItem>
@@ -88,7 +95,7 @@ export function NavUser({
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout}>
+              <DropdownMenuItem onClick={handleLogout}>
                 <IconLogout />
                 {t('common.log_out')}
               </DropdownMenuItem>
@@ -102,5 +109,5 @@ export function NavUser({
         onOpenChange={setSettingsOpen}
       />
     </>
-  )
+    )
 }
