@@ -155,7 +155,10 @@ export function AppSidebar({ brushColor, setBrushColor, tool, setTool, brushSize
                 </div>
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={userData.user} />
+                {/*wrapper for testing, testids cannot be added to react components*/}
+                <div data-testid={"sidebar-dropdown-menu"}>
+                    <NavUser user={userData.user}/>
+                </div>
             </SidebarFooter>
         </Sidebar>
     )

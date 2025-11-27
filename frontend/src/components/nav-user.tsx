@@ -29,7 +29,6 @@ export function NavUser({
     user,
 }: {
     user: {
-        id: number
         name: string
         email: string
         avatar: string
@@ -95,7 +94,7 @@ export function NavUser({
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
+              <DropdownMenuItem data-testid={"sidebar-logout-button"} onClick={handleLogout}>
                 <IconLogout />
                 {t('common.log_out')}
               </DropdownMenuItem>

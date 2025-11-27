@@ -163,7 +163,7 @@ export default function UserRegisterModal() {
                                         <FormItem>
                                             <FormLabel className={"mt-4"}>{t('auth.email')}</FormLabel>
                                             <FormControl>
-                                                <Input type="email" placeholder="mail@mail.com" {...field} />
+                                                <Input type="email" placeholder="mail@mail.com" data-testid="register-email-input" {...field} />
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -176,7 +176,7 @@ export default function UserRegisterModal() {
                                         <FormItem>
                                             <FormLabel>{t('auth.display_name')}</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Bob" {...field} />
+                                                <Input placeholder="Bob" data-testid="register-displayname-input" {...field} />
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -189,7 +189,7 @@ export default function UserRegisterModal() {
                                         <FormItem>
                                             <FormLabel className={"mt-4"}>{t('auth.password')}</FormLabel>
                                             <FormControl>
-                                                <Input type="password" placeholder="password" {...field} />
+                                                <Input type="password" placeholder="password" data-testid="register-password-input" {...field} />
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -236,7 +236,7 @@ export default function UserRegisterModal() {
                                         <FormItem>
                                             <FormLabel className={"mt-4"}>{t('auth.email')}</FormLabel>
                                             <FormControl>
-                                                <Input type="email" placeholder="mail@mail.com" {...field} />
+                                                <Input type="email" placeholder="mail@mail.com" data-testid="login-email-input" {...field} />
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -247,9 +247,9 @@ export default function UserRegisterModal() {
                                     name="password"
                                     render={({field}) => (
                                         <FormItem>
-                                            <FormLabel htmlFor={"password"} className={"mt-4"}>{t('auth.password')}</FormLabel>
+                                            <FormLabel className={"mt-4"}>{t('auth.password')}</FormLabel>
                                             <FormControl>
-                                                <Input type="password" placeholder="password" {...field} />
+                                                <Input type="password" placeholder="password" data-testid="login-password-input" {...field} />
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>

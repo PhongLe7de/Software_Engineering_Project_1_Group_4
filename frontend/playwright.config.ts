@@ -1,7 +1,7 @@
 import {defineConfig, devices} from '@playwright/test';
 
 export default defineConfig({
-    testDir: './tests/stress',
+    testDir: './tests',
     fullyParallel: true,
     workers: process.env.CI ? 1 : 4,
     // Retry failed tests on CI
@@ -9,8 +9,8 @@ export default defineConfig({
 
     // Reporter configuration
     reporter: [
-        ['html', {outputFolder: 'playwright-report'}],
-        ['json', {outputFile: 'playwright-report/results.json'}],
+        ['html', {outputFolder: 'tests/playwright-report'}],
+        ['json', {outputFile: 'tests/playwright-report/results.json'}],
         ['list']
     ],
     timeout: 60000,
@@ -36,6 +36,7 @@ export default defineConfig({
         {
             name: 'firefox',
             use: {...devices['Desktop Firefox']},
+
         },
         {
             name: 'webkit',

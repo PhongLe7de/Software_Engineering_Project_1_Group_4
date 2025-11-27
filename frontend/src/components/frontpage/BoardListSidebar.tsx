@@ -7,18 +7,18 @@ import {
     SidebarMenuItem,
     SidebarMenuButton,
 } from '@/components/ui/sidebar.tsx';
-import type { User } from '@/types.ts';
-import { LayoutDashboard } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { NavUser } from '@/components/nav-user.tsx';
+import type {User} from '@/types.ts';
+import {LayoutDashboard} from 'lucide-react';
+import {useTranslation} from 'react-i18next';
+import {NavUser} from '@/components/nav-user.tsx';
 import {LanguageSelector} from "@/components/LanguageSelector.tsx";
 
 interface BoardListSidebarProps {
     user: User;
 }
 
-export function BoardListSidebar({ user }: BoardListSidebarProps) {
-    const { t } = useTranslation();
+export function BoardListSidebar({user}: BoardListSidebarProps) {
+    const {t} = useTranslation();
 
     if (!user) return null;
 
@@ -40,8 +40,9 @@ export function BoardListSidebar({ user }: BoardListSidebarProps) {
                             tooltip={t('home.board_manager')}
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
-                            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                                <LayoutDashboard className="size-4" />
+                            <div
+                                className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                                <LayoutDashboard className="size-4"/>
                             </div>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-semibold">{t('dashboard.realtime_whiteboard')}</span>
@@ -54,8 +55,10 @@ export function BoardListSidebar({ user }: BoardListSidebarProps) {
             </SidebarHeader>
             <SidebarContent>
                 <div className="flex flex-col mt-2 ml-2 ">
-                <LanguageSelector />
-                <NavUser user={userData.user}/>
+                    <LanguageSelector/>
+                    <div data-testid={"sidebar-dropdown-menu"}>
+                        <NavUser user={userData.user}/>
+                    </div>
                 </div>
             </SidebarContent>
             <SidebarFooter>
