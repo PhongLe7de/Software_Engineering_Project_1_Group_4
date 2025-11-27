@@ -1,9 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import UserRegisterModal from '../../src/components/frontpage/UserRegisterModal.tsx';
-import  { AuthContext } from "frontend/src/context/AuthContext.tsx";
+import UserRegisterModal from '../../src/components/frontpage/UserRegisterModal';
+import { AuthContext } from "../../src/context/AuthContext";
 
 vi.mock('@faker-js/faker', () => ({
     faker: {
@@ -34,6 +34,7 @@ const renderWithAuthProvider = (component: React.ReactElement) => {
             sidebarVisible: false,
             register: mockRegister,
             login: mockLogin,
+            updateUser: null,
             logout: mockLogout
         }}>
             {component}
@@ -51,6 +52,7 @@ describe('UserRegisterModal', () => {
         const user = userEvent.setup();
         const mockUserData = {
             email: 'JohnDoe@example.com',
+            locale: 'en',
             password: 'password123',
             displayName: 'JohnDoe',
             photoUrl: '🦧',
@@ -59,15 +61,15 @@ describe('UserRegisterModal', () => {
 
         renderWithAuthProvider(<UserRegisterModal />);
 
-        const emailInput = screen.getByLabelText('Email');
+        const emailInput = screen.getByLabelText('auth.email');
         await user.clear(emailInput);
         await user.type(emailInput, mockUserData.email);
 
-        const displayNameInput = screen.getByLabelText('Display name');
+        const displayNameInput = screen.getByLabelText('auth.display_name');
         await user.clear(displayNameInput);
         await user.type(displayNameInput, mockUserData.displayName);
 
-        const passwordInput = screen.getByLabelText('Password');
+        const passwordInput = screen.getByLabelText('auth.password');
         await user.clear(passwordInput);
         await user.type(passwordInput, mockUserData.password);
 
@@ -86,7 +88,7 @@ describe('UserRegisterModal', () => {
 
         renderWithAuthProvider(<UserRegisterModal />);
 
-        const displayNameInput = screen.getByLabelText('Display name');
+        const displayNameInput = screen.getByLabelText('auth.display_name');
         await user.clear(displayNameInput);
         await user.type(displayNameInput, 'JohnDoe');
 

@@ -1,8 +1,8 @@
-import Canvas from "../../src/components/canvas/Canvas.tsx";
+import Canvas from "../../src/components/canvas/Canvas";
 import { vi } from "vitest";
 import { render } from "@testing-library/react";
 import { describe, it, expect, beforeEach } from "vitest";
-import AuthProvider from "frontend/src/context/AuthContext.tsx";
+import AuthProvider from "../../src/context/AuthProvider";
 
 const mockContext = {
     lineCap: '',
@@ -42,7 +42,7 @@ describe("Canvas Component", () => {
         );
 
         const canvas = document.querySelector('canvas');
-        expect(canvas).toBeInTheDocument();
+        expect(canvas).toBeTruthy();
     });
 
     it("applies correct cursor style based on tool", () => {
