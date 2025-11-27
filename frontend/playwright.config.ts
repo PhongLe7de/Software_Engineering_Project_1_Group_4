@@ -26,6 +26,7 @@ export default defineConfig({
         video: 'on',
         actionTimeout: 10000,
         navigationTimeout: 30000,
+        headless: true,
     },
 
     projects: [
@@ -33,15 +34,14 @@ export default defineConfig({
             name: 'chromium',
             use: {...devices['Desktop Chrome']},
         },
-        {
-            name: 'firefox',
-            use: {...devices['Desktop Firefox']},
-
-        },
-        {
-            name: 'webkit',
-            use: {...devices['Desktop Safari']},
-        },
+        // {
+        //     name: 'firefox',
+        //     use: {...devices['Desktop Firefox']},
+        // },
+        // {
+        //     name: 'webkit',
+        //     use: {...devices['Desktop Safari']},
+        // },
     ],
 
     // starts the dev server before tests

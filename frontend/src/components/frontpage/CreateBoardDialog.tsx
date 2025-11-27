@@ -29,6 +29,10 @@ interface CreateBoardDialogProps {
     ownerId: number;
     onBoardCreated: () => void;
 }
+interface CreateBoardDialogProps {
+    ownerId: number;
+    onBoardCreated: () => void;
+}
 //TODO: ADD MESSAGE OF THE DAY FIELD
 export function CreateBoardDialog({ ownerId, onBoardCreated }: CreateBoardDialogProps) {
     const [open, setOpen] = useState(false);
@@ -48,15 +52,14 @@ export function CreateBoardDialog({ ownerId, onBoardCreated }: CreateBoardDialog
         try {
             await createBoard({
                 boardName: data.boardName,
-                ownerId,
+                ownerId: ownerId,
             });
-            toast.success('Board created successfully!');
+            toast.success(t('home.board_created_success', { boardName: data.boardName }));
             reset();
-            setOpen(false);
             onBoardCreated();
+            setOpen(false);
         } catch (error) {
-            console.error('Failed to create board:', error);
-            toast.error('Failed to create board. Please try again.');
+            toast.error(t('home.board_created_error'));
         } finally {
             setIsLoading(false);
         }
@@ -65,9 +68,12 @@ export function CreateBoardDialog({ ownerId, onBoardCreated }: CreateBoardDialog
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button size="lg">
-                    <Plus className="mr-2 h-4 w-4" />
-                    {t('home.create_new_board')}
+                <Button
+                    className="flex items-center gap-2"
+                    data-testid="create-board-dialog-trigger"
+                >
+                    <Plus className="h-4 w-4" />
+                    {t('home.create_board')}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
@@ -92,7 +98,7 @@ export function CreateBoardDialog({ ownerId, onBoardCreated }: CreateBoardDialog
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button type="submit" disabled={isLoading}>
+                        <Button type="submit" disabled={isLoading} data-testid="create-board-submit-button">
                             {isLoading ? t('home.creating') : t('home.create_board')}
                         </Button>
                     </DialogFooter>

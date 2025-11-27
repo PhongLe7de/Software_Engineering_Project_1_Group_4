@@ -30,20 +30,19 @@ export function BoardCard({ board, currentUserId, onJoinBoard, onLeaveBoard }: B
         navigate({ to: '/board/$boardId', params: { boardId: board.id.toString() } });
     };
 
+
     return (
-        <Card className="hover:shadow-lg transition-shadow">
+        <Card data-testid={`board-card-${board.id}`} className="flex flex-col justify-between">
             <CardHeader>
-                <div className="flex items-start justify-between">
-                    <CardTitle className="text-xl">{board.boardName}</CardTitle>
-                    {isOwner && (
-                        <Badge variant="default">{t('home.owner')}</Badge>
-                    )}
+                <div className="flex justify-between items-center">
+                    <CardTitle className="truncate">{board.boardName}</CardTitle>
+                    {isOwner && <Badge variant="default">{t('home.owner')}</Badge>}
                 </div>
-                <CardDescription>
-                    {t('home.board_number')}{board.id}
+                <CardDescription className="line-clamp-2">
+                    {board.motdLabel || t('home.no_motd')}
                 </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="flex gap-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Users className="h-4 w-4" />
                     <span>{board.amountOfUsers} {board.amountOfUsers === 1 ? t('home.member') : t('home.members')}</span>
@@ -58,6 +57,7 @@ export function BoardCard({ board, currentUserId, onJoinBoard, onLeaveBoard }: B
                     <Button
                         onClick={handleOpenBoard}
                         className="flex-1"
+                        data-testid={`board-card-open-button-${board.id}`}
                     >
                         {t('home.open_board')}
                     </Button>
@@ -65,6 +65,7 @@ export function BoardCard({ board, currentUserId, onJoinBoard, onLeaveBoard }: B
                     <Button
                         onClick={handleJoinBoard}
                         className="flex-1"
+                        data-testid={`board-card-join-button-${board.id}`}
                     >
                         {t('home.join_board')}
                     </Button>
@@ -74,6 +75,7 @@ export function BoardCard({ board, currentUserId, onJoinBoard, onLeaveBoard }: B
                         onClick={() => onLeaveBoard(board.id)}
                         variant="outline"
                         size="icon"
+                        data-testid={`board-card-leave-button-${board.id}`}
                     >
                         <LogOut className="h-4 w-4" />
                     </Button>
