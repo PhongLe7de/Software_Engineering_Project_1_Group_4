@@ -103,6 +103,7 @@
   },
   "settings": {
     "account_settings": "Account Settings",
+    "account_settings_description": "Change your language, username or password.",
     "name": "Change Name",
     "name_placeholder": "Enter new name",
     "email": "Change Email",

@@ -103,6 +103,7 @@
   },
   "settings": {
     "account_settings": "Настройки аккаунта",
+    "account_settings_description": "Измените язык, имя пользователя или пароль.",
     "name": "Изменить имя",
     "name_placeholder": "Введите новое имя",
     "email": "Изменить адрес электронной почты",

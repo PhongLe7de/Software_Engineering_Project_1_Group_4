@@ -103,6 +103,7 @@
   },
   "settings": {
     "account_settings": "账户设置",
+    "account_settings_description": "更改您的語言、使用者名稱或密碼。",
     "name": "修改姓名",
     "name_placeholder": "输入新姓名",
     "email": "修改邮箱",
