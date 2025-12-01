@@ -99,7 +99,9 @@
     "board_name_placeholder": "我的精彩白板",
     "create_new_board_description": "为您的新白板输入一个名称。完成后点击创建。",
     "create_board": "创建白板",
-    "creating": "创建中..."
+    "creating": "创建中...",
+    "board_created_success": "看板创建成功！",
+    "board_created_error": "看板创建失败，请重试！"
   },
   "settings": {
     "account_settings": "账户设置",

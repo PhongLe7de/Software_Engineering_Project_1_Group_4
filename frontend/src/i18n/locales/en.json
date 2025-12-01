@@ -99,7 +99,9 @@
     "board_name_placeholder": "My Awesome Board",
     "create_new_board_description": "Enter a name for your new whiteboard. Click create when you're done.",
     "create_board": "Create Board",
-    "creating": "Creating..."
+    "creating": "Creating...",
+    "board_created_success": "Board created successfully!",
+    "board_created_error": "Failed to create board. Please try again!"
   },
   "settings": {
     "account_settings": "Account Settings",

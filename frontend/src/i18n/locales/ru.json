@@ -99,7 +99,9 @@
     "board_name_placeholder": "Моя потрясающая доска",
     "create_new_board_description": "Введите название для вашей новой доски. Нажмите создать, когда закончите.",
     "create_board": "Создать доску",
-    "creating": "Создание..."
+    "creating": "Создание...",
+    "board_created_success": "Доска успешно создана!",
+    "board_created_error": "Не удалось создать доску. Пожалуйста, попробуйте снова!"
   },
   "settings": {
     "account_settings": "Настройки аккаунта",

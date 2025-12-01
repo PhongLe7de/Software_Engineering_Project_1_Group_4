@@ -99,7 +99,9 @@
     "board_name_placeholder": "私の素晴らしいボード",
     "create_new_board_description": "新しいホワイトボードの名前を入力してください。作成が完了したら、作成をクリックします。",
     "create_board": "ボードを作成",
-    "creating": "作成中..."
+    "creating": "作成中...",
+    "board_created_success": "ボードが正常に作成されました！",
+    "board_created_error": "ボードの作成に失敗しました。もう一度お試しください！"
   },
   "settings": {
     "account_settings": "アカウント設定",
