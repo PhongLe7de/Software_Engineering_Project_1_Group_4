@@ -46,6 +46,11 @@ public class UserService {
                 LOGGER.warn("Attempt to create user with existing email: {}", request.email());
                 throw new IllegalArgumentException("User already exists with email: " + request.email());
             }
+            final Optional<User> existingDisplayNameUser = userRepository.findUserByDisplayName(request.displayName());
+            if (existingDisplayNameUser.isPresent()) {
+                LOGGER.warn("Attempt to create user with existing display name: {}", request.displayName());
+                throw new IllegalArgumentException("Display name already in use: " + request.displayName());
+            }
 
             final User user = new User();
             user.setEmail(request.email());
