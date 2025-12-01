@@ -29,16 +29,19 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQubeServer') {
-                    sh """
-                    ${tool 'SonarScanner'}/bin/sonar-scanner \
-                    -Dsonar.projectKey=OTP_2 \
-                    -Dsonar.sources=src \
-                    -Dsonar.projectName=OPT_2_project \
-                    -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=${env.SONAR_TOKEN} \
-                    -Dsonar.java.binaries=target/classes
-                    """
+                dir('backend') {
+                    withSonarQubeEnv('SonarQubeServer') {
+                        sh """
+                        ${tool 'SonarScanner'}/bin/sonar-scanner \
+                        -Dsonar.projectKey=OTP_2 \
+                        -Dsonar.sources=src \
+                        -Dsonar.tests=src/test \
+                        -Dsonar.java.binaries=target/classes \
+                        -Dsonar.projectName=OTP_2_project \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.login=${env.SONAR_TOKEN}
+                        """
+                    }
                 }
             }
         }
