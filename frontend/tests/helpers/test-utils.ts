@@ -1,8 +1,7 @@
 import { Page, expect } from '@playwright/test';
 
-
-/*
-  * Util file for all the repeating code
+/**
+ * Test utilities for Playwright E2E tests
  */
 
 export interface TestUser {
@@ -13,6 +12,13 @@ export interface TestUser {
 
 export class TestHelper {
     constructor(private page: Page) {}
+
+    /**
+     * Calculate average of number array
+     */
+    static average(numbers: number[]): number {
+        return numbers.length ? numbers.reduce((a, b) => a + b, 0) / numbers.length : 0;
+    }
 
     /**
      * Generate a random test user
@@ -28,22 +34,30 @@ export class TestHelper {
     }
 
     /**
+     * Dismiss the MOTD dialog if it's blocking the canvas
+     */
+    private async dismissMotdIfVisible(): Promise<void> {
+        const dialog = this.page.getByRole('dialog', { name: 'Message of the day:' });
+        if (await dialog.isVisible()) {
+            await this.page.getByRole('button', { name: 'Close' }).click();
+            await dialog.waitFor({ state: 'hidden', timeout: 5000 });
+        }
+    }
+
+    /**
      * Register a new user
      * @param user User info
      */
     async register(user: TestUser): Promise<void> {
         await this.page.goto('/');
-
-        // Wait for the registration form to be visible
         await this.page.getByTestId('register-displayname-input').waitFor({ state: 'visible' });
 
         await this.page.getByTestId('register-displayname-input').fill(user.username);
         await this.page.getByTestId('register-email-input').fill(user.email);
         await this.page.getByTestId('register-password-input').fill(user.password);
-        const submitButton = this.page.getByRole('button', { name: /register/i });
-        await submitButton.click();
+        await this.page.getByRole('button', { name: /register/i }).click();
 
-        // After successful registration, user should be redirected to /home (sidebar appears)
+        // After successful registration, user should be redirected to /home
         await this.page.waitForSelector('[data-testid="sidebar-dropdown-menu"]', { timeout: 15000 });
     }
 
@@ -51,18 +65,18 @@ export class TestHelper {
      * Login with existing user credentials
      * @param email User email
      * @param password User password
-     * @param navigate for separating page loading from auth time when benchmarking auth speeds = firefox is slower than chrome/safari
+     * @param navigate Whether to navigate to '/' first (set false when benchmarking auth speed separately)
      */
     async login(email: string, password: string, navigate: boolean = true): Promise<void> {
         if (navigate) {
             await this.page.goto('/');
         }
 
-        // wait for either the login input or the register input
+        // Wait for either login or register form
         await this.page.waitForSelector('[data-testid="login-email-input"], [data-testid="register-displayname-input"]');
-        const registerInput = this.page.getByTestId('register-displayname-input');
 
-        // If register input is visible switch to login
+        // Switch to login form if register form is showing
+        const registerInput = this.page.getByTestId('register-displayname-input');
         if (await registerInput.isVisible()) {
             await this.page.getByText(/login/i).last().click();
             await this.page.getByTestId('login-email-input').waitFor({ state: 'visible' });
@@ -70,12 +84,9 @@ export class TestHelper {
 
         await this.page.getByTestId('login-email-input').fill(email);
         await this.page.getByTestId('login-password-input').fill(password);
-
-        const submitButton = this.page.getByRole('button', { name: /^login$/i });
-        await submitButton.click();
+        await this.page.getByRole('button', { name: /^login$/i }).click();
 
         try {
-            // After successful login, user should be redirected to /home
             await this.page.waitForSelector('[data-testid="sidebar-dropdown-menu"]', { timeout: 15000 });
         } catch (e) {
             console.error(`Login failed or sidebar did not load for ${email}`);
@@ -87,128 +98,153 @@ export class TestHelper {
      * Check if user is logged in
      */
     async isLoggedIn(): Promise<boolean> {
-        // Check for sidebar dropdown menu as indicator that user is logged in
-        const dropdownMenu = this.page.getByTestId('sidebar-dropdown-menu');
-        return await dropdownMenu.isVisible(); // Use isVisible for simpler boolean check
+        return await this.page.getByTestId('sidebar-dropdown-menu').isVisible();
     }
 
     /**
      * Logout current user
      */
     async logout(): Promise<void> {
-        // Open the sidebar dropdown menu
         const dropdownMenu = this.page.getByTestId('sidebar-dropdown-menu');
         if (await dropdownMenu.isVisible()) {
             await dropdownMenu.click();
 
-            // Click the logout button inside the dropdown (it has a data-testid)
             const logoutButton = this.page.getByTestId('sidebar-logout-button');
-
-            // Wait for the button to appear before clicking
             await logoutButton.waitFor({ state: 'visible' });
             await logoutButton.click();
 
-            // Wait for the indicator of successful logout (i.e., the dropdown menu disappears)
             await dropdownMenu.waitFor({ state: 'hidden', timeout: 10000 });
         }
     }
+
     /**
      * Attempts to join an existing board by name or creates a new one if it doesn't exist.
      * Assumes the user is on the /home board list page.
-     * @param boardName The name of the board to access.
+     * @param boardName The name of the board to access
      */
     async accessOrCreateBoard(boardName: string) {
         await this.page.waitForURL(/\/home/, { timeout: 10000 });
 
-        // Locate boardcard by name
         const boardCardLocator = this.page.locator(`[data-testid^="board-card-"]:has-text("${boardName}")`).first();
-        if (await boardCardLocator.isVisible()) {
 
-            const joinButton =  boardCardLocator.getByRole('button', { name: /join board/i });
-            const openButton = boardCardLocator.getByRole('button', { name: /open board/i });
-
-            if (await joinButton.isVisible()) {
-                await joinButton.click();
-            } else if (await openButton.isVisible()) {
-                await openButton.click();
-            } else {
-                throw new Error(`Board card for "${boardName}" found, but neither join nor open button was visible.`);
-            }
-
-            // Wait for URL change to /board/$boardId
-            await this.page.waitForURL(/\/board\/\d+/, { timeout: 15000 });
-
-        } else {
-            // If not found, create a new board
-            // Locator for the button that opens the Create Board Dialog
+        // If board is not visible, create it
+        if (!await boardCardLocator.isVisible()) {
             const createBoardButton = this.page.getByTestId('create-board-dialog-trigger');
             await createBoardButton.waitFor({ state: 'visible' });
             await createBoardButton.click();
+
             await this.page.getByRole("textbox", { name: "Board Name" }).click();
             await this.page.getByRole("textbox", { name: "Board Name" }).fill(boardName);
             await this.page.getByTestId("create-board-submit-button").click();
+
+            // Wait for the card to appear in the list
+            await boardCardLocator.waitFor({ state: 'visible', timeout: 5000 });
         }
+
+        // Join OR Open
+        const actionButton = boardCardLocator.getByRole('button', { name: /(join|open) board/i });
+
+        await actionButton.click();
+
+        // Wait for navigation to complete
+        await this.page.waitForURL(/\/board\/\d+/, { timeout: 15000 });
+    }
+
+    /**
+     * Draws a stroke on the canvas and measures the time until React state updates.
+     *
+     * NOTE: This measures LOCAL render latency only (mouse input → React state → DOM update).
+     * It does NOT measure full round-trip time through the backend.
+     *
+     * @returns Time in milliseconds from mouse action to React state acknowledgment
+     */
+    async drawAndMeasureRender(): Promise<number> {
+        const canvas = this.page.getByTestId('board-canvas');
+        await this.dismissMotdIfVisible();
+
+        // Capture initial stroke count
+        // data-stroke-count={drawingEvents.length + remoteEvents.length}
+        const initialCount = parseInt(await canvas.getAttribute('data-stroke-count') || '0');
+
+        // Calculate safe draw coordinates (avoid sidebar and toast areas)
+        const box = await canvas.boundingBox();
+        if (!box) throw new Error('Canvas not found');
+
+        const SIDEBAR_OFFSET = 400;
+        const TOP_OFFSET = 200;
+        const startX = box.x + SIDEBAR_OFFSET + (Math.random() * 400);
+        const startY = box.y + TOP_OFFSET + (Math.random() * 200);
+
+        //  Draw stroke and measure time until React state updates
+        const startTime = performance.now();
+
+        await this.page.mouse.move(startX, startY);
+        await this.page.mouse.down();
+        await this.page.mouse.move(startX + 50, startY + 50, { steps: 2 });
+        await this.page.mouse.up();
+
+        // Wait for stroke count to increment
+        try {
+            await expect.poll(
+                async () => parseInt(await canvas.getAttribute('data-stroke-count') || '0'),
+                { timeout: 2000, message: `Stroke count stuck at ${initialCount}` }
+            ).toBeGreaterThan(initialCount);
+        } catch {
+            const finalCount = await canvas.getAttribute('data-stroke-count');
+            throw new Error(`Stroke dropped! Count: ${initialCount} → ${finalCount}`);
+        }
+
+        return performance.now() - startTime;
     }
 
     /**
      * Draw on canvas at specific coordinates
-     * @param x x-coords
-     * @param y y-coords
+     * @param x X offset from safe drawing area
+     * @param y Y offset from safe drawing area
      */
     async drawOnCanvas(x: number, y: number): Promise<void> {
-        const canvas = this.page.locator('canvas').first();
-        await canvas.waitFor({ state: 'visible' });
+        const canvas = this.page.getByTestId('board-canvas');
+        await canvas.waitFor({ state: 'visible', timeout: 30000 });
+        await this.dismissMotdIfVisible();
 
         const box = await canvas.boundingBox();
         if (!box) throw new Error('Canvas not found');
-        await this.page.getByRole('button', { name: 'Close' }).click();
-        await this.page.waitForTimeout(300);
-        // Draw a simple stroke
-        await this.page.mouse.move(box.x + x, box.y + y);
+
+        const SIDEBAR_OFFSET = 300;
+        const finalX = box.x + SIDEBAR_OFFSET + x;
+        const finalY = box.y + y;
+
+        await this.page.mouse.move(finalX, finalY);
         await this.page.mouse.down();
-        await this.page.mouse.move(box.x + x + 50, box.y + y + 50);
+        await this.page.mouse.move(finalX + 50, finalY + 50);
         await this.page.mouse.up();
     }
 
     /**
-     * Draw multiple strokes rapidly
-     * @param count number of strokes
+     * Draw multiple strokes at random positions
+     * @param count Number of strokes to draw
      */
     async drawMultipleStrokes(count: number): Promise<void> {
         for (let i = 0; i < count; i++) {
-            const x = Math.floor(Math.random() * 400);
-            const y = Math.floor(Math.random() * 400);
-            await this.drawOnCanvas(x, y);
+            await this.drawOnCanvas(Math.random() * 400, Math.random() * 400);
         }
     }
 
     /**
-     * Wait for WebSocket connection (by checking for interactive canvas)
+     * Wait for WebSocket connection (canvas becomes interactive)
      */
     async waitForWebSocketConnection(): Promise<void> {
         await this.page.waitForLoadState('domcontentloaded');
-        // Check if canvas is interactive
-        const canvas = this.page.locator('canvas').first();
-        await expect(canvas).toBeVisible();
+        await expect(this.page.locator('canvas').first()).toBeVisible();
     }
 
     /**
-     * Verify canvas has content (strokes have been drawn)
-     */
-    async verifyCanvasHasContent(): Promise<void> {
-        const canvas = this.page.locator('canvas').first();
-        await expect(canvas).toBeVisible();
-        // TODO: Measure somehow that lines were drawn 🤷
-    }
-
-    /**
-     * Measure response time for an action
-     * @param action being measured
+     * Measure response time for an async action
+     * @param action Function to measure
      */
     async measureResponseTime(action: () => Promise<void>): Promise<number> {
         const start = Date.now();
         await action();
         return Date.now() - start;
     }
-
 }

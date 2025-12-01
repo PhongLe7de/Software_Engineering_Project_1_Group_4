@@ -272,6 +272,8 @@ function Canvas({ boardId, sidebarVisible, tool, brushSize, brushColor, remoteEv
                 }}
             >
                 <canvas
+                    data-testid="board-canvas"
+                    data-stroke-count={drawingEvents.length + remoteEvents.length}
                     ref={canvasRef}
                     width={CANVAS_WIDTH}
                     height={CANVAS_HEIGHT}
