@@ -68,6 +68,11 @@ pipeline {
             }
         }
 
+        stage('Non-Functional Test') {
+            steps {
+                sh '/usr/local/bin/jmeter -n -t tests/performance/auth-test.jmx -l result.jtl'
+            }
+        }
 
         stage('Publish Test Results') {
             steps {
