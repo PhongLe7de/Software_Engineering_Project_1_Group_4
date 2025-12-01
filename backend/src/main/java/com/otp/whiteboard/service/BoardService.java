@@ -24,6 +24,8 @@ import java.util.Optional;
 @Service
 public class BoardService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BoardService.class);
+    private static final String DEFAULT_MESSAGE_OF_THE_DAY = "messageOfTheDay";
+    private static final String DEFAULT_WELCOME_MESSAGE = "welcome";
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
@@ -88,8 +90,8 @@ public class BoardService {
         LOGGER.debug("Fetching all boards");
         try {
             final String userLocale = userService.getLocale(user);
-            final String motdLabel = localizationService.getMessage("messageOfTheDay", userLocale);
-            final String defaultWelcome = localizationService.getMessage("welcome", userLocale);
+            final String motdLabel = localizationService.getMessage(DEFAULT_MESSAGE_OF_THE_DAY, userLocale);
+            final String defaultWelcome = localizationService.getMessage(DEFAULT_WELCOME_MESSAGE, userLocale);
             final List<Board> boards = boardRepository.findAll();
             return boards.stream().map(board -> {
                 final String message = board.getCustomMessage() != null ? board.getCustomMessage() : defaultWelcome;
@@ -112,8 +114,8 @@ public class BoardService {
     public BoardDto getBoardById(@NotNull final Long boardId, @NotNull @Valid final User user) {
         try {
             final String userLocale = userService.getLocale(user);
-            final String motdLabel = localizationService.getMessage("messageOfTheDay", userLocale);
-            final String defaultWelcome = localizationService.getMessage("welcome", userLocale);
+            final String motdLabel = localizationService.getMessage(DEFAULT_MESSAGE_OF_THE_DAY, userLocale);
+            final String defaultWelcome = localizationService.getMessage(DEFAULT_WELCOME_MESSAGE, userLocale);
             final Optional<Board> optionalBoard = boardRepository.findById(boardId);
             if (optionalBoard.isEmpty()) {
                 throw new IllegalArgumentException("Board not found with ID: " + boardId);
@@ -140,8 +142,8 @@ public class BoardService {
     public BoardDto addUserToBoard(@NotNull final Long boardId, @NotNull final Long userId, @NotNull @Valid final User user) {
         try {
             final String userLocale = userService.getLocale(user);
-            final String motdLabel = localizationService.getMessage("messageOfTheDay", userLocale);
-            final String defaultWelcome = localizationService.getMessage("welcome", userLocale);
+            final String motdLabel = localizationService.getMessage(DEFAULT_MESSAGE_OF_THE_DAY, userLocale);
+            final String defaultWelcome = localizationService.getMessage(DEFAULT_WELCOME_MESSAGE, userLocale);
             final Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new IllegalArgumentException("Board not found with ID: " + boardId));
 

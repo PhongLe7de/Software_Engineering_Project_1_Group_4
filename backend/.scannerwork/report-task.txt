@@ -2,5 +2,5 @@ projectKey=OTP_2
 serverUrl=http://localhost:9000
 serverVersion=25.11.0.114957
 dashboardUrl=http://localhost:9000/dashboard?id=OTP_2
-ceTaskId=6ac800ad-8043-4c78-9630-19da15f2c667
-ceTaskUrl=http://localhost:9000/api/ce/task?id=6ac800ad-8043-4c78-9630-19da15f2c667
+ceTaskId=4fbc37ee-aac6-4515-b4ae-bb8abc1420bb
+ceTaskUrl=http://localhost:9000/api/ce/task?id=4fbc37ee-aac6-4515-b4ae-bb8abc1420bb

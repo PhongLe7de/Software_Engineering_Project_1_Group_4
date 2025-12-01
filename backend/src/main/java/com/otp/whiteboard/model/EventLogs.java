@@ -31,6 +31,7 @@ public class EventLogs implements Serializable {
     private LocalDateTime createdAt;
 
     public EventLogs() {
+        // Default constructor
     }
 
     // Getters and Setters
