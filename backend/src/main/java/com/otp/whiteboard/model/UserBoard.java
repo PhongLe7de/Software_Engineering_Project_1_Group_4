@@ -3,8 +3,6 @@ package com.otp.whiteboard.model;
 import com.otp.whiteboard.enums.Role;
 import jakarta.persistence.*;
 
-import java.util.Objects;
-
 @Entity
 @Table(name = "user_boards")
 public class UserBoard {
