@@ -112,26 +112,6 @@ public class Board {
         this.numberOfStrokes = numberOfStrokes;
     }
 
-    public Integer getAmountOfUsers() {
-        return userIds.size();
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(final LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     @PrePersist
     protected void onCreate() {
         final LocalDateTime now = LocalDateTime.now();
@@ -158,28 +138,5 @@ public class Board {
     }
 
     public void incrementStrokes() { numberOfStrokes++; }
-
-    public void decrementStrokes() { if(numberOfStrokes > 0) numberOfStrokes--; }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Board board = (Board) o;
-        return Objects.equals(id, board.id) &&
-                Objects.equals(name, board.name) &&
-                Objects.equals(ownerId, board.ownerId) &&
-                Objects.equals(createdAt, board.createdAt) &&
-                Objects.equals(updatedAt, board.updatedAt) &&
-                Objects.equals(userIds, board.userIds) &&
-                Objects.equals(numberOfStrokes, board.numberOfStrokes) &&
-                Objects.equals(amountOfUsers, board.amountOfUsers) &&
-                Objects.equals(customMessage, board.customMessage);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, ownerId, createdAt, updatedAt, userIds, amountOfUsers, numberOfStrokes, customMessage);
-    }
 }
 

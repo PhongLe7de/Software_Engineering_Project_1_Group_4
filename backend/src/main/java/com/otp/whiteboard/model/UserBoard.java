@@ -57,25 +57,7 @@ public class UserBoard {
         this.board = board;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
     public void setRole(final Role role) {
         this.role = role;
     }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if( o == null || getClass() != o.getClass()) return false;
-        final UserBoard userBoard = (UserBoard) o;
-        return Objects.equals(id, userBoard.id) && Objects.equals(user, userBoard.user) && Objects.equals(board, userBoard.board);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, user, board);
-    }
-
 }
