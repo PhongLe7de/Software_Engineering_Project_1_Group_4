@@ -3,13 +3,9 @@ package com.otp.whiteboard.model;
 import com.otp.whiteboard.enums.DrawEventType;
 import com.otp.whiteboard.enums.DrawingTool;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name = "strokes")
@@ -128,20 +124,6 @@ public class Stroke implements Serializable {
 
     public void setCreatedAt(final LocalDateTime now) {
         this.createdAt = now;
-    }
-
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Stroke stroke = (Stroke) o;
-        return Objects.equals(id, stroke.id) && Objects.equals(board, stroke.board) && Objects.equals(user, stroke.user) && Objects.equals(color, stroke.color) && Objects.equals(thickness, stroke.thickness) && Objects.equals(type, stroke.type) && Objects.equals(tool, stroke.tool) && Objects.equals(xCord, stroke.xCord) && Objects.equals(yCord, stroke.yCord) && Objects.equals(createdAt, stroke.createdAt);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, board, user, color, thickness, type, tool, xCord, yCord, createdAt);
     }
 
 }
