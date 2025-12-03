@@ -8,6 +8,9 @@ pipeline {
         SONAR_TOKEN = 'sqp_398a398986cabe1472b87589edc3c74be7db6aa2'
         JAVA_HOME = '/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home'
         PATH = "${JAVA_HOME}/bin:${JMETER_HOME}/bin:${env.PATH}"
+        DOCKERHUB_CREDENTIALS_ID = 'docker_hub'
+        DOCKER_IMAGE = 'phongle7de/whiteboard'
+        DOCKER_TAG = 'latest'
     }
     stages {
         stage('Checkout') {
@@ -82,6 +85,28 @@ pipeline {
         stage('Publish Coverage Report') {
             steps {
                 jacoco()
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                    } else {
+                        bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', env.DOCKERHUB_CREDENTIALS_ID) {
+                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                    }
+                }
             }
         }
     }
